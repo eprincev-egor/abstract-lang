@@ -1,0 +1,51 @@
+{
+  "name": "lang-parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "lib/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "nyc --reporter=html --reporter=text-summary mocha",
+    "eslint": "eslint --ext .js,.ts lib",
+    "eslint-fix": "eslint --fix --ext .js,.ts lib",
+    "postinstall": "node postinstall/postinstall.js"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "require": [
+      "ts-node/register",
+      "source-map-support/register"
+    ],
+    "all": true,
+    "exclude": [
+      "dist",
+      "coverage",
+      "postinstall/postinstall.js",
+      ".mocharc.js",
+      "lib/index.ts"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^14.14.25",
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
+    "eslint": "^7.19.0",
+    "eslint-plugin-sonarjs": "^0.5.0",
+    "eslint-plugin-unicorn": "^27.0.0",
+    "mocha": "^8.2.1",
+    "nyc": "^15.1.0",
+    "source-map-support": "^0.5.19",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  }
+}

@@ -1,0 +1,130 @@
+{
+    "env": {
+        "es6": true,
+        "es2017": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:sonarjs/recommended",
+        "plugin:unicorn/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "tsconfig.json",
+        "tsconfigRootDir": "."
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "sonarjs",
+        "unicorn"
+    ],
+    "rules": {
+        "no-import-assign": "off",
+        "arrow-spacing": "error",
+        "arrow-parens": ["error", "always"],
+        "comma-dangle": ["error", "never"],
+        "curly": [2, "multi-line"],
+        "no-prototype-builtins": "off",
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "keyword-spacing": ["error", { "after": true }],
+        "key-spacing": ["error", { "afterColon": true }],
+        "no-case-declarations": "off",
+        "no-console": "off",
+        "no-extra-boolean-cast": "off",
+        "no-lonely-if": ["error"],
+        "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 0, "maxBOF": 0 }],
+        "no-multi-spaces": "error",
+        "no-var": "error",
+        "object-shorthand": ["error", "always"],
+        "operator-linebreak": ["error", "after"],
+        "one-var": ["error", "never"],
+        "quotes": ["error", "double"],
+        "quote-props": ["error", "as-needed"],
+        "semi": ["error", "always"],
+        "space-before-blocks": "error",
+        "max-classes-per-file": ["error", 1],
+        "space-before-function-paren": ["error", {
+            "anonymous": "never",
+            "named": "never",
+            "asyncArrow": "always"
+        }],
+        "space-infix-ops": ["error"],
+        "no-trailing-spaces": "error",
+        "sonarjs/prefer-immediate-return": 0,
+        "unicorn/filename-case": [
+            "error", {
+                "cases": {
+                    "pascalCase": true,
+                    "camelCase": true
+                }
+            }
+        ],
+        "unicorn/prevent-abbreviations": [
+            "error",
+            {
+                "whitelist": {
+                    "params": true,
+                    "Params": true,
+                    "err": true,
+                    "i": true,
+                    "j": true,
+                    "prev": true,
+                    "args": true
+                }
+            }
+        ],
+        "class-methods-use-this": "error",
+        "@typescript-eslint/brace-style": ["error", "stroustrup"],
+        "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+        "@typescript-eslint/dot-notation": "error",
+        "@typescript-eslint/func-call-spacing": "error",
+        "@typescript-eslint/keyword-spacing": "error",
+        "@typescript-eslint/lines-between-class-members": [
+            "error",
+            "always",
+            {"exceptAfterSingleLine": true}
+        ],
+        "@typescript-eslint/member-delimiter-style": "error",
+        "@typescript-eslint/no-array-constructor": "error",
+        "@typescript-eslint/no-confusing-void-expression": [
+            "error",
+            {"ignoreArrowShorthand": true}
+        ],
+        "@typescript-eslint/no-duplicate-imports": "error",
+        "@typescript-eslint/no-empty-interface": [
+            "error",
+            {"allowSingleExtends": false}
+        ],
+        "@typescript-eslint/no-extra-parens": ["error"],
+        "@typescript-eslint/no-magic-numbers": [
+            "error",
+            {
+                "ignore": [0, -1, 1],
+                "ignoreArrayIndexes": true,
+                "ignoreDefaultValues": true,
+                "ignoreReadonlyClassProperties": true,
+                "ignoreEnums": true,
+                "ignoreNumericLiteralTypes": true
+            }
+        ],
+        "@typescript-eslint/no-explicit-any": "off"
+    },
+    "overrides": [
+        {
+            "files": ["*.spec.ts"],
+            "rules": {
+                "@typescript-eslint/no-magic-numbers": "off"
+            }
+        },
+        {
+            "files": ["*.js"],
+            "rules": {
+                "@typescript-eslint/no-var-requires": "off"
+            }
+        }
+    ]
+}
