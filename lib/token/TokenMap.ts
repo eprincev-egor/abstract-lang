@@ -42,6 +42,14 @@ function buildPopularMap(descriptions: TokenDescription[]) {
         const popularChars = description.popularEntry || [];
 
         for (const popularChar of popularChars) {
+            if ( !description.entry.test(popularChar) ) {
+                throw new Error([
+                    `${description.TokenConstructor.name}:`,
+                    `popular entry char "${popularChar}"`,
+                    `does not match entry: ${String(description.entry)}`
+                ].join(" "));
+            }
+
             const existentDescription = popularMap[ popularChar ];
             if ( existentDescription ) {
                 throw new Error([

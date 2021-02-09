@@ -52,9 +52,12 @@ describe("TokenMap", () => {
 
     it("speedup getDescription() by popular entry", () => {
 
+        const regExp = new RegExp("[0-7]");
+        regExp.test = () => true;
+
         class PopularNumberToken extends Token {
             static description: TokenDescription = {
-                entry: /[0-7]/,
+                entry: regExp,
                 popularEntry: ["8", "9"],
                 TokenConstructor: PopularNumberToken
             };
@@ -122,6 +125,24 @@ describe("TokenMap", () => {
             map.getDescription("x");
         }, (err: Error) =>
             /Token for char "x" not found/.test(err.message)
+        );
+    });
+
+    it("getDescription() popular entry chars must match entry regExp", () => {
+        class BarToken extends Token {
+            static description: TokenDescription = {
+                entry: /[0-2]/,
+                popularEntry: ["2", "3"],
+                TokenConstructor: BarToken
+            };
+        }
+
+        assert.throws(() => {
+            new TokenMap([
+                BarToken.description
+            ]);
+        }, (err: Error) =>
+            /BarToken: popular entry char "3" does not match entry: \/\[0-2]\//.test(err.message)
         );
     });
 });
