@@ -43,6 +43,10 @@ export class Token {
         this.position = position;
     }
 
+    is(equal: string): boolean {
+        return this.value === equal;
+    }
+
     toJSON(): {value: string; position: ReturnType<Position["toJSON"]>} {
         return {
             value: this.value,
