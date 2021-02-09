@@ -1,16 +1,15 @@
 import * as assert from "assert";
-import { AnyCharToken } from "../default/AnyCharToken";
 import { DigitsToken } from "../default/DigitsToken";
 import { SpaceToken } from "../default/SpaceToken";
 import { Tokenizer } from "../Tokenizer";
 import { TokenMap } from "../TokenMap";
+import { Token } from "../Token";
 
 describe("Tokenizer", () => {
 
     const map = new TokenMap([
         SpaceToken.description,
-        DigitsToken.description,
-        AnyCharToken.description
+        DigitsToken.description
     ]);
 
     it("tokenize digits",() => {
@@ -84,4 +83,38 @@ describe("Tokenizer", () => {
         );
     });
 
+    it("tokenize unknown symbols by one-symbol per token",() => {
+        const map = new TokenMap([
+            DigitsToken.description
+        ]);
+
+        const tokens = Tokenizer.tokenize(
+            map,
+            "qwe"
+        );
+
+        assert.strictEqual(tokens.length, 3);
+
+        assert.ok(tokens[0] instanceof Token);
+        assert.ok(tokens[1] instanceof Token);
+        assert.ok(tokens[2] instanceof Token);
+
+        assert.deepStrictEqual(
+            tokens.map((token) => token.toJSON()),
+            [
+                {
+                    value: "q",
+                    position: {start: 0, end: 1}
+                },
+                {
+                    value: "w",
+                    position: {start: 1, end: 2}
+                },
+                {
+                    value: "e",
+                    position: {start: 2, end: 3}
+                }
+            ]
+        );
+    });
 });

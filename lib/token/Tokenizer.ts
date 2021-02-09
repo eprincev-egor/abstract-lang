@@ -29,15 +29,29 @@ export class Tokenizer {
             const start = this.cursor;
             const char = this.code[ this.cursor ];
             const tokenDescription = this.map.getDescription(char);
-            const tokenValue = this.read(tokenDescription);
 
-            const end = this.cursor;
-            const position = new Position(start, end);
+            if ( tokenDescription ) {
 
-            const {TokenConstructor} = tokenDescription;
-            const token = new TokenConstructor(tokenValue, position);
+                const tokenValue = this.read(tokenDescription);
 
-            tokens.push(token);
+                const end = this.cursor;
+                const position = new Position(start, end);
+
+                const {TokenConstructor} = tokenDescription;
+                const token = new TokenConstructor(tokenValue, position);
+                tokens.push(token);
+            }
+            else {
+                const tokenValue = char;
+                this.cursor++;
+
+                const end = this.cursor;
+                const position = new Position(start, end);
+
+                const token = new Token(tokenValue, position);
+                tokens.push(token);
+            }
+
         }
 
         return tokens;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as assert from "assert";
 import { Token, TokenDescription } from "../Token";
 import { TokenMap } from "../TokenMap";
@@ -24,7 +25,7 @@ describe("TokenMap", () => {
         ]);
         const actualDescription = map.getDescription("a");
         assert.ok(
-            actualDescription.TokenConstructor === AnyCharToken
+            actualDescription!.TokenConstructor === AnyCharToken
         );
     });
 
@@ -35,7 +36,7 @@ describe("TokenMap", () => {
         ]);
         const actualDescription = map.getDescription("1");
         assert.ok(
-            actualDescription.TokenConstructor === NumberToken
+            actualDescription!.TokenConstructor === NumberToken
         );
     });
 
@@ -46,7 +47,7 @@ describe("TokenMap", () => {
         ]);
         const actualDescription = map.getDescription("x");
         assert.ok(
-            actualDescription.TokenConstructor === AnyCharToken
+            actualDescription!.TokenConstructor === AnyCharToken
         );
     });
 
@@ -69,7 +70,7 @@ describe("TokenMap", () => {
         ]);
         const actualDescription = map.getDescription("9");
         assert.ok(
-            actualDescription.TokenConstructor === PopularNumberToken
+            actualDescription!.TokenConstructor === PopularNumberToken
         );
     });
 
@@ -109,7 +110,7 @@ describe("TokenMap", () => {
         );
     });
 
-    it("getDescription() token for char not found", () => {
+    it("getDescription() returns undefined when token for char not found", () => {
         class BarToken extends Token {
             static description: TokenDescription = {
                 entry: /[abr]/,
@@ -121,11 +122,8 @@ describe("TokenMap", () => {
             BarToken.description
         ]);
 
-        assert.throws(() => {
-            map.getDescription("x");
-        }, (err: Error) =>
-            /Token for char "x" not found/.test(err.message)
-        );
+        const result = map.getDescription("x");
+        assert.strictEqual(result, undefined);
     });
 
     it("getDescription() popular entry chars must match entry regExp", () => {

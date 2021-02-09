@@ -16,7 +16,7 @@ export class TokenMap {
         this.popularMap = buildPopularMap(descriptions);
     }
 
-    getDescription(char: string): TokenDescription {
+    getDescription(char: string): TokenDescription | undefined {
         const descriptionByPopularChar = this.popularMap[ char ];
         if ( descriptionByPopularChar ) {
             return descriptionByPopularChar;
@@ -27,8 +27,6 @@ export class TokenMap {
                 return description;
             }
         }
-
-        throw new Error(`Token for char "${char}" not found`);
     }
 }
 
