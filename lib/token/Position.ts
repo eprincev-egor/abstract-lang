@@ -6,4 +6,11 @@ export class Position {
         this.start = start;
         this.end = end;
     }
+
+    toJSON(): {start: number; end: number} {
+        return {
+            start: this.start,
+            end: this.end
+        };
+    }
 }

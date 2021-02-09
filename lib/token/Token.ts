@@ -25,4 +25,11 @@ export class Token {
         this.value = value;
         this.position = position;
     }
+
+    toJSON(): {value: string; position: ReturnType<Position["toJSON"]>} {
+        return {
+            value: this.value,
+            position: this.position.toJSON()
+        };
+    }
 }
