@@ -19,6 +19,11 @@ export interface TokenDescription {
      * a set of the most popular token symbols to improve performance
      */
     popularEntry?: string[];
+    /**
+     * maximum token value length,
+     * default length is Infinity
+     */
+    maxLength?: number;
 }
 
 /**
@@ -29,7 +34,8 @@ export interface TokenDescription {
 export class Token {
 
     static description: TokenDescription = {
-        entry: /./
+        entry: /./,
+        maxLength: 1
     };
 
     readonly value: string;

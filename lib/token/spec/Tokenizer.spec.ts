@@ -3,7 +3,7 @@ import { DigitsToken } from "../default/DigitsToken";
 import { SpaceToken } from "../default/SpaceToken";
 import { Tokenizer } from "../Tokenizer";
 import { TokenMap } from "../TokenMap";
-import { Token } from "../Token";
+import { Token, TokenDescription } from "../Token";
 
 describe("Tokenizer", () => {
 
@@ -116,5 +116,30 @@ describe("Tokenizer", () => {
                 }
             ]
         );
+    });
+
+    it("TokenClass can be single-char",() => {
+        class OperatorToken extends Token {
+            static description: TokenDescription = {
+                entry: /[*+/-]/,
+                popularEntry: ["*", "+", "/", "-"],
+                maxLength: 1
+            }
+        }
+
+        const map = new TokenMap([
+            OperatorToken
+        ]);
+        const tokens = Tokenizer.tokenize(
+            map,
+            "--++1"
+        );
+        assert.strictEqual(tokens.length, 5);
+
+        assert.ok(tokens[0] instanceof OperatorToken, "[0]");
+        assert.ok(tokens[1] instanceof OperatorToken, "[1]");
+        assert.ok(tokens[2] instanceof OperatorToken, "[2]");
+        assert.ok(tokens[3] instanceof OperatorToken, "[3]");
+        assert.ok( !(tokens[4] instanceof OperatorToken), "[4]" );
     });
 });

@@ -65,6 +65,14 @@ export class Tokenizer {
             if ( TokenClass.description.entry.test(char) ) {
                 tokenValue += char;
                 this.cursor++;
+
+                const maxLengthReached = (
+                    "maxLength" in TokenClass.description &&
+                    tokenValue.length === TokenClass.description.maxLength
+                );
+                if ( maxLengthReached ) {
+                    break;
+                }
             }
             else {
                 break;

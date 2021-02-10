@@ -13,6 +13,7 @@ export class OperatorsToken extends Token {
             "&", "|", "!", "?",
             // other
             ".", "^", "~"
-        ]
+        ],
+        maxLength: 1
     };
 }

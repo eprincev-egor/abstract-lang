@@ -4,6 +4,7 @@ export class BracketsToken extends Token {
 
     static description: TokenDescription = {
         entry: /[()[\]{}]/,
-        popularEntry: ["[", "]", "(", ")", "{", "}"]
+        popularEntry: ["[", "]", "(", ")", "{", "}"],
+        maxLength: 1
     };
 }
