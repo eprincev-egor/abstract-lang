@@ -1,5 +1,5 @@
 import { Position } from "./Position";
-import { Token, TokenDescription } from "./Token";
+import { Token, TokenClass } from "./Token";
 import { TokenMap } from "./TokenMap";
 
 export class Tokenizer {
@@ -28,17 +28,16 @@ export class Tokenizer {
         while ( this.cursor < this.code.length ) {
             const start = this.cursor;
             const char = this.code[ this.cursor ];
-            const tokenDescription = this.map.getDescription(char);
+            const TokenClass = this.map.getTokenClass(char);
 
-            if ( tokenDescription ) {
+            if ( TokenClass ) {
 
-                const tokenValue = this.read(tokenDescription);
+                const tokenValue = this.read(TokenClass);
 
                 const end = this.cursor;
                 const position = new Position(start, end);
 
-                const {TokenConstructor} = tokenDescription;
-                const token = new TokenConstructor(tokenValue, position);
+                const token = new TokenClass(tokenValue, position);
                 tokens.push(token);
             }
             else {
@@ -57,13 +56,13 @@ export class Tokenizer {
         return tokens;
     }
 
-    private read(tokenDescription: TokenDescription) {
+    private read(TokenClass: TokenClass) {
         let tokenValue = "";
 
         while ( this.cursor < this.code.length ) {
             const char = this.code[ this.cursor ];
 
-            if ( tokenDescription.entry.test(char) ) {
+            if ( TokenClass.description.entry.test(char) ) {
                 tokenValue += char;
                 this.cursor++;
             }

@@ -7,10 +7,10 @@ import { DigitsToken } from "./DigitsToken";
 import { QuotesToken } from "./QuotesToken";
 
 export const defaultMap = new TokenMap([
-    SpaceToken.description,
-    WordToken.description,
-    BracketsToken.description,
-    OperatorsToken.description,
-    DigitsToken.description,
-    QuotesToken.description
+    SpaceToken,
+    WordToken,
+    BracketsToken,
+    OperatorsToken,
+    DigitsToken,
+    QuotesToken
 ]);

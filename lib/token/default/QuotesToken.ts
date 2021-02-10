@@ -4,7 +4,6 @@ export class QuotesToken extends Token {
 
     static description: TokenDescription = {
         entry: /["'`]/,
-        popularEntry: ["\"", "'", "`"],
-        TokenConstructor: QuotesToken
+        popularEntry: ["\"", "'", "`"]
     };
 }

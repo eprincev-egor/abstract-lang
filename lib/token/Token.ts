@@ -1,9 +1,11 @@
 import { Position } from "./Position";
 
-export type TokenConstructor = new (
-    value: string,
-    position: Position
-) => Token;
+
+export interface TokenClass {
+    description: TokenDescription;
+    name: string;
+    new (...args: any[]): Token;
+}
 
 /**
  * instructions for parsing text into tokens
@@ -17,10 +19,6 @@ export interface TokenDescription {
      * a set of the most popular token symbols to improve performance
      */
     popularEntry?: string[];
-    /**
-     * constructor to creating a token
-     */
-    TokenConstructor: TokenConstructor;
 }
 
 /**
@@ -31,8 +29,7 @@ export interface TokenDescription {
 export class Token {
 
     static description: TokenDescription = {
-        entry: /./,
-        TokenConstructor: Token
+        entry: /./
     };
 
     readonly value: string;

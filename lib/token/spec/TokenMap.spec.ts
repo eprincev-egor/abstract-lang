@@ -7,47 +7,45 @@ describe("TokenMap", () => {
 
     class AnyCharToken extends Token {
         static description: TokenDescription = {
-            entry: /./,
-            TokenConstructor: AnyCharToken
+            entry: /./
         };
     }
 
     class NumberToken extends Token {
         static description: TokenDescription = {
-            entry: /\d/,
-            TokenConstructor: NumberToken
+            entry: /\d/
         };
     }
 
     it("getDescription() get AnyCharToken", () => {
         const map = new TokenMap([
-            AnyCharToken.description
+            AnyCharToken
         ]);
-        const actualDescription = map.getDescription("a");
+        const actualClass = map.getTokenClass("a");
         assert.ok(
-            actualDescription!.TokenConstructor === AnyCharToken
+            actualClass === AnyCharToken
         );
     });
 
     it("getDescription() get NumberToken from number char", () => {
         const map = new TokenMap([
-            NumberToken.description,
-            AnyCharToken.description
+            NumberToken,
+            AnyCharToken
         ]);
-        const actualDescription = map.getDescription("1");
+        const actualClass = map.getTokenClass("1");
         assert.ok(
-            actualDescription!.TokenConstructor === NumberToken
+            actualClass === NumberToken
         );
     });
 
     it("getDescription() get NumberToken from some symbol", () => {
         const map = new TokenMap([
-            NumberToken.description,
-            AnyCharToken.description
+            NumberToken,
+            AnyCharToken
         ]);
-        const actualDescription = map.getDescription("x");
+        const actualClass = map.getTokenClass("x");
         assert.ok(
-            actualDescription!.TokenConstructor === AnyCharToken
+            actualClass === AnyCharToken
         );
     });
 
@@ -59,18 +57,17 @@ describe("TokenMap", () => {
         class PopularNumberToken extends Token {
             static description: TokenDescription = {
                 entry: regExp,
-                popularEntry: ["8", "9"],
-                TokenConstructor: PopularNumberToken
+                popularEntry: ["8", "9"]
             };
         }
 
         const map = new TokenMap([
-            PopularNumberToken.description,
-            AnyCharToken.description
+            PopularNumberToken,
+            AnyCharToken
         ]);
-        const actualDescription = map.getDescription("9");
+        const actualClass = map.getTokenClass("9");
         assert.ok(
-            actualDescription!.TokenConstructor === PopularNumberToken
+            actualClass === PopularNumberToken
         );
     });
 
@@ -79,22 +76,20 @@ describe("TokenMap", () => {
         class FooToken extends Token {
             static description: TokenDescription = {
                 entry: /./,
-                popularEntry: ["1"],
-                TokenConstructor: FooToken
+                popularEntry: ["1"]
             };
         }
         class BarToken extends Token {
             static description: TokenDescription = {
                 entry: /./,
-                popularEntry: ["0", "1"],
-                TokenConstructor: BarToken
+                popularEntry: ["0", "1"]
             };
         }
 
         assert.throws(() => {
             new TokenMap([
-                FooToken.description,
-                BarToken.description
+                FooToken,
+                BarToken
             ]);
         }, (err: Error) =>
             /duplicated popular entry char: "1" between FooToken and BarToken/.test(err.message)
@@ -113,16 +108,15 @@ describe("TokenMap", () => {
     it("getDescription() returns undefined when token for char not found", () => {
         class BarToken extends Token {
             static description: TokenDescription = {
-                entry: /[abr]/,
-                TokenConstructor: BarToken
+                entry: /[abr]/
             };
         }
 
         const map = new TokenMap([
-            BarToken.description
+            BarToken
         ]);
 
-        const result = map.getDescription("x");
+        const result = map.getTokenClass("x");
         assert.strictEqual(result, undefined);
     });
 
@@ -130,14 +124,13 @@ describe("TokenMap", () => {
         class BarToken extends Token {
             static description: TokenDescription = {
                 entry: /[0-2]/,
-                popularEntry: ["2", "3"],
-                TokenConstructor: BarToken
+                popularEntry: ["2", "3"]
             };
         }
 
         assert.throws(() => {
             new TokenMap([
-                BarToken.description
+                BarToken
             ]);
         }, (err: Error) =>
             /BarToken: popular entry char "3" does not match entry: \/\[0-2]\//.test(err.message)

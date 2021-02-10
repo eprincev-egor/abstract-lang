@@ -1,63 +1,63 @@
-import { TokenDescription } from "./Token";
+import { TokenClass } from "./Token";
 
 export class TokenMap {
 
-    private readonly descriptions: TokenDescription[];
+    private readonly tokenClasses: TokenClass[];
     private readonly popularMap: {
-        readonly [char: string]: TokenDescription;
+        readonly [char: string]: TokenClass;
     };
 
-    constructor(descriptions: TokenDescription[]) {
-        if ( descriptions.length === 0 ) {
+    constructor(tokenClasses: TokenClass[]) {
+        if ( tokenClasses.length === 0 ) {
             throw new Error("one or more token descriptions required");
         }
 
-        this.descriptions = descriptions;
-        this.popularMap = buildPopularMap(descriptions);
+        this.tokenClasses = tokenClasses;
+        this.popularMap = buildPopularMap(tokenClasses);
     }
 
-    getDescription(char: string): TokenDescription | undefined {
+    getTokenClass(char: string): TokenClass | undefined {
         const descriptionByPopularChar = this.popularMap[ char ];
         if ( descriptionByPopularChar ) {
             return descriptionByPopularChar;
         }
 
-        for (const description of this.descriptions) {
-            if ( description.entry.test(char) ) {
-                return description;
+        for (const TokenClass of this.tokenClasses) {
+            if ( TokenClass.description.entry.test(char) ) {
+                return TokenClass;
             }
         }
     }
 }
 
-function buildPopularMap(descriptions: TokenDescription[]) {
+function buildPopularMap(tokenClasses: TokenClass[]) {
 
     const popularMap: {
-        [char: string]: TokenDescription;
+        [char: string]: TokenClass;
     } = {};
 
-    for (const description of descriptions) {
-        const popularChars = description.popularEntry || [];
+    for (const TokenClass of tokenClasses) {
+        const popularChars = TokenClass.description.popularEntry || [];
 
         for (const popularChar of popularChars) {
-            if ( !description.entry.test(popularChar) ) {
+            if ( !TokenClass.description.entry.test(popularChar) ) {
                 throw new Error([
-                    `${description.TokenConstructor.name}:`,
+                    `${TokenClass.name}:`,
                     `popular entry char "${popularChar}"`,
-                    `does not match entry: ${String(description.entry)}`
+                    `does not match entry: ${String(TokenClass.description.entry)}`
                 ].join(" "));
             }
 
-            const existentDescription = popularMap[ popularChar ];
-            if ( existentDescription ) {
+            const existentTokenClass = popularMap[ popularChar ];
+            if ( existentTokenClass ) {
                 throw new Error([
                     `duplicated popular entry char: "${popularChar}"`,
-                    `between ${ existentDescription.TokenConstructor.name }`,
+                    `between ${ existentTokenClass.name }`,
                     "and",
-                    description.TokenConstructor.name
+                    TokenClass.name
                 ].join(" "));
             }
-            popularMap[ popularChar ] = description;
+            popularMap[ popularChar ] = TokenClass;
         }
     }
 

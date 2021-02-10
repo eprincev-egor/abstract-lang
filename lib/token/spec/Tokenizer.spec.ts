@@ -8,8 +8,8 @@ import { Token } from "../Token";
 describe("Tokenizer", () => {
 
     const map = new TokenMap([
-        SpaceToken.description,
-        DigitsToken.description
+        SpaceToken,
+        DigitsToken
     ]);
 
     it("tokenize digits",() => {
@@ -85,7 +85,7 @@ describe("Tokenizer", () => {
 
     it("tokenize unknown symbols by one-symbol per token",() => {
         const map = new TokenMap([
-            DigitsToken.description
+            DigitsToken
         ]);
 
         const tokens = Tokenizer.tokenize(

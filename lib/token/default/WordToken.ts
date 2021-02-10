@@ -18,7 +18,6 @@ export class WordToken extends Token {
             "_",
             ...lowerAlphabet,
             ...upperAlphabet
-        ],
-        TokenConstructor: WordToken
+        ]
     };
 }

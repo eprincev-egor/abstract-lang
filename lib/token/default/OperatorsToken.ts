@@ -13,7 +13,6 @@ export class OperatorsToken extends Token {
             "&", "|", "!", "?",
             // other
             ".", "^", "~"
-        ],
-        TokenConstructor: OperatorsToken
+        ]
     };
 }
