@@ -7,20 +7,37 @@ export class Cursor {
 
     private readonly tokens: readonly Token[];
     private tokenIndex: number;
-    private nextToken: Token;
+    private nextToken_?: Token;
     constructor(tokens: Token[]) {
-        // TODO:
-        // token.length > 0
+        if ( tokens.length === 0 ) {
+            throw new Error("required not empty array of tokens");
+        }
         this.tokens = tokens;
         this.tokenIndex = 0;
-        this.nextToken = this.tokens[ this.tokenIndex ];
+        this.nextToken_ = this.tokens[ this.tokenIndex ];
+    }
+
+    get nextToken(): Token | undefined {
+        return this.nextToken_;
     }
 
     /**
-     * equal next token value
+     * returns true if next token value is equal someTokenValue,
+     * returns false if this is end of tokens
      */
-    before(tokenValue: string): boolean {
-        return this.nextToken.value === tokenValue;
+    before(someTokenValue: string): boolean {
+        if ( !this.nextToken_ ) {
+            return false;
+        }
+
+        return this.nextToken_.value === someTokenValue;
+    }
+
+    /**
+     * returns true if there are no more tokens ahead
+     */
+    atTheEnd(): this is {nextToken: undefined} {
+        return !this.nextToken_;
     }
 
     /**
@@ -28,14 +45,18 @@ export class Cursor {
      * else throw error
      */
     read(expectedToken: string): void {
-        if ( this.nextToken.value !== expectedToken ) {
+        if ( !this.nextToken_ ) {
+            throw new Error(`reached end of code, but expected token: "${expectedToken}"`);
+        }
+
+        if ( this.nextToken_.value !== expectedToken ) {
             throw new Error([
-                `unexpected token: "${this.nextToken.value}",`,
+                `unexpected token: "${this.nextToken_.value}",`,
                 `expected: "${expectedToken}"`
             ].join(" "));
         }
 
-        this.moveNext();
+        this.next();
     }
 
     /**
@@ -43,20 +64,23 @@ export class Cursor {
      */
     setPositionBefore(token: Token): void {
         this.tokenIndex = this.tokens.indexOf(token);
-        this.nextToken = this.tokens[ this.tokenIndex ];
+        this.nextToken_ = this.tokens[ this.tokenIndex ];
     }
 
     /**
      * skip sequence of tokens
      */
     skip(SkipThisTokenClass: TokenClass): void {
-        while ( this.nextToken instanceof SkipThisTokenClass ) {
-            this.moveNext();
+        while ( this.nextToken_ instanceof SkipThisTokenClass ) {
+            this.next();
         }
     }
 
-    private moveNext() {
+    /**
+     * move cursor position to next token
+     */
+    next(): void {
         this.tokenIndex++;
-        this.nextToken = this.tokens[ this.tokenIndex ];
+        this.nextToken_ = this.tokens[ this.tokenIndex ];
     }
 }

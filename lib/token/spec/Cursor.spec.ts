@@ -19,12 +19,20 @@ describe("Token", () => {
         cursor = new Cursor(tokens);
     });
 
-    it("cursor.before('hello')", () => {
+    it("required not empty array of tokens", () => {
+        assert.throws(() => {
+            new Cursor([]);
+        }, (err: Error) =>
+            /required not empty array of tokens/.test(err.message)
+        );
+    });
+
+    it("before('hello')", () => {
         assert.ok( cursor.before("hello") );
         assert.ok( !cursor.before("world") );
     });
 
-    it("cursor.read('hello')", () => {
+    it("read('hello')", () => {
         cursor.read("hello");
         assert.ok( cursor.before(" ") );
     });
@@ -34,6 +42,18 @@ describe("Token", () => {
             cursor.read("world");
         }, (err: Error) =>
             /unexpected token: "hello", expected: "world"/.test(err.message)
+        );
+    });
+
+    it("read('after rend') throw an error if reached end of tokens", () => {
+        cursor.next();
+        cursor.next();
+        cursor.next();
+
+        assert.throws(() => {
+            cursor.read("missed");
+        }, (err: Error) =>
+            /reached end of code, but expected token: "missed"/.test(err.message)
         );
     });
 
@@ -52,6 +72,37 @@ describe("Token", () => {
             cursor.before("hello"),
             "set position before hello, now before hello"
         );
+    });
+
+    it("cursor.next() move cursor on one token", () => {
+        cursor.next();
+        assert.ok( cursor.before(" "), "now before space" );
+
+        cursor.next();
+        assert.ok( cursor.before("world"), "now before world" );
+    });
+
+    it("cursor.atTheEnd()", () => {
+        cursor.next();
+        cursor.next();
+        cursor.next();
+        assert.ok( cursor.atTheEnd() );
+    });
+
+    it("valid cursor.nextToken property", () => {
+        assert.ok( cursor.nextToken instanceof WordToken );
+        assert.strictEqual( cursor.nextToken.value, "hello" );
+        cursor.next();
+
+        assert.ok( cursor.nextToken instanceof SpaceToken );
+        assert.strictEqual( cursor.nextToken.value, " " );
+        cursor.next();
+
+        assert.ok( cursor.nextToken instanceof WordToken );
+        assert.strictEqual( cursor.nextToken.value, "world" );
+        cursor.next();
+
+        assert.strictEqual( cursor.nextToken, undefined );
     });
 
     it("cursor.skip(TokenClass)", () => {
