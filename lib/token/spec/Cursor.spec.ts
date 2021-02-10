@@ -56,6 +56,18 @@ describe("Cursor", () => {
         );
     });
 
+    it("readValue('wrong') throw an error if the next token is EOF", () => {
+        cursor.next();
+        cursor.next();
+        cursor.next();
+
+        assert.throws(() => {
+            cursor.readValue("missed");
+        }, (err: Error) =>
+            /reached end of code, but expected token: "missed"/.test(err.message)
+        );
+    });
+
     it("next() cannot move position after last token", () => {
         cursor.next();
         cursor.next();
@@ -139,6 +151,50 @@ describe("Cursor", () => {
 
         cursor.skipAll(SpaceToken);
         assert.ok( cursor.before("correct"), "before correct token" );
+    });
+
+    it("usage example: parse single quotes", () => {
+        tokens = Tokenizer.tokenize(
+            defaultMap,
+            "'hello \\'\\nworld\"'"
+        );
+        cursor = new Cursor(tokens);
+
+        const escape = "\\";
+        const quote = "'";
+
+        function parseQuotes() {
+            // require open quote
+            cursor.readValue(quote);
+            let content = "";
+
+
+            while ( !cursor.before(quote) && !cursor.beforeEndToken() ) {
+
+                if ( cursor.before(escape) ) {
+                    cursor.readValue(escape);
+
+                    const someValue = cursor.nextToken.value;
+                    const escapedCharCode = someValue[0];
+                    const escapedChar = eval(`"\\${escapedCharCode}"`) as string;
+
+                    content += escapedChar;
+                    content += someValue.slice(1);
+                }
+                else {
+                    content += cursor.nextToken.value;
+                }
+
+                cursor.next();
+            }
+
+            // require close quote
+            cursor.readValue(quote);
+            return content;
+        }
+
+        const quotesContent = parseQuotes();
+        assert.strictEqual(quotesContent, "hello '\nworld\"");
     });
 
 });

@@ -50,11 +50,15 @@ export class Cursor {
      * move cursor if next token value is correct,
      * else throw error
      */
-    readValue(expectedToken: string): void {
-        if ( this.nextToken_.value !== expectedToken ) {
+    readValue(expectedTokenValue: string): void {
+        if ( this.nextToken_.value !== expectedTokenValue ) {
+            if ( this.beforeEndToken() ) {
+                throw new Error(`reached end of code, but expected token: "${expectedTokenValue}"`);
+            }
+
             throw new Error([
                 `unexpected token: "${this.nextToken_.value}",`,
-                `expected: "${expectedToken}"`
+                `expected: "${expectedTokenValue}"`
             ].join(" "));
         }
 
