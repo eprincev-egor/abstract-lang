@@ -17,7 +17,7 @@ describe("TokenMap", () => {
         };
     }
 
-    it("getDescription() get AnyCharToken", () => {
+    it("getTokenClass() get AnyCharToken", () => {
         const map = new TokenMap([
             AnyCharToken
         ]);
@@ -27,7 +27,7 @@ describe("TokenMap", () => {
         );
     });
 
-    it("getDescription() get NumberToken from number char", () => {
+    it("getTokenClass() get NumberToken from number char", () => {
         const map = new TokenMap([
             NumberToken,
             AnyCharToken
@@ -38,7 +38,7 @@ describe("TokenMap", () => {
         );
     });
 
-    it("getDescription() get NumberToken from some symbol", () => {
+    it("getTokenClass() get NumberToken from some symbol", () => {
         const map = new TokenMap([
             NumberToken,
             AnyCharToken
@@ -49,7 +49,7 @@ describe("TokenMap", () => {
         );
     });
 
-    it("speedup getDescription() by popular entry", () => {
+    it("speedup getTokenClass() by popular entry", () => {
 
         const regExp = new RegExp("[0-7]");
         regExp.test = () => true;
@@ -105,7 +105,7 @@ describe("TokenMap", () => {
         );
     });
 
-    it("getDescription() returns undefined when token for char not found", () => {
+    it("getTokenClass() returns undefined when token for char not found", () => {
         class BarToken extends Token {
             static description: TokenDescription = {
                 entry: /[abr]/
@@ -120,7 +120,7 @@ describe("TokenMap", () => {
         assert.strictEqual(result, undefined);
     });
 
-    it("getDescription() popular entry chars must match entry regExp", () => {
+    it("getTokenClass() popular entry chars must match entry regExp", () => {
         class BarToken extends Token {
             static description: TokenDescription = {
                 entry: /[0-2]/,
