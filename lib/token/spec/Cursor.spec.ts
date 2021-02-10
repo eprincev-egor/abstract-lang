@@ -125,6 +125,18 @@ describe("Token", () => {
         assert.ok( cursor.before("correct"), "now before correct token" );
     });
 
+    it("cursor.skipOne(TokenClass) skip only one token with same class", () => {
+        tokens = [
+            new SpaceToken(" ", new Position(0, 1)),
+            new SpaceToken(" ", new Position(1, 2)),
+            new WordToken("correct", new Position(2, 9))
+        ];
+        cursor = new Cursor(tokens);
+
+        cursor.skipOne(SpaceToken);
+        assert.ok( cursor.before(" "), "skipped one token" );
+    });
+
 });
 
 // cursor.beforeWord("xx");
