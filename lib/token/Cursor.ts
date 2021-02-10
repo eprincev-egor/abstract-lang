@@ -7,7 +7,7 @@ export class Cursor {
 
     private readonly tokens: readonly Token[];
     private tokenIndex: number;
-    private nextToken_?: Token;
+    private nextToken_: Token;
     constructor(tokens: Token[]) {
         if ( tokens.length === 0 ) {
             throw new Error("required not empty array of tokens");
@@ -17,7 +17,7 @@ export class Cursor {
         this.nextToken_ = this.tokens[ this.tokenIndex ];
     }
 
-    get nextToken(): Token | undefined {
+    get nextToken(): Token {
         return this.nextToken_;
     }
 
@@ -36,8 +36,8 @@ export class Cursor {
     /**
      * returns true if there are no more tokens ahead
      */
-    atTheEnd(): this is {nextToken: undefined} {
-        return !this.nextToken_;
+    beforeLastToken(): boolean {
+        return this.tokenIndex === this.tokens.length - 1;
     }
 
     /**
@@ -45,10 +45,6 @@ export class Cursor {
      * else throw error
      */
     readValue(expectedToken: string): void {
-        if ( !this.nextToken_ ) {
-            throw new Error(`reached end of code, but expected token: "${expectedToken}"`);
-        }
-
         if ( this.nextToken_.value !== expectedToken ) {
             throw new Error([
                 `unexpected token: "${this.nextToken_.value}",`,
@@ -69,7 +65,8 @@ export class Cursor {
     }
 
     /**
-     * skip only one token
+     * skip just one token,
+     * and throw an error if it was last one
      */
     skipOne(SkipThisTokenClass: TokenClass): void {
         if ( this.nextToken_ instanceof SkipThisTokenClass ) {
@@ -78,18 +75,14 @@ export class Cursor {
     }
 
     /**
-     * skip sequence of tokens
-     */
-    skipAll(SkipThisTokenClass: TokenClass): void {
-        while ( this.nextToken_ instanceof SkipThisTokenClass ) {
-            this.next();
-        }
-    }
-
-    /**
-     * move cursor position to next token
+     * move cursor position to next token,
+     * and throw error if no more tokens
      */
     next(): void {
+        if ( this.beforeLastToken() ) {
+            throw new Error("reached end of tokens");
+        }
+
         this.tokenIndex++;
         this.nextToken_ = this.tokens[ this.tokenIndex ];
     }

@@ -45,15 +45,14 @@ describe("Token", () => {
         );
     });
 
-    it("readValue('after rend') throw an error if reached end of tokens", () => {
-        cursor.next();
+    it("next() cannot move position after last token", () => {
         cursor.next();
         cursor.next();
 
         assert.throws(() => {
-            cursor.readValue("missed");
+            cursor.next();
         }, (err: Error) =>
-            /reached end of code, but expected token: "missed"/.test(err.message)
+            /reached end of tokens/.test(err.message)
         );
     });
 
@@ -82,11 +81,12 @@ describe("Token", () => {
         assert.ok( cursor.before("world"), "now before world" );
     });
 
-    it("cursor.atTheEnd()", () => {
+    it("cursor.beforeLastToken()", () => {
         cursor.next();
+        assert.ok( !cursor.beforeLastToken() );
+
         cursor.next();
-        cursor.next();
-        assert.ok( cursor.atTheEnd() );
+        assert.ok( cursor.beforeLastToken() );
     });
 
     it("valid cursor.nextToken property", () => {
@@ -100,29 +100,6 @@ describe("Token", () => {
 
         assert.ok( cursor.nextToken instanceof WordToken );
         assert.strictEqual( cursor.nextToken.value, "world" );
-        cursor.next();
-
-        assert.strictEqual( cursor.nextToken, undefined );
-    });
-
-    it("cursor.skipAll(TokenClass)", () => {
-        cursor.skipAll(WordToken);
-        assert.ok( cursor.before(" "), "now before space" );
-
-        cursor.skipAll(SpaceToken);
-        assert.ok( cursor.before("world"), "now before world" );
-    });
-
-    it("cursor.skipAll(TokenClass) skip all tokens with same class", () => {
-        tokens = [
-            new SpaceToken(" ", new Position(0, 1)),
-            new SpaceToken(" ", new Position(1, 2)),
-            new WordToken("correct", new Position(2, 9))
-        ];
-        cursor = new Cursor(tokens);
-
-        cursor.skipAll(SpaceToken);
-        assert.ok( cursor.before("correct"), "now before correct token" );
     });
 
     it("cursor.skipOne(TokenClass) skip only one token with same class", () => {
