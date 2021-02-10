@@ -25,7 +25,7 @@ describe("defaultMap", () => {
         const actualTokens = tokens.map((token) =>
             token.toJSON()
         );
-        console.log(actualTokens);
+        // console.log(actualTokens);
         const expectedTokens = [
             { value: "hello", position: { start: 0, end: 5 } },
             { value: " ", position: { start: 5, end: 6 } },
