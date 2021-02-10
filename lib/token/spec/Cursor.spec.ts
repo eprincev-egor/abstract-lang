@@ -7,7 +7,7 @@ import { SpaceToken } from "../default/SpaceToken";
 import { WordToken } from "../default/WordToken";
 import { Position } from "../Position";
 
-describe("Token", () => {
+describe("Cursor", () => {
 
     let tokens!: Token[];
     let cursor!: Cursor;
@@ -48,6 +48,7 @@ describe("Token", () => {
     it("next() cannot move position after last token", () => {
         cursor.next();
         cursor.next();
+        cursor.next();
 
         assert.throws(() => {
             cursor.next();
@@ -56,7 +57,7 @@ describe("Token", () => {
         );
     });
 
-    it("cursor.setBefore(world)", () => {
+    it("setPositionBefore(world)", () => {
         const hello = tokens[0];
         const world = tokens[2];
 
@@ -73,7 +74,7 @@ describe("Token", () => {
         );
     });
 
-    it("cursor.next() move cursor on one token", () => {
+    it("next() move cursor on one token", () => {
         cursor.next();
         assert.ok( cursor.before(" "), "now before space" );
 
@@ -81,12 +82,13 @@ describe("Token", () => {
         assert.ok( cursor.before("world"), "now before world" );
     });
 
-    it("cursor.beforeLastToken()", () => {
+    it("beforeEndToken()", () => {
         cursor.next();
-        assert.ok( !cursor.beforeLastToken() );
+        assert.ok( !cursor.beforeEndToken() );
 
         cursor.next();
-        assert.ok( cursor.beforeLastToken() );
+        cursor.next();
+        assert.ok( cursor.beforeEndToken() );
     });
 
     it("valid cursor.nextToken property", () => {

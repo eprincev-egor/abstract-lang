@@ -1,3 +1,4 @@
+import { EndOfFleToken } from "./EndOfFileToken";
 import { Position } from "./Position";
 import { Token, TokenClass } from "./Token";
 import { TokenMap } from "./TokenMap";
@@ -53,6 +54,13 @@ export class Tokenizer {
 
         }
 
+        const end = new Position(
+            this.code.length,
+            this.code.length
+        );
+        const eof = new EndOfFleToken(end);
+        tokens.push(eof);
+
         return tokens;
     }
 
@@ -82,9 +90,3 @@ export class Tokenizer {
         return tokenValue;
     }
 }
-
-// Word;
-// Digits;
-// Char;
-// Space;
-// EOL;

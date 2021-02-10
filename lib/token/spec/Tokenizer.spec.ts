@@ -4,6 +4,7 @@ import { SpaceToken } from "../default/SpaceToken";
 import { Tokenizer } from "../Tokenizer";
 import { TokenMap } from "../TokenMap";
 import { Token, TokenDescription } from "../Token";
+import { EndOfFleToken } from "../EndOfFileToken";
 
 describe("Tokenizer", () => {
 
@@ -19,15 +20,21 @@ describe("Tokenizer", () => {
             "0123456789"
         );
 
-        assert.strictEqual(tokens.length, 1);
+        assert.strictEqual(tokens.length, 2);
 
         assert.ok(tokens[0] instanceof DigitsToken);
         assert.deepStrictEqual(
             tokens.map((token) => token.toJSON()),
-            [{
-                value: "0123456789",
-                position: {start: 0, end: 10}
-            }]
+            [
+                {
+                    value: "0123456789",
+                    position: {start: 0, end: 10}
+                },
+                {
+                    value: "",
+                    position: {start: 10, end: 10}
+                }
+            ]
         );
     });
 
@@ -38,7 +45,7 @@ describe("Tokenizer", () => {
             "012 23\n44\r66    \t\r\n"
         );
 
-        assert.strictEqual(tokens.length, 8);
+        assert.strictEqual(tokens.length, 9);
 
         assert.ok(tokens[0] instanceof DigitsToken, "tokens[0] is digits");
         assert.ok(tokens[1] instanceof SpaceToken, "tokens[1] is spaces");
@@ -78,6 +85,10 @@ describe("Tokenizer", () => {
                 {
                     value: "    \t\r\n",
                     position: {start: 12, end: 19}
+                },
+                {
+                    value: "",
+                    position: {start: 19, end: 19}
                 }
             ]
         );
@@ -93,7 +104,7 @@ describe("Tokenizer", () => {
             "qwe"
         );
 
-        assert.strictEqual(tokens.length, 3);
+        assert.strictEqual(tokens.length, 4);
 
         assert.ok(tokens[0] instanceof Token);
         assert.ok(tokens[1] instanceof Token);
@@ -113,6 +124,10 @@ describe("Tokenizer", () => {
                 {
                     value: "e",
                     position: {start: 2, end: 3}
+                },
+                {
+                    value: "",
+                    position: {start: 3, end: 3}
                 }
             ]
         );
@@ -134,12 +149,22 @@ describe("Tokenizer", () => {
             map,
             "--++1"
         );
-        assert.strictEqual(tokens.length, 5);
+        assert.strictEqual(tokens.length, 6);
 
         assert.ok(tokens[0] instanceof OperatorToken, "[0]");
         assert.ok(tokens[1] instanceof OperatorToken, "[1]");
         assert.ok(tokens[2] instanceof OperatorToken, "[2]");
         assert.ok(tokens[3] instanceof OperatorToken, "[3]");
         assert.ok( !(tokens[4] instanceof OperatorToken), "[4]" );
+    });
+
+    it("last token should be EndOfFleToken",() => {
+
+        const tokens = Tokenizer.tokenize(
+            map,
+            "1"
+        );
+        assert.strictEqual(tokens.length, 2);
+        assert.ok(tokens[1] instanceof EndOfFleToken, "[1] is EndOfFleToken");
     });
 });

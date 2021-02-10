@@ -77,7 +77,8 @@ describe("defaultMap", () => {
             { value: "&", position: { start: 107, end: 108 } },
             { value: "|", position: { start: 108, end: 109 } },
             { value: "|", position: { start: 109, end: 110 } },
-            { value: "?", position: { start: 110, end: 111 } }
+            { value: "?", position: { start: 110, end: 111 } },
+            { value: "", position: { start: 111, end: 111 } }
         ];
         assert.deepStrictEqual(
             actualTokens,

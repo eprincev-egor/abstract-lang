@@ -36,7 +36,7 @@ export class Cursor {
     /**
      * returns true if there are no more tokens ahead
      */
-    beforeLastToken(): boolean {
+    beforeEndToken(): boolean {
         return this.tokenIndex === this.tokens.length - 1;
     }
 
@@ -79,7 +79,7 @@ export class Cursor {
      * and throw error if no more tokens
      */
     next(): void {
-        if ( this.beforeLastToken() ) {
+        if ( this.beforeEndToken() ) {
             throw new Error("reached end of tokens");
         }
 
