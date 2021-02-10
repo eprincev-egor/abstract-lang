@@ -44,7 +44,7 @@ export class Cursor {
      * move cursor if next token value is correct,
      * else throw error
      */
-    read(expectedToken: string): void {
+    readValue(expectedToken: string): void {
         if ( !this.nextToken_ ) {
             throw new Error(`reached end of code, but expected token: "${expectedToken}"`);
         }

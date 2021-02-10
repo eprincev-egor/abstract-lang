@@ -32,26 +32,26 @@ describe("Token", () => {
         assert.ok( !cursor.before("world") );
     });
 
-    it("read('hello')", () => {
-        cursor.read("hello");
+    it("readValue('hello')", () => {
+        cursor.readValue("hello");
         assert.ok( cursor.before(" ") );
     });
 
-    it("read('wrong') throw an error if the next token has a different value", () => {
+    it("readValue('wrong') throw an error if the next token has a different value", () => {
         assert.throws(() => {
-            cursor.read("world");
+            cursor.readValue("world");
         }, (err: Error) =>
             /unexpected token: "hello", expected: "world"/.test(err.message)
         );
     });
 
-    it("read('after rend') throw an error if reached end of tokens", () => {
+    it("readValue('after rend') throw an error if reached end of tokens", () => {
         cursor.next();
         cursor.next();
         cursor.next();
 
         assert.throws(() => {
-            cursor.read("missed");
+            cursor.readValue("missed");
         }, (err: Error) =>
             /reached end of code, but expected token: "missed"/.test(err.message)
         );
