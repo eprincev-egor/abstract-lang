@@ -1,4 +1,4 @@
-import { Token } from "./Token";
+import { Token, TokenClass } from "./Token";
 
 /**
  * Text cursor between some tokens.
@@ -35,15 +35,28 @@ export class Cursor {
             ].join(" "));
         }
 
-        this.tokenIndex++;
-        this.nextToken = this.tokens[ this.tokenIndex ];
+        this.moveNext();
     }
 
     /**
      * move cursor position before token
      */
-    moveBefore(token: Token): void {
+    setPositionBefore(token: Token): void {
         this.tokenIndex = this.tokens.indexOf(token);
+        this.nextToken = this.tokens[ this.tokenIndex ];
+    }
+
+    /**
+     * skip sequence of tokens
+     */
+    skip(SkipThisTokenClass: TokenClass): void {
+        while ( this.nextToken instanceof SkipThisTokenClass ) {
+            this.moveNext();
+        }
+    }
+
+    private moveNext() {
+        this.tokenIndex++;
         this.nextToken = this.tokens[ this.tokenIndex ];
     }
 }

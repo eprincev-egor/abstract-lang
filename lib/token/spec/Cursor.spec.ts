@@ -3,6 +3,9 @@ import { Cursor } from "../Cursor";
 import { Tokenizer } from "../Tokenizer";
 import { defaultMap } from "../default/defaultMap";
 import { Token } from "../Token";
+import { SpaceToken } from "../default/SpaceToken";
+import { WordToken } from "../default/WordToken";
+import { Position } from "../Position";
 
 describe("Token", () => {
 
@@ -26,7 +29,7 @@ describe("Token", () => {
         assert.ok( cursor.before(" ") );
     });
 
-    it("read('wrong') throw error, if next token have another value", () => {
+    it("read('wrong') throw an error if the next token has a different value", () => {
         assert.throws(() => {
             cursor.read("world");
         }, (err: Error) =>
@@ -38,16 +41,41 @@ describe("Token", () => {
         const hello = tokens[0];
         const world = tokens[2];
 
-        cursor.moveBefore(world);
-        assert.ok( cursor.before("world"), "now before world" );
+        cursor.setPositionBefore(world);
+        assert.ok(
+            cursor.before("world"),
+            "set position before world, now before world"
+        );
 
-        cursor.moveBefore(hello);
-        assert.ok( cursor.before("hello"), "now before hello" );
+        cursor.setPositionBefore(hello);
+        assert.ok(
+            cursor.before("hello"),
+            "set position before hello, now before hello"
+        );
+    });
+
+    it("cursor.skip(TokenClass)", () => {
+        cursor.skip(WordToken);
+        assert.ok( cursor.before(" "), "now before space" );
+
+        cursor.skip(SpaceToken);
+        assert.ok( cursor.before("world"), "now before world" );
+    });
+
+    it("cursor.skip(TokenClass) skip all tokens with same class", () => {
+        tokens = [
+            new SpaceToken(" ", new Position(0, 1)),
+            new SpaceToken(" ", new Position(1, 2)),
+            new WordToken("correct", new Position(2, 9))
+        ];
+        cursor = new Cursor(tokens);
+
+        cursor.skip(SpaceToken);
+        assert.ok( cursor.before("correct"), "now before correct token" );
     });
 
 });
 
-// cursor.skip(TokenConstructor);
 // cursor.beforeWord("xx");
 // cursor.readWord("xx");
 // cursor.readPhrase("a", "b", "c");
