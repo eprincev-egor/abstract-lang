@@ -6,6 +6,7 @@ import { Token } from "../Token";
 import { SpaceToken } from "../default/SpaceToken";
 import { WordToken } from "../default/WordToken";
 import { Position } from "../Position";
+import { EndOfFleToken } from "../EndOfFileToken";
 
 describe("Cursor", () => {
 
@@ -24,6 +25,16 @@ describe("Cursor", () => {
             new Cursor([]);
         }, (err: Error) =>
             /required not empty array of tokens/.test(err.message)
+        );
+    });
+
+    it("required EOF at last token", () => {
+        assert.throws(() => {
+            new Cursor([
+                new Token("test", new Position(0, 4))
+            ]);
+        }, (err: Error) =>
+            /required special token EOF after last token/.test(err.message)
         );
     });
 
@@ -104,16 +115,30 @@ describe("Cursor", () => {
         assert.strictEqual( cursor.nextToken.value, "world" );
     });
 
-    it("cursor.skipOne(TokenClass) skip only one token with same class", () => {
+    it("skipOne(TokenClass) skip only one token with same class", () => {
         tokens = [
             new SpaceToken(" ", new Position(0, 1)),
             new SpaceToken(" ", new Position(1, 2)),
-            new WordToken("correct", new Position(2, 9))
+            new WordToken("correct", new Position(2, 9)),
+            new EndOfFleToken(new Position(9, 9))
         ];
         cursor = new Cursor(tokens);
 
         cursor.skipOne(SpaceToken);
         assert.ok( cursor.before(" "), "skipped one token" );
+    });
+
+    it("skipAll(TokenClass) skip all tokens with same class", () => {
+        tokens = [
+            new SpaceToken(" ", new Position(0, 1)),
+            new SpaceToken(" ", new Position(1, 2)),
+            new WordToken("correct", new Position(2, 9)),
+            new EndOfFleToken(new Position(9, 9))
+        ];
+        cursor = new Cursor(tokens);
+
+        cursor.skipAll(SpaceToken);
+        assert.ok( cursor.before("correct"), "before correct token" );
     });
 
 });

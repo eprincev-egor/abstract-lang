@@ -1,3 +1,4 @@
+import { EndOfFleToken } from "./EndOfFileToken";
 import { Token, TokenClass } from "./Token";
 
 /**
@@ -12,6 +13,11 @@ export class Cursor {
         if ( tokens.length === 0 ) {
             throw new Error("required not empty array of tokens");
         }
+        const endToken = tokens[ tokens.length - 1 ];
+        if ( !(endToken instanceof EndOfFleToken) ) {
+            throw new TypeError("required special token EOF after last token");
+        }
+
         this.tokens = tokens;
         this.tokenIndex = 0;
         this.nextToken_ = this.tokens[ this.tokenIndex ];
@@ -37,7 +43,7 @@ export class Cursor {
      * returns true if there are no more tokens ahead
      */
     beforeEndToken(): boolean {
-        return this.tokenIndex === this.tokens.length - 1;
+        return this.nextToken instanceof EndOfFleToken;
     }
 
     /**
@@ -65,11 +71,19 @@ export class Cursor {
     }
 
     /**
-     * skip just one token,
-     * and throw an error if it was last one
+     * skip just one token
      */
     skipOne(SkipThisTokenClass: TokenClass): void {
         if ( this.nextToken_ instanceof SkipThisTokenClass ) {
+            this.next();
+        }
+    }
+
+    /**
+     * skip all tokens with same class
+     */
+    skipAll(SkipThisTokenClass: TokenClass): void {
+        while ( this.nextToken_ instanceof SkipThisTokenClass ) {
             this.next();
         }
     }
