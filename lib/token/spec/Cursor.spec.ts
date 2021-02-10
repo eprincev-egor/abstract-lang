@@ -105,15 +105,15 @@ describe("Token", () => {
         assert.strictEqual( cursor.nextToken, undefined );
     });
 
-    it("cursor.skip(TokenClass)", () => {
-        cursor.skip(WordToken);
+    it("cursor.skipAll(TokenClass)", () => {
+        cursor.skipAll(WordToken);
         assert.ok( cursor.before(" "), "now before space" );
 
-        cursor.skip(SpaceToken);
+        cursor.skipAll(SpaceToken);
         assert.ok( cursor.before("world"), "now before world" );
     });
 
-    it("cursor.skip(TokenClass) skip all tokens with same class", () => {
+    it("cursor.skipAll(TokenClass) skip all tokens with same class", () => {
         tokens = [
             new SpaceToken(" ", new Position(0, 1)),
             new SpaceToken(" ", new Position(1, 2)),
@@ -121,7 +121,7 @@ describe("Token", () => {
         ];
         cursor = new Cursor(tokens);
 
-        cursor.skip(SpaceToken);
+        cursor.skipAll(SpaceToken);
         assert.ok( cursor.before("correct"), "now before correct token" );
     });
 

@@ -63,6 +63,7 @@ export class Cursor {
      * move cursor position before token
      */
     setPositionBefore(token: Token): void {
+        // TODO: check -1
         this.tokenIndex = this.tokens.indexOf(token);
         this.nextToken_ = this.tokens[ this.tokenIndex ];
     }
@@ -70,7 +71,7 @@ export class Cursor {
     /**
      * skip sequence of tokens
      */
-    skip(SkipThisTokenClass: TokenClass): void {
+    skipAll(SkipThisTokenClass: TokenClass): void {
         while ( this.nextToken_ instanceof SkipThisTokenClass ) {
             this.next();
         }
