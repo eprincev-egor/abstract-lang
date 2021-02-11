@@ -140,6 +140,11 @@ describe("Cursor", () => {
         assert.ok( cursor.before(" "), "skipped one token" );
     });
 
+    it("skipOne() don't change position if the next token has a different class", () => {
+        cursor.skipOne(SpaceToken);
+        assert.ok( cursor.before("hello") );
+    });
+
     it("skipAll(TokenClass) skip all tokens with same class", () => {
         tokens = [
             new SpaceToken(" ", new Position(0, 1)),
@@ -154,20 +159,20 @@ describe("Cursor", () => {
     });
 
     it("usage example: parse single quotes", () => {
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            "'hello \\'\\nworld\"'"
-        );
-        cursor = new Cursor(tokens);
 
         const escape = "\\";
         const quote = "'";
 
-        function parseQuotes() {
+        function parseQuotes(text: string) {
+            const tokens = Tokenizer.tokenize(
+                defaultMap,
+                text
+            );
+            const cursor = new Cursor(tokens);
+
             // require open quote
             cursor.readValue(quote);
             let content = "";
-
 
             while ( !cursor.before(quote) && !cursor.beforeEndToken() ) {
 
@@ -193,7 +198,7 @@ describe("Cursor", () => {
             return content;
         }
 
-        const quotesContent = parseQuotes();
+        const quotesContent = parseQuotes("'hello \\'\\nworld\"'");
         assert.strictEqual(quotesContent, "hello '\nworld\"");
     });
 

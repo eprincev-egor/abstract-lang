@@ -28,7 +28,8 @@
       "coverage",
       "postinstall/postinstall.js",
       ".mocharc.js",
-      "lib/index.ts"
+      "lib/index.ts",
+      "lib/sandbox.ts"
     ]
   },
   "keywords": [],

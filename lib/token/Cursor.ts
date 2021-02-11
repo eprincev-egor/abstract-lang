@@ -32,10 +32,6 @@ export class Cursor {
      * returns false if this is end of tokens
      */
     before(someTokenValue: string): boolean {
-        if ( !this.nextToken_ ) {
-            return false;
-        }
-
         return this.nextToken_.value === someTokenValue;
     }
 
