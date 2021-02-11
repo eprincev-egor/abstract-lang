@@ -6,6 +6,7 @@ import { Token } from "../Token";
 import { SpaceToken } from "../default/SpaceToken";
 import { WordToken } from "../default/WordToken";
 import { EndOfFleToken } from "../EndOfFileToken";
+import { DigitsToken } from "../default/DigitsToken";
 
 describe("Cursor", () => {
 
@@ -55,7 +56,7 @@ describe("Cursor", () => {
         );
     });
 
-    it("readValue('wrong') throw an error if the next token is EOF", () => {
+    it("readValue(...) throw an error if the next token is EOF", () => {
         cursor.next();
         cursor.next();
         cursor.next();
@@ -64,6 +65,37 @@ describe("Cursor", () => {
             cursor.readValue("missed");
         }, (err: Error) =>
             /reached end of code, but expected token: "missed"/.test(err.message)
+        );
+    });
+
+    it("readToken(TokenClass)", () => {
+        const hello = cursor.readToken(WordToken).value;
+        assert.strictEqual( hello, "hello" );
+
+        const space = cursor.readToken(SpaceToken).value;
+        assert.strictEqual( space, " " );
+
+        const world = cursor.readToken(WordToken).value;
+        assert.strictEqual( world, "world" );
+    });
+
+    it("readToken(WrongToken) throw an error if the next token has a different class", () => {
+        assert.throws(() => {
+            cursor.readToken(SpaceToken);
+        }, (err: Error) =>
+            /unexpected token WordToken\("hello"\), expected: SpaceToken/.test(err.message)
+        );
+    });
+
+    it("readToken(...) throw an error if the next token is EOF", () => {
+        cursor.next();
+        cursor.next();
+        cursor.next();
+
+        assert.throws(() => {
+            cursor.readToken(WordToken);
+        }, (err: Error) =>
+            /reached end of code, but expected token: WordToken/.test(err.message)
         );
     });
 

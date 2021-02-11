@@ -62,6 +62,34 @@ export class Cursor {
     }
 
     /**
+     * move cursor if next token instance is correct and return this token,
+     * else throw error
+     */
+    readToken<T extends TokenClass>(ExpectedTokenClass: T): InstanceType<T> {
+        const token = this.nextToken_;
+
+        if ( token instanceof ExpectedTokenClass ) {
+            this.next();
+            return token as InstanceType<T>;
+        }
+
+        const invalidToken = token as Token;
+        const invalidTokenName = invalidToken.constructor.name;
+
+        if ( this.beforeEndToken() ) {
+            throw new Error([
+                "reached end of code,",
+                `but expected token: ${ExpectedTokenClass.name}`
+            ].join(" "));
+        }
+
+        throw new Error([
+            `unexpected token ${invalidTokenName}("${invalidToken.value}"),`,
+            `expected: ${ExpectedTokenClass.name}`
+        ].join(" "));
+    }
+
+    /**
      * move cursor position before token
      */
     setPositionBefore(token: Token): void {
