@@ -3,6 +3,7 @@ import { Tokenizer } from "../../Tokenizer";
 import { BracketsToken } from "../BracketsToken";
 import { defaultMap } from "../defaultMap";
 import { DigitsToken } from "../DigitsToken";
+import { EolToken } from "../EolToken";
 import { OperatorsToken } from "../OperatorsToken";
 import { QuotesToken } from "../QuotesToken";
 import { SpaceToken } from "../SpaceToken";
@@ -91,8 +92,10 @@ describe("defaultMap", () => {
         assert.ok( tokens[6] instanceof WordToken, "[6] is WordToken" );
 
         assert.ok( tokens[1] instanceof SpaceToken, "[1] is SpaceToken" );
-        assert.ok( tokens[3] instanceof SpaceToken, "[3] is SpaceToken" );
         assert.ok( tokens[5] instanceof SpaceToken, "[5] is SpaceToken" );
+        assert.ok( tokens[26] instanceof SpaceToken, "[26] is SpaceToken" );
+
+        assert.ok( tokens[3] instanceof EolToken, "[3] is EolToken" );
 
         assert.ok( tokens[7] instanceof BracketsToken, "[7] is BracketsToken" );
         assert.ok( tokens[9] instanceof BracketsToken, "[9] is BracketsToken" );

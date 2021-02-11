@@ -1,5 +1,5 @@
 import { EndOfFleToken } from "./EndOfFileToken";
-import { Token, TokenClass } from "./Token";
+import { Token } from "./Token";
 import { TokenMap } from "./TokenMap";
 
 export class Tokenizer {

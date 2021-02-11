@@ -5,10 +5,12 @@ import { Tokenizer } from "../Tokenizer";
 import { TokenMap } from "../TokenMap";
 import { Token, TokenDescription } from "../Token";
 import { EndOfFleToken } from "../EndOfFileToken";
+import { EolToken } from "../default/EolToken";
 
 describe("Tokenizer", () => {
 
     const map = new TokenMap([
+        EolToken,
         SpaceToken,
         DigitsToken
     ]);
@@ -45,7 +47,7 @@ describe("Tokenizer", () => {
             "012 23\n44\r66    \t\r\n"
         );
 
-        assert.strictEqual(tokens.length, 9);
+        assert.strictEqual(tokens.length, 10);
 
         assert.ok(tokens[0] instanceof DigitsToken, "tokens[0] is digits");
         assert.ok(tokens[1] instanceof SpaceToken, "tokens[1] is spaces");
@@ -83,8 +85,12 @@ describe("Tokenizer", () => {
                     position: 10
                 },
                 {
-                    value: "    \t\r\n",
+                    value: "    \t",
                     position: 12
+                },
+                {
+                    value: "\r\n",
+                    position: 17
                 },
                 {
                     value: "",

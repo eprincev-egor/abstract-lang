@@ -36,6 +36,11 @@ export class Token {
         maxLength: 1
     };
 
+    /**
+     * read token symbols from text,
+     * special method for Tokenizer.
+     * This method can be redefined
+     */
     static read(text: string, position: number): string {
         let tokenValue = "";
 
