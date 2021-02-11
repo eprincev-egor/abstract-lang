@@ -233,6 +233,54 @@ describe("Cursor", () => {
         assert.strictEqual(quotesContent, "hello '\nworld\"");
     });
 
+    it("usage example: number literal", () => {
+
+        // eslint-disable-next-line unicorn/consistent-function-scoping
+        function parseNumber(text: string): number {
+            const tokens = Tokenizer.tokenize(
+                defaultMap,
+                text
+            );
+            const cursor = new Cursor(tokens);
+
+            let numb = "";
+            if ( cursor.before("-") ) {
+                numb += "-";
+                cursor.next();
+            }
+
+            numb += cursor.readToken(DigitsToken).value;
+
+            if ( cursor.before(".") ) {
+                numb += ".";
+                cursor.next();
+
+                numb += cursor.readToken(DigitsToken).value;
+            }
+
+            if (
+                cursor.nextToken.startsWith("e") ||
+                cursor.nextToken.startsWith("E")
+            ) {
+                numb += "e";
+                numb += cursor.nextToken.value
+                    .slice(1)
+                    .split(/\D/)[0];
+            }
+
+            return +numb;
+        }
+
+        assert.strictEqual( parseNumber("1"), 1 );
+        assert.strictEqual( parseNumber("-1"), -1 );
+        assert.strictEqual( parseNumber("1.10"), 1.1 );
+        assert.strictEqual( parseNumber("-1.10"), -1.1 );
+        assert.strictEqual( parseNumber("1e3"), 1e3 );
+        assert.strictEqual( parseNumber("1E10"), 1e10 );
+        assert.strictEqual( parseNumber("123456700.123E2"), 12345670012.3 );
+        assert.strictEqual( parseNumber("1e2w3"), 100 );
+    });
+
 });
 
 // cursor.beforeWord("xx");
