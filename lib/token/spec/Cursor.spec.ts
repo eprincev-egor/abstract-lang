@@ -44,7 +44,8 @@ describe("Cursor", () => {
     });
 
     it("readValue('hello')", () => {
-        cursor.readValue("hello");
+        const result = cursor.readValue("hello");
+        assert.strictEqual( result, "hello" );
         assert.ok( cursor.before(" ") );
     });
 
@@ -245,27 +246,21 @@ describe("Cursor", () => {
 
             let numb = "";
             if ( cursor.before("-") ) {
-                numb += "-";
-                cursor.next();
+                numb += cursor.readValue("-");
             }
 
             numb += cursor.readToken(DigitsToken).value;
 
             if ( cursor.before(".") ) {
-                numb += ".";
-                cursor.next();
-
+                numb += cursor.readValue(".");
                 numb += cursor.readToken(DigitsToken).value;
             }
 
-            if (
-                cursor.nextToken.startsWith("e") ||
-                cursor.nextToken.startsWith("E")
-            ) {
+            if ( cursor.before("e") || cursor.before("E") ) {
                 numb += "e";
-                numb += cursor.nextToken.value
-                    .slice(1)
-                    .split(/\D/)[0];
+                cursor.skipOne(WordToken);
+
+                numb += cursor.readToken(DigitsToken).value;
             }
 
             return +numb;
@@ -275,7 +270,7 @@ describe("Cursor", () => {
         assert.strictEqual( parseNumber("-1"), -1 );
         assert.strictEqual( parseNumber("1.10"), 1.1 );
         assert.strictEqual( parseNumber("-1.10"), -1.1 );
-        assert.strictEqual( parseNumber("1e3"), 1e3 );
+        assert.strictEqual( parseNumber("1e3"), 1000 );
         assert.strictEqual( parseNumber("1E10"), 1e10 );
         assert.strictEqual( parseNumber("123456700.123E2"), 12345670012.3 );
         assert.strictEqual( parseNumber("1e2w3"), 100 );

@@ -19,7 +19,8 @@ describe("defaultMap", () => {
                 "(test){brackets}[variants]",
                 "'single'\"double\\\"\"`and that`",
                 "123\t\t456\t7890",
-                "%+-*/~!.><=^&&||?"
+                "%+-*/~!.><=^&&||?",
+                "10e10"
             ].join("")
         );
 
@@ -79,7 +80,13 @@ describe("defaultMap", () => {
             { value: "|", position: 108 },
             { value: "|", position: 109 },
             { value: "?", position: 110 },
-            { value: "", position: 111 }
+
+            // WordToken does not include digits
+            { value: "10", position: 111 },
+            { value: "e", position: 113 },
+            { value: "10", position: 114 },
+
+            { value: "", position: 116 }
         ];
         assert.deepStrictEqual(
             actualTokens,
