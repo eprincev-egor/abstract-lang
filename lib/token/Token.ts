@@ -2,6 +2,7 @@ export interface TokenClass {
     description: TokenDescription;
     name: string;
     new (...args: any[]): Token;
+    read(text: string, position: number): string;
 }
 
 /**
@@ -34,6 +35,32 @@ export class Token {
         entry: /./,
         maxLength: 1
     };
+
+    static read(text: string, position: number): string {
+        let tokenValue = "";
+
+        while ( position < text.length ) {
+            const char = text[ position ];
+
+            if ( this.description.entry.test(char) ) {
+                tokenValue += char;
+                position++;
+
+                const maxLengthReached = (
+                    "maxLength" in this.description &&
+                    tokenValue.length === this.description.maxLength
+                );
+                if ( maxLengthReached ) {
+                    break;
+                }
+            }
+            else {
+                break;
+            }
+        }
+
+        return tokenValue;
+    }
 
     readonly value: string;
     /**

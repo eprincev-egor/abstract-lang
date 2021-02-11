@@ -34,7 +34,12 @@ export class Tokenizer {
             const TokenClass = this.map.getTokenClass(char);
 
             if ( TokenClass ) {
-                const tokenValue = this.read(TokenClass);
+                const tokenValue = TokenClass.read(
+                    this.text,
+                    this.position
+                );
+                this.position += tokenValue.length;
+
                 const token = new TokenClass(tokenValue, start);
                 tokens.push(token);
             }
@@ -52,31 +57,5 @@ export class Tokenizer {
         tokens.push(eof);
 
         return tokens;
-    }
-
-    private read(TokenClass: TokenClass) {
-        let tokenValue = "";
-
-        while ( this.position < this.text.length ) {
-            const char = this.text[ this.position ];
-
-            if ( TokenClass.description.entry.test(char) ) {
-                tokenValue += char;
-                this.position++;
-
-                const maxLengthReached = (
-                    "maxLength" in TokenClass.description &&
-                    tokenValue.length === TokenClass.description.maxLength
-                );
-                if ( maxLengthReached ) {
-                    break;
-                }
-            }
-            else {
-                break;
-            }
-        }
-
-        return tokenValue;
     }
 }
