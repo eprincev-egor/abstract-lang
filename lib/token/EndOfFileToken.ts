@@ -1,4 +1,3 @@
-import { Position } from "./Position";
 import { Token, TokenDescription } from "./Token";
 
 export class EndOfFleToken extends Token {
@@ -7,7 +6,7 @@ export class EndOfFleToken extends Token {
         maxLength: 0
     }
 
-    constructor(position: Position) {
+    constructor(position: number) {
         super("", position);
     }
 }

@@ -1,5 +1,4 @@
 import { EndOfFleToken } from "./EndOfFileToken";
-import { Position } from "./Position";
 import { Token, TokenClass } from "./Token";
 import { TokenMap } from "./TokenMap";
 
@@ -32,33 +31,21 @@ export class Tokenizer {
             const TokenClass = this.map.getTokenClass(char);
 
             if ( TokenClass ) {
-
                 const tokenValue = this.read(TokenClass);
-
-                const end = this.cursor;
-                const position = new Position(start, end);
-
-                const token = new TokenClass(tokenValue, position);
+                const token = new TokenClass(tokenValue, start);
                 tokens.push(token);
             }
             else {
                 const tokenValue = char;
                 this.cursor++;
 
-                const end = this.cursor;
-                const position = new Position(start, end);
-
-                const token = new Token(tokenValue, position);
+                const token = new Token(tokenValue, start);
                 tokens.push(token);
             }
 
         }
 
-        const end = new Position(
-            this.code.length,
-            this.code.length
-        );
-        const eof = new EndOfFleToken(end);
+        const eof = new EndOfFleToken(this.code.length);
         tokens.push(eof);
 
         return tokens;

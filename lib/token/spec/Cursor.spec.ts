@@ -5,7 +5,6 @@ import { defaultMap } from "../default/defaultMap";
 import { Token } from "../Token";
 import { SpaceToken } from "../default/SpaceToken";
 import { WordToken } from "../default/WordToken";
-import { Position } from "../Position";
 import { EndOfFleToken } from "../EndOfFileToken";
 
 describe("Cursor", () => {
@@ -31,7 +30,7 @@ describe("Cursor", () => {
     it("required EOF at last token", () => {
         assert.throws(() => {
             new Cursor([
-                new Token("test", new Position(0, 4))
+                new Token("test", 0)
             ]);
         }, (err: Error) =>
             /required special token EOF after last token/.test(err.message)
@@ -129,10 +128,10 @@ describe("Cursor", () => {
 
     it("skipOne(TokenClass) skip only one token with same class", () => {
         tokens = [
-            new SpaceToken(" ", new Position(0, 1)),
-            new SpaceToken(" ", new Position(1, 2)),
-            new WordToken("correct", new Position(2, 9)),
-            new EndOfFleToken(new Position(9, 9))
+            new SpaceToken(" ", 0),
+            new SpaceToken(" ", 1),
+            new WordToken("correct", 2),
+            new EndOfFleToken(9)
         ];
         cursor = new Cursor(tokens);
 
@@ -147,10 +146,10 @@ describe("Cursor", () => {
 
     it("skipAll(TokenClass) skip all tokens with same class", () => {
         tokens = [
-            new SpaceToken(" ", new Position(0, 1)),
-            new SpaceToken(" ", new Position(1, 2)),
-            new WordToken("correct", new Position(2, 9)),
-            new EndOfFleToken(new Position(9, 9))
+            new SpaceToken(" ", 0),
+            new SpaceToken(" ", 1),
+            new WordToken("correct", 2),
+            new EndOfFleToken(9)
         ];
         cursor = new Cursor(tokens);
 

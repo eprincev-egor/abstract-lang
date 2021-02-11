@@ -28,11 +28,11 @@ describe("Tokenizer", () => {
             [
                 {
                     value: "0123456789",
-                    position: {start: 0, end: 10}
+                    position: 0
                 },
                 {
                     value: "",
-                    position: {start: 10, end: 10}
+                    position: 10
                 }
             ]
         );
@@ -56,39 +56,39 @@ describe("Tokenizer", () => {
             [
                 {
                     value: "012",
-                    position: {start: 0, end: 3}
+                    position: 0
                 },
                 {
                     value: " ",
-                    position: {start: 3, end: 4}
+                    position: 3
                 },
                 {
                     value: "23",
-                    position: {start: 4, end: 6}
+                    position: 4
                 },
                 {
                     value: "\n",
-                    position: {start: 6, end: 7}
+                    position: 6
                 },
                 {
                     value: "44",
-                    position: {start: 7, end: 9}
+                    position: 7
                 },
                 {
                     value: "\r",
-                    position: {start: 9, end: 10}
+                    position: 9
                 },
                 {
                     value: "66",
-                    position: {start: 10, end: 12}
+                    position: 10
                 },
                 {
                     value: "    \t\r\n",
-                    position: {start: 12, end: 19}
+                    position: 12
                 },
                 {
                     value: "",
-                    position: {start: 19, end: 19}
+                    position: 19
                 }
             ]
         );
@@ -115,19 +115,19 @@ describe("Tokenizer", () => {
             [
                 {
                     value: "q",
-                    position: {start: 0, end: 1}
+                    position: 0
                 },
                 {
                     value: "w",
-                    position: {start: 1, end: 2}
+                    position: 1
                 },
                 {
                     value: "e",
-                    position: {start: 2, end: 3}
+                    position: 2
                 },
                 {
                     value: "",
-                    position: {start: 3, end: 3}
+                    position: 3
                 }
             ]
         );

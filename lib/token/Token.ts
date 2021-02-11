@@ -1,6 +1,3 @@
-import { Position } from "./Position";
-
-
 export interface TokenClass {
     description: TokenDescription;
     name: string;
@@ -39,9 +36,12 @@ export class Token {
     };
 
     readonly value: string;
-    readonly position: Position;
+    /**
+     * index of the first char within the source text
+     */
+    readonly position: number;
 
-    constructor(value: string, position: Position) {
+    constructor(value: string, position: number) {
         this.value = value;
         this.position = position;
     }
@@ -50,10 +50,10 @@ export class Token {
         return this.value === equal;
     }
 
-    toJSON(): {value: string; position: ReturnType<Position["toJSON"]>} {
+    toJSON(): {value: string; position: number} {
         return {
             value: this.value,
-            position: this.position.toJSON()
+            position: this.position
         };
     }
 }
