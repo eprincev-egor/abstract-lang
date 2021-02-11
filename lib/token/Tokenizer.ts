@@ -4,13 +4,16 @@ import { TokenMap } from "./TokenMap";
 
 export class Tokenizer {
 
-    static tokenize(map: TokenMap, code: string): Token[] {
-        const tokenizer = new Tokenizer(map, code);
+    /**
+     * split text on tokens
+     */
+    static tokenize(map: TokenMap, text: string): Token[] {
+        const tokenizer = new Tokenizer(map, text);
         return tokenizer.tokenize();
     }
 
-    private readonly code: string;
-    private cursor: number;
+    private readonly text: string;
+    private position: number;
     private map: TokenMap;
 
     private constructor(
@@ -18,16 +21,16 @@ export class Tokenizer {
         code: string
     ) {
         this.map = map;
-        this.code = code;
-        this.cursor = 0;
+        this.text = code;
+        this.position = 0;
     }
 
     private tokenize(): Token[] {
         const tokens: Token[] = [];
 
-        while ( this.cursor < this.code.length ) {
-            const start = this.cursor;
-            const char = this.code[ this.cursor ];
+        while ( this.position < this.text.length ) {
+            const start = this.position;
+            const char = this.text[ this.position ];
             const TokenClass = this.map.getTokenClass(char);
 
             if ( TokenClass ) {
@@ -37,7 +40,7 @@ export class Tokenizer {
             }
             else {
                 const tokenValue = char;
-                this.cursor++;
+                this.position++;
 
                 const token = new Token(tokenValue, start);
                 tokens.push(token);
@@ -45,7 +48,7 @@ export class Tokenizer {
 
         }
 
-        const eof = new EndOfFleToken(this.code.length);
+        const eof = new EndOfFleToken(this.text.length);
         tokens.push(eof);
 
         return tokens;
@@ -54,12 +57,12 @@ export class Tokenizer {
     private read(TokenClass: TokenClass) {
         let tokenValue = "";
 
-        while ( this.cursor < this.code.length ) {
-            const char = this.code[ this.cursor ];
+        while ( this.position < this.text.length ) {
+            const char = this.text[ this.position ];
 
             if ( TokenClass.description.entry.test(char) ) {
                 tokenValue += char;
-                this.cursor++;
+                this.position++;
 
                 const maxLengthReached = (
                     "maxLength" in TokenClass.description &&
