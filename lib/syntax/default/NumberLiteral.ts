@@ -6,18 +6,18 @@ export class NumberLiteral extends AbstractSyntax {
 
     static parse(cursor: Cursor): NumberLiteral {
         let numb = "";
-        if ( cursor.before("-") ) {
+        if ( cursor.beforeValue("-") ) {
             numb += cursor.readValue("-");
         }
 
         numb += cursor.readToken(DigitsToken).value;
 
-        if ( cursor.before(".") ) {
+        if ( cursor.beforeValue(".") ) {
             numb += cursor.readValue(".");
             numb += cursor.readToken(DigitsToken).value;
         }
 
-        if ( cursor.before("e") || cursor.before("E") ) {
+        if ( cursor.beforeValue("e") || cursor.beforeValue("E") ) {
             numb += "e";
             cursor.skipOne(WordToken);
 

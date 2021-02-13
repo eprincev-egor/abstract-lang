@@ -31,7 +31,7 @@ export class Cursor {
      * returns true if next token value is equal someTokenValue,
      * returns false if this is end of tokens
      */
-    before(someTokenValue: string): boolean {
+    beforeValue(someTokenValue: string): boolean {
         return this.nextToken_.value === someTokenValue;
     }
 

@@ -11,9 +11,9 @@ export class StringLiteral extends AbstractSyntax {
         cursor.readValue(this.quote);
         let content = "";
 
-        while ( !cursor.before(this.quote) && !cursor.beforeEnd() ) {
+        while ( !cursor.beforeValue(this.quote) && !cursor.beforeEnd() ) {
 
-            if ( cursor.before("\\") ) {
+            if ( cursor.beforeValue("\\") ) {
                 cursor.readValue("\\");
 
                 const someValue = cursor.nextToken.value;

@@ -40,14 +40,14 @@ describe("Cursor", () => {
     });
 
     it("before('hello')", () => {
-        assert.ok( cursor.before("hello") );
-        assert.ok( !cursor.before("world") );
+        assert.ok( cursor.beforeValue("hello") );
+        assert.ok( !cursor.beforeValue("world") );
     });
 
     it("readValue('hello')", () => {
         const result = cursor.readValue("hello");
         assert.strictEqual( result, "hello" );
-        assert.ok( cursor.before(" ") );
+        assert.ok( cursor.beforeValue(" ") );
     });
 
     it("readValue('wrong') throw an error if the next token has a different value", () => {
@@ -119,23 +119,23 @@ describe("Cursor", () => {
 
         cursor.setPositionBefore(world);
         assert.ok(
-            cursor.before("world"),
+            cursor.beforeValue("world"),
             "set position before world, now before world"
         );
 
         cursor.setPositionBefore(hello);
         assert.ok(
-            cursor.before("hello"),
+            cursor.beforeValue("hello"),
             "set position before hello, now before hello"
         );
     });
 
     it("next() move cursor on one token", () => {
         cursor.next();
-        assert.ok( cursor.before(" "), "now before space" );
+        assert.ok( cursor.beforeValue(" "), "now before space" );
 
         cursor.next();
-        assert.ok( cursor.before("world"), "now before world" );
+        assert.ok( cursor.beforeValue("world"), "now before world" );
     });
 
     it("beforeEndToken()", () => {
@@ -170,12 +170,12 @@ describe("Cursor", () => {
         cursor = new Cursor(tokens);
 
         cursor.skipOne(SpaceToken);
-        assert.ok( cursor.before(" "), "skipped one token" );
+        assert.ok( cursor.beforeValue(" "), "skipped one token" );
     });
 
     it("skipOne() don't change position if the next token has a different class", () => {
         cursor.skipOne(SpaceToken);
-        assert.ok( cursor.before("hello") );
+        assert.ok( cursor.beforeValue("hello") );
     });
 
     it("skipAll(TokenClass) skip all tokens with same class", () => {
@@ -188,7 +188,7 @@ describe("Cursor", () => {
         cursor = new Cursor(tokens);
 
         cursor.skipAll(SpaceToken);
-        assert.ok( cursor.before("correct"), "before correct token" );
+        assert.ok( cursor.beforeValue("correct"), "before correct token" );
     });
 
     it("usage example: parse single quotes", () => {
@@ -207,9 +207,9 @@ describe("Cursor", () => {
             cursor.readValue(quote);
             let content = "";
 
-            while ( !cursor.before(quote) && !cursor.beforeEnd() ) {
+            while ( !cursor.beforeValue(quote) && !cursor.beforeEnd() ) {
 
-                if ( cursor.before(escape) ) {
+                if ( cursor.beforeValue(escape) ) {
                     cursor.readValue(escape);
 
                     const someValue = cursor.nextToken.value;
@@ -246,18 +246,18 @@ describe("Cursor", () => {
             const cursor = new Cursor(tokens);
 
             let numb = "";
-            if ( cursor.before("-") ) {
+            if ( cursor.beforeValue("-") ) {
                 numb += cursor.readValue("-");
             }
 
             numb += cursor.readToken(DigitsToken).value;
 
-            if ( cursor.before(".") ) {
+            if ( cursor.beforeValue(".") ) {
                 numb += cursor.readValue(".");
                 numb += cursor.readToken(DigitsToken).value;
             }
 
-            if ( cursor.before("e") || cursor.before("E") ) {
+            if ( cursor.beforeValue("e") || cursor.beforeValue("E") ) {
                 numb += "e";
                 cursor.skipOne(WordToken);
 
