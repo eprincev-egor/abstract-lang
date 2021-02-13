@@ -39,9 +39,14 @@ describe("Cursor", () => {
         );
     });
 
-    it("before('hello')", () => {
+    it("beforeValue('hello')", () => {
         assert.ok( cursor.beforeValue("hello") );
         assert.ok( !cursor.beforeValue("world") );
+    });
+
+    it("before(TokenClass)", () => {
+        assert.ok( cursor.before(WordToken) );
+        assert.ok( !cursor.before(SpaceToken) );
     });
 
     it("readValue('hello')", () => {

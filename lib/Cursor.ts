@@ -36,6 +36,13 @@ export class Cursor {
     }
 
     /**
+     * returns true if next token has correct instance type
+     */
+    before(TokenClass: TokenClass): boolean {
+        return this.nextToken_ instanceof TokenClass;
+    }
+
+    /**
      * returns true if there are no more tokens ahead
      */
     beforeEnd(): boolean {
