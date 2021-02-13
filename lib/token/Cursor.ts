@@ -38,7 +38,7 @@ export class Cursor {
     /**
      * returns true if there are no more tokens ahead
      */
-    beforeEndToken(): boolean {
+    beforeEnd(): boolean {
         return this.nextToken instanceof EndOfFleToken;
     }
 
@@ -48,7 +48,7 @@ export class Cursor {
      */
     readValue(expectedTokenValue: string): string {
         if ( this.nextToken_.value !== expectedTokenValue ) {
-            if ( this.beforeEndToken() ) {
+            if ( this.beforeEnd() ) {
                 throw new Error(`reached end of code, but expected token: "${expectedTokenValue}"`);
             }
 
@@ -77,7 +77,7 @@ export class Cursor {
         const invalidToken = token as Token;
         const invalidTokenName = invalidToken.constructor.name;
 
-        if ( this.beforeEndToken() ) {
+        if ( this.beforeEnd() ) {
             throw new Error([
                 "reached end of code,",
                 `but expected token: ${ExpectedTokenClass.name}`
@@ -122,7 +122,7 @@ export class Cursor {
      * and throw error if no more tokens
      */
     next(): void {
-        if ( this.beforeEndToken() ) {
+        if ( this.beforeEnd() ) {
             throw new Error("reached end of tokens");
         }
 

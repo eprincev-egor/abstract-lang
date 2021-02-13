@@ -139,11 +139,11 @@ describe("Cursor", () => {
 
     it("beforeEndToken()", () => {
         cursor.next();
-        assert.ok( !cursor.beforeEndToken() );
+        assert.ok( !cursor.beforeEnd() );
 
         cursor.next();
         cursor.next();
-        assert.ok( cursor.beforeEndToken() );
+        assert.ok( cursor.beforeEnd() );
     });
 
     it("valid cursor.nextToken property", () => {
@@ -206,7 +206,7 @@ describe("Cursor", () => {
             cursor.readValue(quote);
             let content = "";
 
-            while ( !cursor.before(quote) && !cursor.beforeEndToken() ) {
+            while ( !cursor.before(quote) && !cursor.beforeEnd() ) {
 
                 if ( cursor.before(escape) ) {
                     cursor.readValue(escape);
