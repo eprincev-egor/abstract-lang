@@ -1,5 +1,10 @@
+import { AbstractSyntax } from "./syntax/AbstractSyntax";
 import { EndOfFleToken } from "./token/EndOfFileToken";
 import { Token, TokenClass } from "./token/Token";
+
+interface SyntaxClass<T extends AbstractSyntax> {
+    parse(cursor: Cursor): T;
+}
 
 /**
  * Text cursor between some tokens.
@@ -95,6 +100,10 @@ export class Cursor {
             `unexpected token ${invalidTokenName}("${invalidToken.value}"),`,
             `expected: ${ExpectedTokenClass.name}`
         ].join(" "));
+    }
+
+    parse<T extends AbstractSyntax>(Syntax: SyntaxClass<T>): T {
+        return Syntax.parse(this);
     }
 
     /**

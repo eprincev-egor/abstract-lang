@@ -1,5 +1,6 @@
 import * as assert from "assert";
 import { Cursor } from "../Cursor";
+import { AbstractSyntax } from "../syntax/AbstractSyntax";
 import {
     Token, Tokenizer,
     defaultMap,
@@ -280,6 +281,36 @@ describe("Cursor", () => {
         assert.strictEqual( parseNumber("1E10"), 1e10 );
         assert.strictEqual( parseNumber("123456700.123E2"), 12345670012.3 );
         assert.strictEqual( parseNumber("1e2w3"), 100 );
+    });
+
+    it("parse(Syntax) call Syntax.parse and return syntax instance", () => {
+        class PhraseSyntax extends AbstractSyntax {
+            static parse(cursor: Cursor): PhraseSyntax {
+                let phrase = "";
+                do {
+                    phrase += cursor.nextToken.value;
+                    cursor.next();
+                } while (
+                    cursor.before(SpaceToken) ||
+                    cursor.before(WordToken)
+                );
+                return new PhraseSyntax(phrase);
+            }
+
+            readonly phrase: string;
+            protected constructor(phrase: string) {
+                super();
+                this.phrase = phrase;
+            }
+
+            protected template() {
+                return this.phrase;
+            }
+        }
+
+        const syntax = cursor.parse(PhraseSyntax);
+        assert.strictEqual( syntax.phrase, "hello world" );
+        assert.ok( cursor.beforeEnd() );
     });
 
 });
