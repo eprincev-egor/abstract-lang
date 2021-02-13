@@ -78,7 +78,7 @@ export class Cursor {
      * move cursor if next token instance is correct and return this token,
      * else throw error
      */
-    readToken<T extends TokenClass>(ExpectedTokenClass: T): InstanceType<T> {
+    read<T extends TokenClass>(ExpectedTokenClass: T): InstanceType<T> {
         const token = this.nextToken_;
 
         if ( token instanceof ExpectedTokenClass ) {

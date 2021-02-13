@@ -76,32 +76,32 @@ describe("Cursor", () => {
         );
     });
 
-    it("readToken(TokenClass)", () => {
-        const hello = cursor.readToken(WordToken).value;
+    it("read(TokenClass)", () => {
+        const hello = cursor.read(WordToken).value;
         assert.strictEqual( hello, "hello" );
 
-        const space = cursor.readToken(SpaceToken).value;
+        const space = cursor.read(SpaceToken).value;
         assert.strictEqual( space, " " );
 
-        const world = cursor.readToken(WordToken).value;
+        const world = cursor.read(WordToken).value;
         assert.strictEqual( world, "world" );
     });
 
-    it("readToken(WrongToken) throw an error if the next token has a different class", () => {
+    it("read(WrongToken) throw an error if the next token has a different class", () => {
         assert.throws(() => {
-            cursor.readToken(SpaceToken);
+            cursor.read(SpaceToken);
         }, (err: Error) =>
             /unexpected token WordToken\("hello"\), expected: SpaceToken/.test(err.message)
         );
     });
 
-    it("readToken(...) throw an error if the next token is EOF", () => {
+    it("read(...) throw an error if the next token is EOF", () => {
         cursor.next();
         cursor.next();
         cursor.next();
 
         assert.throws(() => {
-            cursor.readToken(WordToken);
+            cursor.read(WordToken);
         }, (err: Error) =>
             /reached end of code, but expected token: WordToken/.test(err.message)
         );
@@ -256,18 +256,18 @@ describe("Cursor", () => {
                 numb += cursor.readValue("-");
             }
 
-            numb += cursor.readToken(DigitsToken).value;
+            numb += cursor.read(DigitsToken).value;
 
             if ( cursor.beforeValue(".") ) {
                 numb += cursor.readValue(".");
-                numb += cursor.readToken(DigitsToken).value;
+                numb += cursor.read(DigitsToken).value;
             }
 
             if ( cursor.beforeValue("e") || cursor.beforeValue("E") ) {
                 numb += "e";
                 cursor.skipOne(WordToken);
 
-                numb += cursor.readToken(DigitsToken).value;
+                numb += cursor.read(DigitsToken).value;
             }
 
             return +numb;

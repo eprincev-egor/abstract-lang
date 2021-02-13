@@ -10,18 +10,18 @@ export class NumberLiteral extends AbstractSyntax {
             numb += cursor.readValue("-");
         }
 
-        numb += cursor.readToken(DigitsToken).value;
+        numb += cursor.read(DigitsToken).value;
 
         if ( cursor.beforeValue(".") ) {
             numb += cursor.readValue(".");
-            numb += cursor.readToken(DigitsToken).value;
+            numb += cursor.read(DigitsToken).value;
         }
 
         if ( cursor.beforeValue("e") || cursor.beforeValue("E") ) {
             numb += "e";
             cursor.skipOne(WordToken);
 
-            numb += cursor.readToken(DigitsToken).value;
+            numb += cursor.read(DigitsToken).value;
         }
 
         return new NumberLiteral(numb);
