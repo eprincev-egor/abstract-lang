@@ -1,5 +1,5 @@
-import { EndOfFleToken } from "./EndOfFileToken";
-import { Token, TokenClass } from "./Token";
+import { EndOfFleToken } from "./token/EndOfFileToken";
+import { Token, TokenClass } from "./token/Token";
 
 /**
  * Text cursor between some tokens.

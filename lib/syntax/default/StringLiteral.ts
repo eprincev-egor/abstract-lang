@@ -1,5 +1,5 @@
-import { Cursor } from "../../token";
 import { AbstractSyntax } from "../AbstractSyntax";
+import { Cursor } from "../../Cursor";
 
 type QuoteType = "\"" | "'";
 

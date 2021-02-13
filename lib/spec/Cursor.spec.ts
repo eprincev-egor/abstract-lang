@@ -1,12 +1,13 @@
 import * as assert from "assert";
 import { Cursor } from "../Cursor";
-import { Tokenizer } from "../Tokenizer";
-import { defaultMap } from "../default/defaultMap";
-import { Token } from "../Token";
-import { SpaceToken } from "../default/SpaceToken";
-import { WordToken } from "../default/WordToken";
-import { EndOfFleToken } from "../EndOfFileToken";
-import { DigitsToken } from "../default/DigitsToken";
+import {
+    Token, Tokenizer,
+    defaultMap,
+    SpaceToken,
+    WordToken,
+    EndOfFleToken,
+    DigitsToken
+} from "../token";
 
 describe("Cursor", () => {
 

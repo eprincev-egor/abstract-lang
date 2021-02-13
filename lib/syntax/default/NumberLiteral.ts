@@ -1,5 +1,6 @@
-import { Cursor, DigitsToken, WordToken } from "../../token";
+import { DigitsToken, WordToken } from "../../token";
 import { AbstractSyntax } from "../AbstractSyntax";
+import { Cursor } from "../../Cursor";
 
 export class NumberLiteral extends AbstractSyntax {
 
