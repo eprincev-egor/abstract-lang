@@ -6,6 +6,7 @@ export class EndOfFleToken extends Token {
         maxLength: 0
     }
 
+    readonly value!: "";
     constructor(position: number) {
         super("", position);
     }

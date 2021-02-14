@@ -67,6 +67,9 @@ export class Token {
         return tokenValue;
     }
 
+    /**
+     * result of calling TokeClass.read
+     */
     readonly value: string;
     /**
      * index of the first char within the source text

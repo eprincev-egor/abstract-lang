@@ -36,31 +36,38 @@ export class Cursor {
      * returns true if next token value is equal someTokenValue,
      * returns false if this is end of tokens
      */
-    beforeValue(someTokenValue: string): boolean {
+    beforeValue<T extends string>(someTokenValue: T): this is {
+        nextToken: Token & {value: T};
+    } {
         return this.nextToken_.value === someTokenValue;
     }
 
     /**
      * returns true if next token has correct instance type
      */
-    beforeToken(TokenClass: TokenClass): boolean {
+    beforeToken<T extends TokenClass>(TokenClass: T): this is {
+        nextToken: InstanceType<T> & {
+            constructor: T;
+        };
+    } {
         return this.nextToken_ instanceof TokenClass;
     }
 
     /**
      * returns true if there are no more tokens ahead
      */
-    beforeEnd(): boolean {
-        return this.nextToken instanceof EndOfFleToken;
+    beforeEnd(): this is {nextToken: EndOfFleToken} {
+        return this.nextToken_ instanceof EndOfFleToken;
     }
 
     /**
      * move cursor if next token value is correct,
      * else throw error
      */
-    readValue(expectedTokenValue: string): string {
+    readValue<T extends string>(expectedTokenValue: T): T {
         if ( this.nextToken_.value !== expectedTokenValue ) {
             if ( this.beforeEnd() ) {
+                this.nextToken;
                 throw new Error(`reached end of code, but expected token: "${expectedTokenValue}"`);
             }
 
