@@ -1,4 +1,4 @@
-import { Cursor } from "../Cursor";
+import { Cursor } from "../cursor";
 
 type TemplateElement = string;
 

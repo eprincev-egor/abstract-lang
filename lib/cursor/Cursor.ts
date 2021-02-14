@@ -1,6 +1,5 @@
-import { AbstractSyntax } from "./syntax/AbstractSyntax";
-import { EndOfFleToken } from "./token/EndOfFileToken";
-import { Token, TokenClass } from "./token/Token";
+import { Token, TokenClass, EndOfFleToken } from "../token";
+import { AbstractSyntax } from "../syntax";
 
 interface SyntaxClass<T extends AbstractSyntax> {
     parse(cursor: Cursor): T;

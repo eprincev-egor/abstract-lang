@@ -1,6 +1,6 @@
 import * as assert from "assert";
 import { Cursor } from "../Cursor";
-import { AbstractSyntax } from "../syntax/AbstractSyntax";
+import { AbstractSyntax } from "../../syntax";
 import {
     Token, Tokenizer,
     defaultMap,
@@ -8,7 +8,7 @@ import {
     WordToken,
     EndOfFleToken,
     DigitsToken
-} from "../token";
+} from "../../token";
 
 describe("Cursor", () => {
 
@@ -312,7 +312,6 @@ describe("Cursor", () => {
         assert.strictEqual( syntax.phrase, "hello world" );
         assert.ok( cursor.beforeEnd() );
     });
-
 });
 
 // cursor.beforeWord("xx");
