@@ -133,8 +133,12 @@ export class Cursor {
     /**
      * skip all tokens with same class
      */
-    skipAll(SkipThisTokenClass: TokenClass): void {
-        while ( this.nextToken_ instanceof SkipThisTokenClass ) {
+    skipAll(...SkipTokens: TokenClass[]): void {
+        while (
+            SkipTokens.some((SkipThisTokenClass) =>
+                this.nextToken_ instanceof SkipThisTokenClass
+            )
+        ) {
             this.next();
         }
     }

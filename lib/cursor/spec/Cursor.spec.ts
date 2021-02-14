@@ -7,7 +7,8 @@ import {
     SpaceToken,
     WordToken,
     EndOfFleToken,
-    DigitsToken
+    DigitsToken,
+    EolToken
 } from "../../token";
 
 describe("Cursor", () => {
@@ -194,6 +195,36 @@ describe("Cursor", () => {
         cursor = new Cursor(tokens);
 
         cursor.skipAll(SpaceToken);
+        assert.ok( cursor.beforeValue("correct"), "before correct token" );
+    });
+
+    it("skipAll(...) don't change position if the next token has a different class", () => {
+        tokens = [
+            new SpaceToken(" ", 0),
+            new EolToken("\r", 1),
+            new SpaceToken(" ", 2),
+            new EolToken("\n", 3),
+            new WordToken("correct", 4),
+            new EndOfFleToken(11)
+        ];
+        cursor = new Cursor(tokens);
+
+        cursor.skipAll(WordToken);
+        assert.ok( cursor.beforeValue(" ") );
+    });
+
+    it("skipAll(A, B, C, ...) skip all tokens with same classes", () => {
+        tokens = [
+            new SpaceToken(" ", 0),
+            new EolToken("\r", 1),
+            new SpaceToken(" ", 2),
+            new EolToken("\n", 3),
+            new WordToken("correct", 4),
+            new EndOfFleToken(11)
+        ];
+        cursor = new Cursor(tokens);
+
+        cursor.skipAll(SpaceToken, EolToken);
         assert.ok( cursor.beforeValue("correct"), "before correct token" );
     });
 
