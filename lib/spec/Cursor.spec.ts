@@ -45,9 +45,9 @@ describe("Cursor", () => {
         assert.ok( !cursor.beforeValue("world") );
     });
 
-    it("before(TokenClass)", () => {
-        assert.ok( cursor.before(WordToken) );
-        assert.ok( !cursor.before(SpaceToken) );
+    it("beforeToken(TokenClass)", () => {
+        assert.ok( cursor.beforeToken(WordToken) );
+        assert.ok( !cursor.beforeToken(SpaceToken) );
     });
 
     it("readValue('hello')", () => {
@@ -291,8 +291,8 @@ describe("Cursor", () => {
                     phrase += cursor.nextToken.value;
                     cursor.next();
                 } while (
-                    cursor.before(SpaceToken) ||
-                    cursor.before(WordToken)
+                    cursor.beforeToken(SpaceToken) ||
+                    cursor.beforeToken(WordToken)
                 );
                 return new PhraseSyntax(phrase);
             }
