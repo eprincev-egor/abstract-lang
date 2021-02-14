@@ -7,14 +7,10 @@ export type SyntaxClassWithEntry<T extends AbstractSyntax> = SyntaxClass<T> & {
 }
 
 export interface SyntaxClass<T extends AbstractSyntax> {
+    entry: (cursor: Cursor) => boolean;
     parse(cursor: Cursor): T;
 }
 
 export abstract class AbstractSyntax {
-
-    static parse(cursor: Cursor): AbstractSyntax {
-        throw new Error("not implemented");
-    }
-
     protected abstract template(): TemplateElement | TemplateElement[];
 }

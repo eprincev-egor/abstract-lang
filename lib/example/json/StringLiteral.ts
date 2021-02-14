@@ -2,6 +2,10 @@ import { AbstractSyntax, Cursor } from "../../index";
 
 export class StringLiteral extends AbstractSyntax {
 
+    static entry(cursor: Cursor): boolean {
+        return cursor.beforeValue("\"");
+    }
+
     static parse(cursor: Cursor): StringLiteral {
         // require open quote
         cursor.readValue("\"");
@@ -40,7 +44,7 @@ export class StringLiteral extends AbstractSyntax {
         this.string = content;
     }
 
-    protected template(): string {
+    template(): string {
         return this.string;
     }
 }

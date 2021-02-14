@@ -1,11 +1,8 @@
 import { Token, TokenClass, EndOfFleToken, SpaceToken, EolToken } from "../token";
 import {
     AbstractSyntax,
-    SyntaxClass,
-    SyntaxClassWithEntry
+    SyntaxClass
 } from "../syntax";
-import { cursorTo } from "readline";
-import { sep } from "path";
 
 /**
  * Text cursor between some tokens.
@@ -64,7 +61,7 @@ export class Cursor {
     /**
      * returns true if cursor before the Syntax
      */
-    before<T extends AbstractSyntax>(Syntax: SyntaxClassWithEntry<T>): boolean {
+    before<T extends AbstractSyntax>(Syntax: SyntaxClass<T>): boolean {
         return Syntax.entry(this);
     }
 
@@ -128,7 +125,7 @@ export class Cursor {
      * parse a sequence of syntax separated by a some value
      */
     parseChainOf<T extends AbstractSyntax>(
-        Syntax: SyntaxClassWithEntry<T>,
+        Syntax: SyntaxClass<T>,
         delimiter: string
     ): T[] {
         const syntaxes: T[] = [];

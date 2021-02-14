@@ -7,6 +7,10 @@ import {
 
 export class NumberLiteral extends AbstractSyntax {
 
+    static entry(cursor: Cursor): boolean {
+        return cursor.beforeToken(DigitsToken);
+    }
+
     static parse(cursor: Cursor): NumberLiteral {
         let numb = "";
         if ( cursor.beforeValue("-") ) {
@@ -36,7 +40,7 @@ export class NumberLiteral extends AbstractSyntax {
         this.number = numb;
     }
 
-    protected template(): string {
+    template(): string {
         return this.number;
     }
 }

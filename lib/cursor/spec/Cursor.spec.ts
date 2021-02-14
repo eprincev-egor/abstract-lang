@@ -316,6 +316,11 @@ describe("Cursor", () => {
 
     it("parse(Syntax) call Syntax.parse and return syntax instance", () => {
         class PhraseSyntax extends AbstractSyntax {
+
+            static entry(cursor: Cursor) {
+                return cursor.beforeToken(WordToken);
+            }
+
             static parse(cursor: Cursor): PhraseSyntax {
                 let phrase = "";
                 do {

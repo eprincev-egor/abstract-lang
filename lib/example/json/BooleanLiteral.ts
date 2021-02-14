@@ -2,6 +2,13 @@ import { AbstractSyntax, Cursor } from "../../index";
 
 export class BooleanLiteral extends AbstractSyntax {
 
+    static entry(cursor: Cursor): boolean {
+        return (
+            cursor.beforeValue("true") ||
+            cursor.beforeValue("false")
+        );
+    }
+
     static parse(cursor: Cursor): BooleanLiteral {
         if ( cursor.beforeValue("true") ) {
             cursor.readValue("true");
