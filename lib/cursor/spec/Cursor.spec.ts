@@ -343,9 +343,110 @@ describe("Cursor", () => {
         assert.strictEqual( syntax.phrase, "hello world" );
         assert.ok( cursor.beforeEnd() );
     });
+
+    it("before(Syntax)", () => {
+        class NullLiteral extends AbstractSyntax {
+
+            static entry(cursor: Cursor) {
+                return cursor.beforeValue("null");
+            }
+
+            static parse(cursor: Cursor): NullLiteral {
+                cursor.readValue("null");
+                return new NullLiteral();
+            }
+
+            // eslint-disable-next-line class-methods-use-this
+            template(): string {
+                return "null";
+            }
+        }
+
+        tokens = Tokenizer.tokenize(
+            defaultMap,
+            "null"
+        );
+        cursor = new Cursor(tokens);
+        assert.ok( cursor.before(NullLiteral), "valid entry" );
+
+
+        tokens = Tokenizer.tokenize(
+            defaultMap,
+            "hello"
+        );
+        cursor = new Cursor(tokens);
+        assert.ok( !cursor.before(NullLiteral), "not valid entry" );
+    });
+
+    describe("parseChainOf(Syntax, delimiter)", () => {
+        class WordSyntax extends AbstractSyntax {
+
+            static entry(cursor: Cursor) {
+                return cursor.beforeToken(WordToken);
+            }
+
+            static parse(cursor: Cursor): WordSyntax {
+                const word = cursor.read(WordToken).value;
+                return new WordSyntax(word);
+            }
+
+            readonly word: string;
+            protected constructor(word: string) {
+                super();
+                this.word = word;
+            }
+
+            protected template() {
+                return this.word;
+            }
+        }
+
+        it("parse sequence of syntax over some delimiter", () => {
+
+            const tokens = Tokenizer.tokenize(
+                defaultMap,
+                "first,second , third\n,\rfour,\tfive"
+            );
+            const cursor = new Cursor(tokens);
+
+            const words = cursor.parseChainOf(WordSyntax, ",");
+            assert.deepStrictEqual(
+                words.map((syntax) => syntax.word),
+                ["first", "second", "third", "four", "five"]
+            );
+        });
+
+        it("throw an error if the next token is wrong", () => {
+            const tokens = Tokenizer.tokenize(
+                defaultMap,
+                " "
+            );
+            const cursor = new Cursor(tokens);
+
+            assert.throws(() => {
+                cursor.parseChainOf(WordSyntax, ";");
+            }, (err: Error) =>
+                /unexpected token SpaceToken\(" "\), expected: WordToken/.test(err.message)
+            );
+        });
+
+        it("throw an error if the next token after delimiter is wrong", () => {
+            const tokens = Tokenizer.tokenize(
+                defaultMap,
+                "hello;123"
+            );
+            const cursor = new Cursor(tokens);
+
+            assert.throws(() => {
+                cursor.parseChainOf(WordSyntax, ";");
+            }, (err: Error) =>
+                /unexpected token DigitsToken\("123"\), expected: WordToken/.test(err.message)
+            );
+        });
+    });
+
 });
 
 // cursor.beforeWord("xx");
 // cursor.readWord("xx");
 // cursor.readPhrase("a", "b", "c");
-// cursor.readChainOf(Syntax, separator);

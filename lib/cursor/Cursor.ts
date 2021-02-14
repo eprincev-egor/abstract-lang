@@ -1,9 +1,11 @@
-import { Token, TokenClass, EndOfFleToken } from "../token";
-import { AbstractSyntax } from "../syntax";
-
-interface SyntaxClass<T extends AbstractSyntax> {
-    parse(cursor: Cursor): T;
-}
+import { Token, TokenClass, EndOfFleToken, SpaceToken, EolToken } from "../token";
+import {
+    AbstractSyntax,
+    SyntaxClass,
+    SyntaxClassWithEntry
+} from "../syntax";
+import { cursorTo } from "readline";
+import { sep } from "path";
 
 /**
  * Text cursor between some tokens.
@@ -60,6 +62,13 @@ export class Cursor {
     }
 
     /**
+     * returns true if cursor before the Syntax
+     */
+    before<T extends AbstractSyntax>(Syntax: SyntaxClassWithEntry<T>): boolean {
+        return Syntax.entry(this);
+    }
+
+    /**
      * move cursor if next token value is correct,
      * else throw error
      */
@@ -108,8 +117,38 @@ export class Cursor {
         ].join(" "));
     }
 
+    /**
+     * call Syntax.parse and return syntax instance
+     */
     parse<T extends AbstractSyntax>(Syntax: SyntaxClass<T>): T {
         return Syntax.parse(this);
+    }
+
+    /**
+     * parse a sequence of syntax separated by a some value
+     */
+    parseChainOf<T extends AbstractSyntax>(
+        Syntax: SyntaxClassWithEntry<T>,
+        delimiter: string
+    ): T[] {
+        const syntaxes: T[] = [];
+
+        do {
+            const syntax = this.parse(Syntax);
+            syntaxes.push(syntax);
+
+            this.skipAll(SpaceToken, EolToken);
+
+            if ( !this.beforeValue(delimiter) ) {
+                break;
+            }
+
+            this.readValue(delimiter);
+            this.skipAll(SpaceToken, EolToken);
+
+        } while ( !this.beforeEnd() );
+
+        return syntaxes;
     }
 
     /**
