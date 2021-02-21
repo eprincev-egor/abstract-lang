@@ -15,14 +15,14 @@ export class SyntaxError extends Error {
         const token = cursor.nextToken;
         const code = new SourceCode(cursor.tokens);
         const coords = code.getCoords(token.position);
-        const fragment = code.getFragmentAtNear(token);
+        const fragment = code.getFragment(token);
 
         return new SyntaxError({
             message: [
                 `SyntaxError: ${message}`,
                 `line ${coords.line}, column ${coords.column}`,
                 "",
-                fragment
+                fragment.toString()
             ].join("\n"),
             token,
             coords
