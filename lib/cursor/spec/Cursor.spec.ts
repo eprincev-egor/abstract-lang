@@ -1,5 +1,6 @@
 import * as assert from "assert";
 import { Cursor } from "../Cursor";
+import { SyntaxError } from "../SyntaxError";
 import { AbstractSyntax } from "../../syntax";
 import {
     Token, Tokenizer,
@@ -448,6 +449,23 @@ describe("Cursor", () => {
                 /unexpected token DigitsToken\("123"\), expected: WordToken/.test(err.message)
             );
         });
+    });
+
+    it("throwError(message) => SyntaxError", () => {
+        cursor.read(WordToken);
+
+        let actualError: unknown = new Error("expected error");
+        try {
+            cursor.throwError("test");
+        }
+        catch (error) {
+            actualError = error;
+        }
+
+        assert.ok( actualError instanceof SyntaxError );
+        assert.strictEqual( actualError.line, 1, "valid line" );
+        assert.strictEqual( actualError.column, 6, "valid column" );
+        assert.strictEqual( actualError.token, cursor.nextToken, "valid token" );
     });
 
 });

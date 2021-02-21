@@ -3,13 +3,14 @@ import {
     AbstractSyntax,
     SyntaxClass
 } from "../syntax";
+import { SyntaxError } from "./SyntaxError";
 
 /**
  * Text cursor between some tokens.
  */
 export class Cursor {
 
-    private readonly tokens: readonly Token[];
+    readonly tokens: readonly Token[];
     private tokenIndex: number;
     private nextToken_: Token;
     constructor(tokens: Token[]) {
@@ -177,6 +178,13 @@ export class Cursor {
         ) {
             this.next();
         }
+    }
+
+    /**
+     * throw syntax error at near current position
+     */
+    throwError(message: string): never {
+        throw SyntaxError.at(this, message);
     }
 
     /**
