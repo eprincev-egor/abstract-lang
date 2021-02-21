@@ -57,8 +57,10 @@ describe("SyntaxError", () => {
 
         const err = SyntaxError.at(cursor, "unexpected token");
 
-        assert.strictEqual(err.line, 10, "valid line");
-        assert.strictEqual(err.column, 14, "valid column");
+        assert.deepStrictEqual(err.coords, {
+            line: 10,
+            column: 14
+        });
 
         assert.strictEqual(
             err.message,
@@ -70,8 +72,8 @@ describe("SyntaxError", () => {
             "\n   7 |            return this.lastWord!;" +
             "\n   8 |        }" +
             "\n   9 |" +
-            "\n> 10 |         this.skipSpace();" +
-            "\n                    ^^^^^^^^^" +
+            "\n> 10 |        this.skipSpace();" +
+            "\n                   ^^^^^^^^^" +
             "\n  11 |" +
             "\n  12 |        for (; this.i < this.n; this.i++) {" +
             "\n  13 |            const symbol = this.str[ this.i ];" +

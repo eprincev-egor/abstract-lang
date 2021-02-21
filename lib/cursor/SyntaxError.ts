@@ -1,80 +1,66 @@
 /* eslint-disable unicorn/error-message */
-import { EolToken, Token } from "../token";
+import { Token } from "../token";
 import { Cursor } from "./Cursor";
-
-interface SyntaxErrorPosition {
-    line: number;
-    column: number;
-}
+import { Coords, SourceCode } from "./SourceCode";
 
 export interface SyntaxErrorParams {
     message: string;
-    line: number;
-    column: number;
+    coords: Coords;
     token: Token;
 }
+
+const HEIGHT = 4;
 
 export class SyntaxError extends Error {
 
     static at(cursor: Cursor, message: string): SyntaxError {
         const token = cursor.nextToken;
-        const {line, column} = calculatePosition(cursor, token);
+        const code = new SourceCode(cursor.tokens);
+        const coords = code.getCoords(token.position);
+        const prevLines = code.lines.slice(coords.line - HEIGHT - 1, coords.line - 1);
+        const currentLine = code.lines[ coords.line - 1];
+        const nextLines = code.lines.slice(coords.line, coords.line + HEIGHT);
 
         return new SyntaxError({
-            message,
+            message: [
+                `SyntaxError: ${message}`,
+                `line ${coords.line}, column ${coords.column}`,
+                "",
+                "  ...|",
+                ...prevLines.map((line) =>
+                    `   ${ line.number } |${line.toString()}`
+                ),
+                `> ${ currentLine.number } |${currentLine.toString()}`,
+                `     ${ repeat( " ", coords.column ) }${ repeat("^", token.value.length) }`,
+                ...nextLines.map((line) =>
+                    `  ${ line.number } |${line.toString()}`
+                ),
+                "  ...|"
+            ].join("\n"),
             token,
-            line,
-            column
+            coords
         });
     }
 
     readonly message: string;
     /** invalid token */
     readonly token: Token;
-    /** line number with error */
-    readonly line: number;
-    /** token position inside line */
-    readonly column: number;
+    /** position with error */
+    readonly coords: Coords;
 
     private constructor(params: SyntaxErrorParams) {
         super(params.message);
 
         this.message = params.message;
         this.token = params.token;
-        this.line = params.line;
-        this.column = params.column;
+        this.coords = params.coords;
     }
 }
 
-function calculatePosition(cursor: Cursor, token: Token): SyntaxErrorPosition {
-    let line = 1;
-    let column = 1;
-
-    for (let i = 0, n = cursor.tokens.length; i < n; i++) {
-        const someToken = cursor.tokens[i];
-
-        if ( token === someToken ) {
-            for (let j = i - 1; j >= 0; j--) {
-                const prevTokenOnLine = cursor.tokens[j];
-                if ( prevTokenOnLine instanceof EolToken ) {
-                    break;
-                }
-
-                column += prevTokenOnLine.value.length;
-            }
-            break;
-        }
-
-        if ( someToken instanceof EolToken ) {
-            line++;
-        }
+function repeat(symbol: string, quantity: number) {
+    let output = "";
+    for (let i = 0; i < quantity; i ++) {
+        output += symbol;
     }
-
-    return {line, column};
+    return output;
 }
-
-function calculateNearCode(
-    cursor: Cursor,
-    token: Token,
-    position: SyntaxErrorPosition
-) {}

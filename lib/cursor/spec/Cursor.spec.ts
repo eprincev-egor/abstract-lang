@@ -463,8 +463,8 @@ describe("Cursor", () => {
         }
 
         assert.ok( actualError instanceof SyntaxError );
-        assert.strictEqual( actualError.line, 1, "valid line" );
-        assert.strictEqual( actualError.column, 6, "valid column" );
+        assert.strictEqual( actualError.coords.line, 1, "valid line" );
+        assert.strictEqual( actualError.coords.column, 6, "valid column" );
         assert.strictEqual( actualError.token, cursor.nextToken, "valid token" );
     });
 
