@@ -11,7 +11,7 @@ export class Cursor {
     readonly tokens: readonly Token[];
     private tokenIndex: number;
     private nextToken_: Token;
-    constructor(tokens: Token[]) {
+    constructor(tokens: readonly Token[]) {
         if ( tokens.length === 0 ) {
             throw new Error("required not empty array of tokens");
         }

@@ -6,22 +6,15 @@ export interface FragmentTarget {
     readonly end: Coords;
 }
 
-const FRAGMENT_HEIGHT = 9;
+const NEAR_LINES_QUANTITY = 4;
 
 export class CodeFragment {
 
     static from(
-        lines: readonly Line[],
+        allLines: readonly Line[],
         startCoords: Coords,
         targetLength: number
     ): CodeFragment {
-        const topLinesQuantity = (FRAGMENT_HEIGHT - 1) / 2;
-        const bottomLinesQuantity = topLinesQuantity;
-        const fragmentLines = lines.slice(
-            startCoords.line - 1 - topLinesQuantity,
-            startCoords.line + bottomLinesQuantity
-        );
-
         const target: FragmentTarget = {
             start: startCoords,
             end: {
@@ -29,50 +22,110 @@ export class CodeFragment {
                 column: startCoords.column + targetLength
             }
         };
-        return new CodeFragment(fragmentLines, target);
+
+        return new CodeFragment(
+            allLines,
+            target
+        );
     }
 
-    readonly lines: readonly Line[];
-    readonly target: FragmentTarget;
-    constructor(
-        lines: readonly Line[],
+    private readonly target: FragmentTarget;
+    private readonly prevLines: readonly Line[];
+    private readonly currentLine: Line;
+    private readonly nextLines: readonly Line[];
+    private readonly maxNumberSize: number;
+    private readonly existsLinesBefore: boolean;
+    private readonly existsLinesAfter: boolean;
+
+    private constructor(
+        allLines: readonly Line[],
         target: FragmentTarget
     ) {
-        this.lines = lines;
+        const fragmentLines = allLines.slice(
+            Math.max(target.start.line - 1 - NEAR_LINES_QUANTITY, 0),
+            target.start.line + NEAR_LINES_QUANTITY
+        );
         this.target = target;
+
+        this.prevLines = fragmentLines.filter((line) =>
+            line.number < target.start.line
+        );
+        this.currentLine = fragmentLines.find((line) =>
+            line.number === target.start.line
+        ) as Line;
+        this.nextLines = fragmentLines.filter((line) =>
+            line.number > target.end.line
+        );
+
+        this.maxNumberSize = last(fragmentLines).number
+            .toString().length;
+
+        this.existsLinesBefore = fragmentLines[0].number > 1;
+        this.existsLinesAfter = (
+            last(fragmentLines).number < last(allLines).number
+        );
     }
 
     toString(): string {
-        const prevLines = this.lines.filter((line) =>
-            line.number < this.target.start.line
-        );
-        const currentLine = this.lines.find((line) =>
-            line.number === this.target.start.line
-        ) as Line;
-        const nextLines = this.lines.filter((line) =>
-            line.number > this.target.end.line
+        const code: string[] = [];
+
+        if ( this.existsLinesBefore ) {
+            code.push("  ...|");
+        }
+
+        code.push(
+            ...this.prevLines.map((line) =>
+                this.printLine(line)
+            ),
+
+            this.printCurrentLine(),
+            this.printTargetUnderline(),
+
+            ...this.nextLines.map((line) =>
+                this.printLine(line)
+            )
         );
 
-        const targetLength = (
+        if ( this.existsLinesAfter ) {
+            code.push("  ...|");
+        }
+
+
+        return code.join("\n");
+    }
+
+    private printLine(line: Line): string {
+        return `  ${ this.printLineNumber(line) } |${line.toString()}`;
+    }
+
+    private printCurrentLine() {
+        const line = this.currentLine;
+        return `> ${ this.printLineNumber(line) } |${line.toString()}`;
+    }
+
+    private printTargetUnderline() {
+        const spaces = repeat( " ",
+            this.target.start.column +
+            // every line printed with:
+            // "  " or "> "
+            // and
+            //  " |"
+            this.maxNumberSize + 2 + 1
+        );
+        const underLine = repeat( "^",
             this.target.end.column -
             this.target.start.column
         );
 
-        const code = [
-            "  ...|",
-            ...prevLines.map((line) =>
-                `   ${ line.number } |${line.toString()}`
-            ),
+        return `${ spaces }${ underLine }`;
+    }
 
-            `> ${ currentLine.number } |${currentLine.toString()}`,
-            `     ${ repeat( " ", this.target.start.column ) }${ repeat("^", targetLength ) }`,
-
-            ...nextLines.map((line) =>
-                `  ${ line.number } |${line.toString()}`
-            ),
-            "  ...|"
-        ];
-        return code.join("\n");
+    private printLineNumber(line: Line) {
+        const needSpaces = (
+            this.maxNumberSize -
+            line.number.toString().length
+        );
+        return `${repeat(" ", needSpaces)}${ line.number }`;
     }
 }
 
@@ -82,4 +135,8 @@ function repeat(symbol: string, quantity: number) {
         output += symbol;
     }
     return output;
+}
+
+function last<T>(array: readonly T[]): T {
+    return array.slice(-1)[0];
 }
