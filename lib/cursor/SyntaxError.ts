@@ -9,33 +9,20 @@ export interface SyntaxErrorParams {
     token: Token;
 }
 
-const HEIGHT = 4;
-
 export class SyntaxError extends Error {
 
     static at(cursor: Cursor, message: string): SyntaxError {
         const token = cursor.nextToken;
         const code = new SourceCode(cursor.tokens);
         const coords = code.getCoords(token.position);
-        const prevLines = code.lines.slice(coords.line - HEIGHT - 1, coords.line - 1);
-        const currentLine = code.lines[ coords.line - 1];
-        const nextLines = code.lines.slice(coords.line, coords.line + HEIGHT);
+        const fragment = code.getFragmentAtNear(token);
 
         return new SyntaxError({
             message: [
                 `SyntaxError: ${message}`,
                 `line ${coords.line}, column ${coords.column}`,
                 "",
-                "  ...|",
-                ...prevLines.map((line) =>
-                    `   ${ line.number } |${line.toString()}`
-                ),
-                `> ${ currentLine.number } |${currentLine.toString()}`,
-                `     ${ repeat( " ", coords.column ) }${ repeat("^", token.value.length) }`,
-                ...nextLines.map((line) =>
-                    `  ${ line.number } |${line.toString()}`
-                ),
-                "  ...|"
+                fragment
             ].join("\n"),
             token,
             coords
@@ -55,12 +42,4 @@ export class SyntaxError extends Error {
         this.token = params.token;
         this.coords = params.coords;
     }
-}
-
-function repeat(symbol: string, quantity: number) {
-    let output = "";
-    for (let i = 0; i < quantity; i ++) {
-        output += symbol;
-    }
-    return output;
 }
