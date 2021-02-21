@@ -5,9 +5,7 @@ import {
 } from "../syntax";
 import { SyntaxError } from "./SyntaxError";
 
-/**
- * Text cursor between some tokens.
- */
+/** Text cursor between some tokens */
 export class Cursor {
 
     readonly tokens: readonly Token[];
@@ -41,9 +39,7 @@ export class Cursor {
         return this.nextToken_.value === someTokenValue;
     }
 
-    /**
-     * returns true if next token has correct instance type
-     */
+    /** returns true if next token has correct instance type */
     beforeToken<T extends TokenClass>(TokenClass: T): this is {
         nextToken: InstanceType<T> & {
             constructor: T;
@@ -52,24 +48,17 @@ export class Cursor {
         return this.nextToken_ instanceof TokenClass;
     }
 
-    /**
-     * returns true if there are no more tokens ahead
-     */
+    /** returns true if there are no more tokens ahead */
     beforeEnd(): this is {nextToken: EndOfFleToken} {
         return this.nextToken_ instanceof EndOfFleToken;
     }
 
-    /**
-     * returns true if cursor before the Syntax
-     */
+    /** returns true if cursor before the Syntax */
     before<T extends AbstractSyntax>(Syntax: SyntaxClass<T>): boolean {
         return Syntax.entry(this);
     }
 
-    /**
-     * move cursor if next token value is correct,
-     * else throw error
-     */
+    /** move cursor if next token value is correct, else throw error */
     readValue<T extends string>(expectedTokenValue: T): T {
         if ( this.nextToken_.value !== expectedTokenValue ) {
             if ( this.beforeEnd() ) {
@@ -115,16 +104,12 @@ export class Cursor {
         ].join(" "));
     }
 
-    /**
-     * call Syntax.parse and return syntax instance
-     */
+    /** call Syntax.parse and return syntax instance */
     parse<T extends AbstractSyntax>(Syntax: SyntaxClass<T>): T {
         return Syntax.parse(this);
     }
 
-    /**
-     * parse a sequence of syntax separated by a some value
-     */
+    /** parse a sequence of syntax separated by a some value */
     parseChainOf<T extends AbstractSyntax>(
         Syntax: SyntaxClass<T>,
         delimiter: string
@@ -149,27 +134,21 @@ export class Cursor {
         return syntaxes;
     }
 
-    /**
-     * move cursor position before token
-     */
+    /** move cursor position before token */
     setPositionBefore(token: Token): void {
         // TODO: check -1
         this.tokenIndex = this.tokens.indexOf(token);
         this.nextToken_ = this.tokens[ this.tokenIndex ];
     }
 
-    /**
-     * skip just one token
-     */
+    /** skip just one token */
     skipOne(SkipThisTokenClass: TokenClass): void {
         if ( this.nextToken_ instanceof SkipThisTokenClass ) {
             this.next();
         }
     }
 
-    /**
-     * skip all tokens with same class
-     */
+    /** skip all tokens with same class */
     skipAll(...SkipTokens: TokenClass[]): void {
         while (
             SkipTokens.some((SkipThisTokenClass) =>
@@ -180,9 +159,7 @@ export class Cursor {
         }
     }
 
-    /**
-     * throw syntax error at near current position
-     */
+    /** throw syntax error at near current position */
     throwError(message: string): never {
         throw SyntaxError.at(this, message);
     }

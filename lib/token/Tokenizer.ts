@@ -4,9 +4,7 @@ import { TokenMap } from "./TokenMap";
 
 export class Tokenizer {
 
-    /**
-     * split text on tokens
-     */
+    /** split text into tokens */
     static tokenize(map: TokenMap, text: string): Token[] {
         const tokenizer = new Tokenizer(map, text);
         return tokenizer.tokenize();

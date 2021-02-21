@@ -5,22 +5,13 @@ export interface TokenClass {
     read(text: string, position: number): string;
 }
 
-/**
- * instructions for parsing text into tokens
- */
+/** instructions for parsing text into tokens */
 export interface TokenDescription {
-    /**
-     * regex that tests if a character is a given token
-     */
+    /** regex that tests if a character is a given token */
     entry: RegExp;
-    /**
-     * a set of the most popular token symbols to improve performance
-     */
+    /** a set of the most popular token symbols to improve performance */
     popularEntry?: string[];
-    /**
-     * maximum token value length,
-     * default length is Infinity
-     */
+    /** maximum token value length, default length is Infinity */
     maxLength?: number;
 }
 
@@ -67,13 +58,9 @@ export class Token {
         return tokenValue;
     }
 
-    /**
-     * result of calling TokeClass.read
-     */
+    /** result of calling TokeClass.read */
     readonly value: string;
-    /**
-     * index of the first char within the source text
-     */
+    /** index of the first char within the source text */
     readonly position: number;
 
     constructor(value: string, position: number) {
@@ -81,16 +68,11 @@ export class Token {
         this.position = position;
     }
 
-    /**
-     * equal token value with string
-     */
+    /** equal token value with string */
     is(equal: string): boolean {
         return this.value === equal;
     }
 
-    /**
-     * startsWith
-     */
     startsWith(value: string): boolean {
         return this.value.indexOf(value) === 0;
     }
