@@ -145,9 +145,12 @@ export class Cursor {
 
     /** move cursor position before token */
     setPositionBefore(token: Token): void {
-        // TODO: check -1
-        this.tokenIndex = this.tokens.indexOf(token);
-        this.nextToken_ = this.tokens[ this.tokenIndex ];
+        const tokenIndex = this.tokens.indexOf(token);
+        if ( tokenIndex === -1 ) {
+            throw new Error(`cannot set position before unknown token: "${token.value}"`);
+        }
+
+        this.nextToken_ = token;
     }
 
     /** skip just one token */

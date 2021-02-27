@@ -81,21 +81,35 @@ describe("Cursor.base.spec.ts base methods", () => {
         );
     });
 
-    it("setPositionBefore(world)", () => {
-        const hello = tokens[0];
-        const world = tokens[2];
+    describe("setPositionBefore(Token)", () => {
 
-        cursor.setPositionBefore(world);
-        assert.ok(
-            cursor.beforeValue("world"),
-            "set position before world, now before world"
-        );
+        it("set position before world", () => {
+            const hello = tokens[0];
+            const world = tokens[2];
 
-        cursor.setPositionBefore(hello);
-        assert.ok(
-            cursor.beforeValue("hello"),
-            "set position before hello, now before hello"
-        );
+            cursor.setPositionBefore(world);
+            assert.ok(
+                cursor.beforeValue("world"),
+                "set position before world, now before world"
+            );
+
+            cursor.setPositionBefore(hello);
+            assert.ok(
+                cursor.beforeValue("hello"),
+                "set position before hello, now before hello"
+            );
+        });
+
+        it("set position before unknown token", () => {
+            const unknownToken = new Token("test", 999);
+            assert.throws(() => {
+                cursor.setPositionBefore(unknownToken);
+            }, (err: Error) =>
+                /cannot set position before unknown token: "test"/.test(err.message)
+            );
+
+            assert.strictEqual(cursor.nextToken.value, "hello");
+        });
     });
 
     it("next() move cursor on one token", () => {
