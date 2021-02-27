@@ -62,7 +62,6 @@ describe("Cursor.node.spec.ts node methods", () => {
 
     describe("parseChainOf(Node, delimiter)", () => {
 
-
         it("parse sequence of nodes over some delimiter", () => {
 
             const tokens = Tokenizer.tokenize(
@@ -76,6 +75,21 @@ describe("Cursor.node.spec.ts node methods", () => {
                 words.map((node) => node.row.word),
                 ["first", "second", "third", "four", "five"]
             );
+        });
+
+        it("parse sequence of nodes without delimiter", () => {
+            const tokens = Tokenizer.tokenize(
+                defaultMap,
+                "first \t second\nthird!stop"
+            );
+            const cursor = new Cursor(tokens);
+
+            const words = cursor.parseChainOf(WordNode);
+            assert.deepStrictEqual(
+                words.map((node) => node.row.word),
+                ["first", "second", "third"]
+            );
+            assert.ok( cursor.beforeValue("!"), "correct position after parsing" );
         });
 
         it("throw an error if the next token is wrong", () => {

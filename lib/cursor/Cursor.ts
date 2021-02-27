@@ -5,6 +5,7 @@ import {
     NodeClass
 } from "../node";
 import { SyntaxError } from "./SyntaxError";
+import { cursorTo } from "readline";
 
 /** Text cursor between some tokens */
 export class Cursor {
@@ -121,7 +122,7 @@ export class Cursor {
     /** parse a sequence of nodes separated by a some value */
     parseChainOf<TNode extends AbstractNode<AnyRow>>(
         Node: NodeClass<TNode>,
-        delimiter: string
+        delimiter?: string
     ): TNode[] {
         const nodes: TNode[] = [];
 
@@ -131,12 +132,16 @@ export class Cursor {
 
             this.skipAll(SpaceToken, EolToken);
 
-            if ( !this.beforeValue(delimiter) ) {
+            if ( delimiter ) {
+                if ( !this.beforeValue(delimiter) ) {
+                    break;
+                }
+                this.readValue(delimiter);
+                this.skipAll(SpaceToken, EolToken);
+            }
+            else if ( !this.before(Node) ) {
                 break;
             }
-
-            this.readValue(delimiter);
-            this.skipAll(SpaceToken, EolToken);
 
         } while ( !this.beforeEnd() );
 
