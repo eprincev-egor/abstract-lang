@@ -46,6 +46,11 @@ describe("Cursor.node.spec.ts node methods", () => {
             assert.ok( cursor.beforeValue(" ") );
         });
 
+        it("correct node.start and node.end position", () => {
+            const node = cursor.parse(WordNode);
+            assert.strictEqual( node.start, 0 );
+            assert.strictEqual( node.end, 5 );
+        });
     });
 
     it("before(Node)", () => {

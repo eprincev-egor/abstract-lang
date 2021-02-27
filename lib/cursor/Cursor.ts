@@ -107,8 +107,14 @@ export class Cursor {
 
     /** call Node.parse and return node instance */
     parse<TNode extends AbstractNode<AnyRow>>(Node: NodeClass<TNode>): TNode {
+        const start = this.nextToken_.position;
         const row = Node.parse(this);
-        const node = new Node(row);
+        const end = this.nextToken_.position;
+
+        const node = new Node({
+            row,
+            position: { start, end }
+        });
         return node;
     }
 

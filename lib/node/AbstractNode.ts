@@ -5,18 +5,30 @@ type TemplateElement = string;
 export interface NodeClass<TNode extends AbstractNode<AnyRow>> {
     entry(cursor: Cursor): boolean;
     parse(cursor: Cursor): TNode["row"];
-    new(row: TNode["row"]): TNode;
+    new(params: NodeParams<TNode["row"]>): TNode;
 }
 
 export interface AnyRow {
     [key: string]: any;
 }
 
-export abstract class AbstractNode<Row extends AnyRow> {
+export interface NodeParams<TRow extends AnyRow> {
+    row: TRow;
+    position: {
+        start: number;
+        end: number;
+    };
+}
 
-    readonly row: Readonly<Row>;
-    constructor(row: Row) {
-        this.row = row;
+export abstract class AbstractNode<TRow extends AnyRow> {
+
+    readonly row: Readonly<TRow>;
+    readonly start: number;
+    readonly end: number;
+    constructor(params: NodeParams<TRow>) {
+        this.row = params.row;
+        this.start = params.position.start;
+        this.end = params.position.end;
     }
 
     abstract template(): TemplateElement | TemplateElement[];
