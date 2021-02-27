@@ -1,4 +1,4 @@
-import { AbstractSyntax, Cursor } from "abstract-lang";
+import { AbstractNode, Cursor } from "abstract-lang";
 import { ArrayLiteral } from "./ArrayLiteral";
 import { BooleanLiteral } from "./BooleanLiteral";
 import { NullLiteral } from "./NullLiteral";
@@ -14,7 +14,7 @@ export type JsonElement = (
     ArrayLiteral
 );
 
-export class JsonSyntax extends AbstractSyntax {
+export class JsonSyntax extends AbstractNode {
 
     static entry(): boolean {
         return true;

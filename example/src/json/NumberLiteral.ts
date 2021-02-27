@@ -1,11 +1,11 @@
 import {
-    AbstractSyntax,
+    AbstractNode,
     Cursor,
     DigitsToken,
     WordToken
 } from "abstract-lang";
 
-export class NumberLiteral extends AbstractSyntax {
+export class NumberLiteral extends AbstractNode {
 
     static entry(cursor: Cursor): boolean {
         return cursor.beforeToken(DigitsToken);

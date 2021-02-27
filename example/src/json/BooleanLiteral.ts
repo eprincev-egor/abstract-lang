@@ -1,6 +1,6 @@
-import { AbstractSyntax, Cursor } from "abstract-lang";
+import { AbstractNode, Cursor } from "abstract-lang";
 
-export class BooleanLiteral extends AbstractSyntax {
+export class BooleanLiteral extends AbstractNode {
 
     static entry(cursor: Cursor): boolean {
         return (

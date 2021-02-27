@@ -1,10 +1,10 @@
-import { AbstractSyntax, Cursor } from "abstract-lang";
+import { AbstractNode, Cursor } from "abstract-lang";
 import { JsonSyntax } from "./JsonSyntax";
 import { StringLiteral } from "./StringLiteral";
 import { cycleDeps } from "./cycleDeps";
 import { EolToken, SpaceToken } from "../../../lib/token";
 
-export class ObjectItem extends AbstractSyntax {
+export class ObjectItem extends AbstractNode {
 
     static entry(cursor: Cursor): boolean {
         return cursor.before(StringLiteral);

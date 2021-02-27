@@ -1,8 +1,8 @@
-import { AbstractSyntax, Cursor, EolToken, SpaceToken } from "abstract-lang";
+import { AbstractNode, Cursor, EolToken, SpaceToken } from "abstract-lang";
 import { JsonSyntax } from "./JsonSyntax";
 import { cycleDeps } from "./cycleDeps";
 
-export class ArrayLiteral extends AbstractSyntax {
+export class ArrayLiteral extends AbstractNode {
 
     static entry(cursor: Cursor): boolean {
         return cursor.beforeValue("[");

@@ -1,6 +1,6 @@
-import { AbstractSyntax, Cursor } from "abstract-lang";
+import { AbstractNode, Cursor } from "abstract-lang";
 
-export class StringLiteral extends AbstractSyntax {
+export class StringLiteral extends AbstractNode {
 
     static entry(cursor: Cursor): boolean {
         return cursor.beforeValue("\"");

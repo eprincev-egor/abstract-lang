@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import { Cursor } from "../Cursor";
 import { SyntaxError } from "../SyntaxError";
-import { AbstractSyntax } from "../../syntax";
+import { AbstractNode } from "../../node";
 import {
     Token, Tokenizer,
     defaultMap,
@@ -315,14 +315,14 @@ describe("Cursor", () => {
         assert.strictEqual( parseNumber("1e2w3"), 100 );
     });
 
-    it("parse(Syntax) call Syntax.parse and return syntax instance", () => {
-        class PhraseSyntax extends AbstractSyntax {
+    it("parse(Node) call Node.parse and return node instance", () => {
+        class PhraseNode extends AbstractNode {
 
             static entry(cursor: Cursor) {
                 return cursor.beforeToken(WordToken);
             }
 
-            static parse(cursor: Cursor): PhraseSyntax {
+            static parse(cursor: Cursor): PhraseNode {
                 let phrase = "";
                 do {
                     phrase += cursor.nextToken.value;
@@ -331,7 +331,7 @@ describe("Cursor", () => {
                     cursor.beforeToken(SpaceToken) ||
                     cursor.beforeToken(WordToken)
                 );
-                return new PhraseSyntax(phrase);
+                return new PhraseNode(phrase);
             }
 
             readonly phrase: string;
@@ -345,13 +345,13 @@ describe("Cursor", () => {
             }
         }
 
-        const syntax = cursor.parse(PhraseSyntax);
-        assert.strictEqual( syntax.phrase, "hello world" );
+        const node = cursor.parse(PhraseNode);
+        assert.strictEqual( node.phrase, "hello world" );
         assert.ok( cursor.beforeEnd() );
     });
 
-    it("before(Syntax)", () => {
-        class NullLiteral extends AbstractSyntax {
+    it("before(Node)", () => {
+        class NullLiteral extends AbstractNode {
 
             static entry(cursor: Cursor) {
                 return cursor.beforeValue("null");
@@ -384,16 +384,16 @@ describe("Cursor", () => {
         assert.ok( !cursor.before(NullLiteral), "not valid entry" );
     });
 
-    describe("parseChainOf(Syntax, delimiter)", () => {
-        class WordSyntax extends AbstractSyntax {
+    describe("parseChainOf(Node, delimiter)", () => {
+        class WordNode extends AbstractNode {
 
             static entry(cursor: Cursor) {
                 return cursor.beforeToken(WordToken);
             }
 
-            static parse(cursor: Cursor): WordSyntax {
+            static parse(cursor: Cursor): WordNode {
                 const word = cursor.read(WordToken).value;
-                return new WordSyntax(word);
+                return new WordNode(word);
             }
 
             readonly word: string;
@@ -407,7 +407,7 @@ describe("Cursor", () => {
             }
         }
 
-        it("parse sequence of syntax over some delimiter", () => {
+        it("parse sequence of nodes over some delimiter", () => {
 
             const tokens = Tokenizer.tokenize(
                 defaultMap,
@@ -415,9 +415,9 @@ describe("Cursor", () => {
             );
             const cursor = new Cursor(tokens);
 
-            const words = cursor.parseChainOf(WordSyntax, ",");
+            const words = cursor.parseChainOf(WordNode, ",");
             assert.deepStrictEqual(
-                words.map((syntax) => syntax.word),
+                words.map((node) => node.word),
                 ["first", "second", "third", "four", "five"]
             );
         });
@@ -430,7 +430,7 @@ describe("Cursor", () => {
             const cursor = new Cursor(tokens);
 
             assert.throws(() => {
-                cursor.parseChainOf(WordSyntax, ";");
+                cursor.parseChainOf(WordNode, ";");
             }, (err: Error) =>
                 /unexpected token SpaceToken\(" "\), expected: WordToken/.test(err.message)
             );
@@ -444,7 +444,7 @@ describe("Cursor", () => {
             const cursor = new Cursor(tokens);
 
             assert.throws(() => {
-                cursor.parseChainOf(WordSyntax, ";");
+                cursor.parseChainOf(WordNode, ";");
             }, (err: Error) =>
                 /unexpected token DigitsToken\("123"\), expected: WordToken/.test(err.message)
             );

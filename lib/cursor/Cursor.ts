@@ -1,8 +1,8 @@
 import { Token, TokenClass, EndOfFleToken, SpaceToken, EolToken } from "../token";
 import {
-    AbstractSyntax,
-    SyntaxClass
-} from "../syntax";
+    AbstractNode,
+    NodeClass
+} from "../node";
 import { SyntaxError } from "./SyntaxError";
 
 /** Text cursor between some tokens */
@@ -53,9 +53,9 @@ export class Cursor {
         return this.nextToken_ instanceof EndOfFleToken;
     }
 
-    /** returns true if cursor before the Syntax */
-    before<T extends AbstractSyntax>(Syntax: SyntaxClass<T>): boolean {
-        return Syntax.entry(this);
+    /** returns true if cursor before the Node */
+    before<T extends AbstractNode>(Node: NodeClass<T>): boolean {
+        return Node.entry(this);
     }
 
     /** move cursor if next token value is correct, else throw error */
@@ -104,21 +104,21 @@ export class Cursor {
         ].join(" "));
     }
 
-    /** call Syntax.parse and return syntax instance */
-    parse<T extends AbstractSyntax>(Syntax: SyntaxClass<T>): T {
-        return Syntax.parse(this);
+    /** call Node.parse and return node instance */
+    parse<T extends AbstractNode>(Node: NodeClass<T>): T {
+        return Node.parse(this);
     }
 
-    /** parse a sequence of syntax separated by a some value */
-    parseChainOf<T extends AbstractSyntax>(
-        Syntax: SyntaxClass<T>,
+    /** parse a sequence of nodes separated by a some value */
+    parseChainOf<T extends AbstractNode>(
+        Node: NodeClass<T>,
         delimiter: string
     ): T[] {
-        const syntaxes: T[] = [];
+        const nodes: T[] = [];
 
         do {
-            const syntax = this.parse(Syntax);
-            syntaxes.push(syntax);
+            const node = this.parse(Node);
+            nodes.push(node);
 
             this.skipAll(SpaceToken, EolToken);
 
@@ -131,7 +131,7 @@ export class Cursor {
 
         } while ( !this.beforeEnd() );
 
-        return syntaxes;
+        return nodes;
     }
 
     /** move cursor position before token */
