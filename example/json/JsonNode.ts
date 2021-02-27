@@ -14,13 +14,17 @@ export type JsonElement = (
     ArrayLiteral
 );
 
-export class JsonNode extends AbstractNode {
+export interface JsonRow {
+    json: JsonElement;
+}
+
+export class JsonNode extends AbstractNode<JsonRow> {
 
     static entry(): boolean {
         return true;
     }
 
-    static parse(cursor: Cursor): JsonNode {
+    static parse(cursor: Cursor): JsonRow {
 
         const {ArrayLiteral} = cycleDeps;
 
@@ -41,17 +45,11 @@ export class JsonNode extends AbstractNode {
             item = cursor.parse(ArrayLiteral);
         }
 
-        return new JsonNode(item);
-    }
-
-    readonly json: JsonElement;
-    constructor(json: JsonElement) {
-        super();
-        this.json = json;
+        return {json: item};
     }
 
     template(): string {
-        return this.json.template();
+        return this.row.json.template();
     }
 }
 

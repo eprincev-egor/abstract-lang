@@ -1,6 +1,7 @@
 import { Token, TokenClass, EndOfFleToken, SpaceToken, EolToken } from "../token";
 import {
     AbstractNode,
+    AnyRow,
     NodeClass
 } from "../node";
 import { SyntaxError } from "./SyntaxError";
@@ -54,7 +55,7 @@ export class Cursor {
     }
 
     /** returns true if cursor before the Node */
-    before<T extends AbstractNode>(Node: NodeClass<T>): boolean {
+    before<TNode extends AbstractNode<AnyRow>>(Node: NodeClass<TNode>): boolean {
         return Node.entry(this);
     }
 
@@ -105,16 +106,18 @@ export class Cursor {
     }
 
     /** call Node.parse and return node instance */
-    parse<T extends AbstractNode>(Node: NodeClass<T>): T {
-        return Node.parse(this);
+    parse<TNode extends AbstractNode<AnyRow>>(Node: NodeClass<TNode>): TNode {
+        const row = Node.parse(this);
+        const node = new Node(row);
+        return node;
     }
 
     /** parse a sequence of nodes separated by a some value */
-    parseChainOf<T extends AbstractNode>(
-        Node: NodeClass<T>,
+    parseChainOf<TNode extends AbstractNode<AnyRow>>(
+        Node: NodeClass<TNode>,
         delimiter: string
-    ): T[] {
-        const nodes: T[] = [];
+    ): TNode[] {
+        const nodes: TNode[] = [];
 
         do {
             const node = this.parse(Node);

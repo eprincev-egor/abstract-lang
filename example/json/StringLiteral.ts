@@ -1,12 +1,16 @@
 import { AbstractNode, Cursor } from "abstract-lang";
 
-export class StringLiteral extends AbstractNode {
+export interface StringRow {
+    string: string;
+}
+
+export class StringLiteral extends AbstractNode<StringRow> {
 
     static entry(cursor: Cursor): boolean {
         return cursor.beforeValue("\"");
     }
 
-    static parse(cursor: Cursor): StringLiteral {
+    static parse(cursor: Cursor): StringRow {
         // require open quote
         cursor.readValue("\"");
         let content = "";
@@ -33,18 +37,10 @@ export class StringLiteral extends AbstractNode {
         // require close quote
         cursor.readValue("\"");
 
-        return new StringLiteral(
-            content
-        );
-    }
-
-    readonly string: string;
-    protected constructor(content: string) {
-        super();
-        this.string = content;
+        return {string: content};
     }
 
     template(): string {
-        return this.string;
+        return this.row.string;
     }
 }

@@ -4,7 +4,7 @@ import assert from "assert";
 describe("BooleanLiteral", () => {
 
     it("first", () => {
-        const bool = new BooleanLiteral(true);
+        const bool = new BooleanLiteral({boolean: true});
         assert.ok( bool instanceof BooleanLiteral );
     });
 });

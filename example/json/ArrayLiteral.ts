@@ -2,13 +2,17 @@ import { AbstractNode, Cursor, EolToken, SpaceToken } from "abstract-lang";
 import { JsonNode } from "./JsonNode";
 import { cycleDeps } from "./cycleDeps";
 
-export class ArrayLiteral extends AbstractNode {
+export interface ArrayRow {
+    array: readonly JsonNode[];
+}
+
+export class ArrayLiteral extends AbstractNode<ArrayRow> {
 
     static entry(cursor: Cursor): boolean {
         return cursor.beforeValue("[");
     }
 
-    static parse(cursor: Cursor): ArrayLiteral {
+    static parse(cursor: Cursor): ArrayRow {
         cursor.readValue("[");
         cursor.skipAll(SpaceToken, EolToken);
 
@@ -17,17 +21,11 @@ export class ArrayLiteral extends AbstractNode {
         cursor.skipAll(SpaceToken, EolToken);
         cursor.readValue("]");
 
-        return new ArrayLiteral(array);
-    }
-
-    readonly array: readonly JsonNode[];
-    constructor(array: readonly JsonNode[]) {
-        super();
-        this.array = array;
+        return {array};
     }
 
     template(): string {
-        return "[" + this.array.map((element) =>
+        return "[" + this.row.array.map((element) =>
             element.template()
         ).join(",") + "]";
     }

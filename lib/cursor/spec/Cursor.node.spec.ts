@@ -19,25 +19,22 @@ describe("Cursor.node.spec.ts node methods", () => {
         cursor = new Cursor(tokens);
     });
 
-    class WordNode extends AbstractNode {
+    interface WordRow {
+        word: string;
+    }
+    class WordNode extends AbstractNode<WordRow> {
 
         static entry(cursor: Cursor) {
             return cursor.beforeToken(WordToken);
         }
 
-        static parse(cursor: Cursor): WordNode {
+        static parse(cursor: Cursor): WordRow {
             const word = cursor.read(WordToken).value;
-            return new WordNode(word);
+            return {word};
         }
 
-        readonly word: string;
-        protected constructor(word: string) {
-            super();
-            this.word = word;
-        }
-
-        protected template() {
-            return this.word;
+        template() {
+            return this.row.word;
         }
     }
 
@@ -45,7 +42,7 @@ describe("Cursor.node.spec.ts node methods", () => {
 
         it("call Node.parse and return node instance", () => {
             const node = cursor.parse(WordNode);
-            assert.strictEqual( node.word, "hello" );
+            assert.deepEqual( node.row, {word: "hello"} );
             assert.ok( cursor.beforeValue(" ") );
         });
 
@@ -71,7 +68,7 @@ describe("Cursor.node.spec.ts node methods", () => {
 
             const words = cursor.parseChainOf(WordNode, ",");
             assert.deepStrictEqual(
-                words.map((node) => node.word),
+                words.map((node) => node.row.word),
                 ["first", "second", "third", "four", "five"]
             );
         });

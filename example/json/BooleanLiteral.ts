@@ -1,6 +1,10 @@
 import { AbstractNode, Cursor } from "abstract-lang";
 
-export class BooleanLiteral extends AbstractNode {
+export interface BooleanRow {
+    boolean: boolean;
+}
+
+export class BooleanLiteral extends AbstractNode<BooleanRow> {
 
     static entry(cursor: Cursor): boolean {
         return (
@@ -9,27 +13,21 @@ export class BooleanLiteral extends AbstractNode {
         );
     }
 
-    static parse(cursor: Cursor): BooleanLiteral {
+    static parse(cursor: Cursor): BooleanRow {
         if ( cursor.beforeValue("true") ) {
             cursor.readValue("true");
-            return new BooleanLiteral(true);
+            return {boolean: true};
         }
         else if ( cursor.beforeValue("false") ) {
             cursor.readValue("false");
-            return new BooleanLiteral(false);
+            return {boolean: false};
         }
 
         // TODO: use cursor.throwError()
         throw new Error("syntax");
     }
 
-    readonly boolean: boolean;
-    constructor(boolean: boolean) {
-        super();
-        this.boolean = boolean;
-    }
-
     template(): string {
-        return this.boolean.toString();
+        return this.row.boolean.toString();
     }
 }

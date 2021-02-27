@@ -5,13 +5,17 @@ import {
     WordToken
 } from "abstract-lang";
 
-export class NumberLiteral extends AbstractNode {
+export interface NumberRow {
+    number: string;
+}
+
+export class NumberLiteral extends AbstractNode<NumberRow> {
 
     static entry(cursor: Cursor): boolean {
         return cursor.beforeToken(DigitsToken);
     }
 
-    static parse(cursor: Cursor): NumberLiteral {
+    static parse(cursor: Cursor): NumberRow {
         let numb = "";
         if ( cursor.beforeValue("-") ) {
             numb += cursor.readValue("-");
@@ -31,16 +35,10 @@ export class NumberLiteral extends AbstractNode {
             numb += cursor.read(DigitsToken).value;
         }
 
-        return new NumberLiteral(numb);
-    }
-
-    readonly number: string;
-    protected constructor(numb: string) {
-        super();
-        this.number = numb;
+        return {number: numb};
     }
 
     template(): string {
-        return this.number;
+        return this.row.number;
     }
 }
