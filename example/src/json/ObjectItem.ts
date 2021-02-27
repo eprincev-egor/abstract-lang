@@ -1,8 +1,8 @@
-import { AbstractSyntax, Cursor } from "../../index";
+import { AbstractSyntax, Cursor } from "abstract-lang";
 import { JsonSyntax } from "./JsonSyntax";
 import { StringLiteral } from "./StringLiteral";
 import { cycleDeps } from "./cycleDeps";
-import { EolToken, SpaceToken } from "../../token";
+import { EolToken, SpaceToken } from "../../../lib/token";
 
 export class ObjectItem extends AbstractSyntax {
 

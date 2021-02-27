@@ -4,7 +4,8 @@ const config = {
     recursive: true,
     exit: true,
     spec: [
-        "lib/**/*.spec.ts"
+        "lib/**/*.spec.ts",
+        "example/**/*.spec.ts"
     ]
 };
 

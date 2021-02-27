@@ -1,4 +1,4 @@
-import { AbstractSyntax, Cursor } from "../../index";
+import { AbstractSyntax, Cursor } from "abstract-lang";
 
 export class StringLiteral extends AbstractSyntax {
 

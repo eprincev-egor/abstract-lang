@@ -3,7 +3,7 @@ import {
     Cursor,
     DigitsToken,
     WordToken
-} from "../../index";
+} from "abstract-lang";
 
 export class NumberLiteral extends AbstractSyntax {
 

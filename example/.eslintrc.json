@@ -1,0 +1,10 @@
+{
+    "extends": [
+        "../.eslintrc.json"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "./example/tsconfig.json",
+        "tsconfigRootDir": "./"
+    }
+}

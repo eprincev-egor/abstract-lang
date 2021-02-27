@@ -1,4 +1,4 @@
-import { AbstractSyntax, Cursor } from "../../index";
+import { AbstractSyntax, Cursor } from "abstract-lang";
 import { ArrayLiteral } from "./ArrayLiteral";
 import { BooleanLiteral } from "./BooleanLiteral";
 import { NullLiteral } from "./NullLiteral";

@@ -1,5 +1,5 @@
-import { AbstractSyntax, Cursor } from "../../index";
-import { EolToken, SpaceToken } from "../../token";
+import { AbstractSyntax, Cursor } from "abstract-lang";
+import { EolToken, SpaceToken } from "../../../lib/token";
 import { ObjectItem } from "./ObjectItem";
 import { cycleDeps } from "./cycleDeps";
 
