@@ -4,7 +4,6 @@ import { AbstractNode } from "../../node";
 import {
     Token, Tokenizer,
     defaultMap,
-    SpaceToken,
     WordToken
 } from "../../token";
 
@@ -20,98 +19,47 @@ describe("Cursor.node.spec.ts node methods", () => {
         cursor = new Cursor(tokens);
     });
 
-    it("parse(Node) call Node.parse and return node instance", () => {
-        class PhraseNode extends AbstractNode {
+    class WordNode extends AbstractNode {
 
-            static entry(cursor: Cursor) {
-                return cursor.beforeToken(WordToken);
-            }
-
-            static parse(cursor: Cursor): PhraseNode {
-                let phrase = "";
-                do {
-                    phrase += cursor.nextToken.value;
-                    cursor.next();
-                } while (
-                    cursor.beforeToken(SpaceToken) ||
-                    cursor.beforeToken(WordToken)
-                );
-                return new PhraseNode(phrase);
-            }
-
-            readonly phrase: string;
-            protected constructor(phrase: string) {
-                super();
-                this.phrase = phrase;
-            }
-
-            protected template() {
-                return this.phrase;
-            }
+        static entry(cursor: Cursor) {
+            return cursor.beforeToken(WordToken);
         }
 
-        const node = cursor.parse(PhraseNode);
-        assert.strictEqual( node.phrase, "hello world" );
-        assert.ok( cursor.beforeEnd() );
+        static parse(cursor: Cursor): WordNode {
+            const word = cursor.read(WordToken).value;
+            return new WordNode(word);
+        }
+
+        readonly word: string;
+        protected constructor(word: string) {
+            super();
+            this.word = word;
+        }
+
+        protected template() {
+            return this.word;
+        }
+    }
+
+    describe("parse(Node)", () => {
+
+        it("call Node.parse and return node instance", () => {
+            const node = cursor.parse(WordNode);
+            assert.strictEqual( node.word, "hello" );
+            assert.ok( cursor.beforeValue(" ") );
+        });
+
     });
 
     it("before(Node)", () => {
-        class NullLiteral extends AbstractNode {
+        assert.ok( cursor.before(WordNode), "valid entry" );
 
-            static entry(cursor: Cursor) {
-                return cursor.beforeValue("null");
-            }
-
-            static parse(cursor: Cursor): NullLiteral {
-                cursor.readValue("null");
-                return new NullLiteral();
-            }
-
-            // eslint-disable-next-line class-methods-use-this
-            template(): string {
-                return "null";
-            }
-        }
-
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            "null"
-        );
-        cursor = new Cursor(tokens);
-        assert.ok( cursor.before(NullLiteral), "valid entry" );
-
-
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            "hello"
-        );
-        cursor = new Cursor(tokens);
-        assert.ok( !cursor.before(NullLiteral), "not valid entry" );
+        cursor.next();
+        assert.ok( !cursor.before(WordNode), "not valid entry" );
     });
 
     describe("parseChainOf(Node, delimiter)", () => {
 
-        class WordNode extends AbstractNode {
-
-            static entry(cursor: Cursor) {
-                return cursor.beforeToken(WordToken);
-            }
-
-            static parse(cursor: Cursor): WordNode {
-                const word = cursor.read(WordToken).value;
-                return new WordNode(word);
-            }
-
-            readonly word: string;
-            protected constructor(word: string) {
-                super();
-                this.word = word;
-            }
-
-            protected template() {
-                return this.word;
-            }
-        }
 
         it("parse sequence of nodes over some delimiter", () => {
 
