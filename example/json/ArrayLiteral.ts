@@ -1,5 +1,5 @@
 import { AbstractNode, Cursor, EolToken, SpaceToken } from "abstract-lang";
-import { JsonSyntax } from "./JsonSyntax";
+import { JsonNode } from "./JsonNode";
 import { cycleDeps } from "./cycleDeps";
 
 export class ArrayLiteral extends AbstractNode {
@@ -12,7 +12,7 @@ export class ArrayLiteral extends AbstractNode {
         cursor.readValue("[");
         cursor.skipAll(SpaceToken, EolToken);
 
-        const array = cursor.parseChainOf(cycleDeps.JsonSyntax, ",");
+        const array = cursor.parseChainOf(cycleDeps.JsonNode, ",");
 
         cursor.skipAll(SpaceToken, EolToken);
         cursor.readValue("]");
@@ -20,8 +20,8 @@ export class ArrayLiteral extends AbstractNode {
         return new ArrayLiteral(array);
     }
 
-    readonly array: readonly JsonSyntax[];
-    constructor(array: readonly JsonSyntax[]) {
+    readonly array: readonly JsonNode[];
+    constructor(array: readonly JsonNode[]) {
         super();
         this.array = array;
     }

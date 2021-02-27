@@ -1,9 +1,9 @@
 import { ArrayLiteral } from "./ArrayLiteral";
 import { ObjectLiteral } from "./ObjectLiteral";
-import { JsonSyntax } from "./JsonSyntax";
+import { JsonNode } from "./JsonNode";
 
 interface CycleDeps {
-    JsonSyntax: typeof JsonSyntax;
+    JsonNode: typeof JsonNode;
     ArrayLiteral: typeof ArrayLiteral;
     ObjectLiteral: typeof ObjectLiteral;
 }

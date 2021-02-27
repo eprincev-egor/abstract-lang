@@ -14,13 +14,13 @@ export type JsonElement = (
     ArrayLiteral
 );
 
-export class JsonSyntax extends AbstractNode {
+export class JsonNode extends AbstractNode {
 
     static entry(): boolean {
         return true;
     }
 
-    static parse(cursor: Cursor): JsonSyntax {
+    static parse(cursor: Cursor): JsonNode {
 
         const {ArrayLiteral} = cycleDeps;
 
@@ -41,7 +41,7 @@ export class JsonSyntax extends AbstractNode {
             item = cursor.parse(ArrayLiteral);
         }
 
-        return new JsonSyntax(item);
+        return new JsonNode(item);
     }
 
     readonly json: JsonElement;
@@ -55,4 +55,4 @@ export class JsonSyntax extends AbstractNode {
     }
 }
 
-cycleDeps.JsonSyntax = JsonSyntax;
+cycleDeps.JsonNode = JsonNode;

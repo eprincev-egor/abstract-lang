@@ -1,1 +1,1 @@
-export * from "./JsonSyntax";
+export * from "./JsonNode";
