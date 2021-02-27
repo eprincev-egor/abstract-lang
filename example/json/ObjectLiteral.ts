@@ -1,5 +1,4 @@
-import { AbstractNode, Cursor } from "abstract-lang";
-import { EolToken, SpaceToken } from "../../../lib/token";
+import { AbstractNode, Cursor, EolToken, SpaceToken } from "abstract-lang";
 import { ObjectItem } from "./ObjectItem";
 import { cycleDeps } from "./cycleDeps";
 

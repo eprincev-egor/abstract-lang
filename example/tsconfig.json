@@ -14,5 +14,5 @@
             "abstract-lang": ["../lib/index.ts"]
         }
     },
-    "include": ["./src/**/*.ts", "../lib/**/*.ts"]
+    "include": ["./**/*.ts", "../lib/**/*.ts"]
 }
