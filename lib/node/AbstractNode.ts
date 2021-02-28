@@ -38,7 +38,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     constructor(params: NodeParams<TRow>) {
         this.row = params.row;
         this.position = params.position;
-        setParents(this);
+        setParent(this, Object.values(this.row));
     }
 
     abstract template(): TemplateElement | TemplateElement[];
@@ -48,28 +48,26 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     }
 }
 
-function setParents(
+function setParent(
     parent: AbstractNode<AnyRow>,
-    children = Object.values(parent.row),
+    children: any[],
     stack: any[] = []
 ) {
     for (const child of children) {
         if ( stack.includes(child) ) {
             continue;
         }
-        else {
-            stack.push(child);
-        }
+        stack.push(child);
 
         if ( child instanceof AbstractNode ) {
             child.parent = parent;
         }
         else if ( Array.isArray(child) ) {
             const unknownArray = child;
-            setParents(parent, unknownArray, stack);
+            setParent(parent, unknownArray, stack);
         }
         else if ( child && typeof child === "object" ) {
-            setParents(parent, Object.values(child), stack);
+            setParent(parent, Object.values(child), stack);
         }
     }
 }
