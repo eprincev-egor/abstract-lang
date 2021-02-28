@@ -81,6 +81,10 @@ describe("Cursor.token.spec.ts token methods", () => {
             assert.ok( cursor.beforeValue("hello") );
         });
 
+        it("skip any one", () => {
+            cursor.skipOne();
+            assert.ok( cursor.beforeValue(" ") );
+        });
     });
 
     describe("skipAll(TokenClass, ...)", () => {

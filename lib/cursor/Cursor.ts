@@ -159,8 +159,8 @@ export class Cursor {
     }
 
     /** skip just one token */
-    skipOne(SkipThisTokenClass: TokenClass): void {
-        if ( this.nextToken_ instanceof SkipThisTokenClass ) {
+    skipOne(SkipThisTokenClass?: TokenClass): void {
+        if ( !SkipThisTokenClass || this.nextToken_ instanceof SkipThisTokenClass ) {
             this.next();
         }
     }
