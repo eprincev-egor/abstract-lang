@@ -1,4 +1,4 @@
-import { AbstractNode, AnyRow } from "./AbstractNode";
+import { AbstractNode, AnyRow } from "../AbstractNode";
 
 export interface Spaces {
     _: string;

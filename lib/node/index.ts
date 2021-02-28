@@ -1,2 +1,2 @@
 export * from "./AbstractNode";
-export * from "./stringifyNode";
+export * from "./util";

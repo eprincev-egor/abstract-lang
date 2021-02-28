@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Cursor } from "../cursor";
-import { stringifyNode, Spaces, TemplateElement } from "./stringifyNode";
+import {
+    stringifyNode, Spaces, TemplateElement,
+    setParent,
+    toJSON,
+    deepClone
+} from "./util";
 
 
 export interface NodeClass<TNode extends AbstractNode<AnyRow>> {
@@ -116,118 +119,6 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     }
 
     toJSON(): JsonRow<TRow> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return toJSON(this.row);
+        return toJSON(this.row) as unknown as JsonRow<TRow>;
     }
-}
-
-function setParent(
-    parent: AbstractNode<AnyRow>,
-    children: any[],
-    stack: any[] = []
-) {
-    for (const child of children) {
-        if ( stack.includes(child) ) {
-            continue;
-        }
-        stack.push(child);
-
-        if ( child instanceof AbstractNode ) {
-            child.parent = parent;
-        }
-        else if ( Array.isArray(child) ) {
-            const unknownArray = child;
-            setParent(parent, unknownArray, stack);
-        }
-        else if ( child && typeof child === "object" ) {
-            setParent(parent, Object.values(child), stack);
-        }
-    }
-}
-
-function deepClone<T>(
-    value: T,
-    stack: WeakMap<any, any> = new WeakMap()
-): T {
-    if ( isPrimitive(value) ) {
-        return value;
-    }
-
-    if ( value instanceof Date ) {
-        return new Date( +value ) as unknown as T;
-    }
-
-    const existentClone = stack.get(value);
-    if ( existentClone ) {
-        return existentClone as unknown as T;
-    }
-
-    if ( value instanceof AbstractNode ) {
-        return value.clone();
-    }
-
-    if ( Array.isArray(value) ) {
-        const originalArray = value;
-        const arrayClone: any[] = [];
-        stack.set(originalArray, arrayClone);
-
-        for (const item of originalArray) {
-            const itemClone = deepClone(item, stack) as unknown;
-            arrayClone.push(itemClone);
-        }
-
-        return arrayClone as unknown as T;
-    }
-
-    const originalObject = value;
-    const objectClone: {[key: string]: any} = {};
-    stack.set(originalObject, objectClone);
-
-    for (const key in originalObject) {
-        objectClone[ key ] = deepClone( originalObject[ key ], stack );
-    }
-
-    return objectClone as unknown as T;
-}
-
-function toJSON(value: any, stack: any[] = []): any {
-    if ( isPrimitive(value) ) {
-        return value;
-    }
-
-    if ( value instanceof Date ) {
-        return value.toISOString();
-    }
-
-    if ( stack.includes(value) ) {
-        throw new Error("Cannot converting circular structure to JSON");
-    }
-    stack.push(value);
-
-    if ( value instanceof AbstractNode ) {
-        return value.toJSON();
-    }
-
-    if ( Array.isArray(value) ) {
-        return value.map((item) =>
-            toJSON(item, stack)
-        );
-    }
-
-    const jsonObject: any = {};
-    for (const key in value) {
-        const jsonValue = toJSON( value[ key ], stack );
-        jsonObject[ key ] = jsonValue;
-    }
-
-    return jsonObject;
-}
-
-function isPrimitive(value: any): boolean {
-    return (
-        typeof value === "number" ||
-        typeof value === "string" ||
-        typeof value === "function" ||
-        value == undefined
-    );
 }

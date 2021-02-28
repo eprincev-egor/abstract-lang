@@ -1,5 +1,5 @@
 import { AbstractNode } from "../AbstractNode";
-import { eol, _, tab, stringifyNode } from "../stringifyNode";
+import { eol, _, tab, stringifyNode } from "../util";
 import assert from "assert";
 
 interface TestToString {
