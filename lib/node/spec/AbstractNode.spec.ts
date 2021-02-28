@@ -272,6 +272,35 @@ describe("AbstractNode", () => {
             assert.ok( clone.position !== node.position, "clone.position is new object" );
         });
 
+        it("clone with changes", () => {
+            const TestNode = createClass<any>();
+            const node = new TestNode({row: {
+                a: 1,
+                b: 2
+            }});
+            const clone = node.clone({
+                a: 10
+            });
+
+            assert.deepStrictEqual(clone.row, {
+                a: 10,
+                b: 2
+            });
+        });
+
+        it("clone with changes, check new child.parent", () => {
+            const TestNode = createClass<{child?: any}>();
+            const child = new TestNode({row: {}});
+            const parent = new TestNode({row: {}});
+
+            const clone = parent.clone({
+                child
+            });
+
+            assert.ok( clone.row.child !== child, "child is new object!" );
+            assert.ok( clone.row.child.parent === clone, "correct new child.parent" );
+        });
+
     });
 
     describe("node.findParentInstance(SomeNode)", () => {

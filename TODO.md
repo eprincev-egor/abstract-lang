@@ -1,10 +1,9 @@
-- node.clone(changes)
+- node.toJSON()
 - node.equal(node)
 - node.filterChildren(cb)
 - node.findParent(cb)
 - node.filterParents(cb)
 - SyntaxError.at(node)
-- node.toJSON()
 - assertNode(Node, { input: "...", json: {}, pretty: "...", minify: "..." })
 - create README
 - add tests for json example

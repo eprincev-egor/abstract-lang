@@ -41,12 +41,15 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         setParent(this, Object.values(this.row));
     }
 
-    clone(): this {
+    clone(changes: Partial<TRow> = {}): this {
         const Node = this.constructor;
         const clone = Object.create(Node.prototype) as this;
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (clone as any).row = deepClone(this.row);
+        (clone as any).row = deepClone({
+            ...this.row,
+            ...changes
+        });
 
         setParent(clone, Object.values(clone.row));
 
