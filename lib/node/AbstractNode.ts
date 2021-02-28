@@ -41,6 +41,17 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         setParent(this, Object.values(this.row));
     }
 
+    findParentInstance<T extends AbstractNode<AnyRow>>(Node: (new(... args: any[]) => T)): T | undefined {
+        let parent = this.parent;
+        while ( parent ) {
+            if ( parent instanceof Node ) {
+                return parent;
+            }
+
+            parent = parent.parent;
+        }
+    }
+
     abstract template(): TemplateElement | TemplateElement[];
 
     toString(spaces?: Spaces): string {

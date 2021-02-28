@@ -60,15 +60,6 @@ describe("AbstractNode", () => {
     });
 
     describe("node.parent", () => {
-        // eslint-disable-next-line unicorn/consistent-function-scoping
-        function createClass<T>() {
-            return class TestNode extends AbstractNode<T> {
-                // eslint-disable-next-line class-methods-use-this
-                template() {
-                    return [];
-                }
-            };
-        }
 
         it("node.row contains primitive values and nodes", () => {
 
@@ -192,4 +183,61 @@ describe("AbstractNode", () => {
 
     });
 
+    describe("node.findParentInstance(SomeNode)", () => {
+
+        it("no parent", () => {
+            const TestNode = createClass();
+            const node = new TestNode({row: {}});
+            const result = node.findParentInstance(TestNode);
+            assert.strictEqual(result, undefined);
+        });
+
+        it("one parent", () => {
+            const TestNode = createClass<{child: any}>();
+            const child = new TestNode({row: {
+                child: undefined
+            }});
+            const parent = new TestNode({row: {
+                child
+            }});
+
+            const result = child.findParentInstance(TestNode);
+            assert.ok(result === parent);
+        });
+
+        it("find concrete parent", () => {
+            const SelectNode = createClass<{child: any}>();
+            const ExpressionNode = createClass<{child: any}>();
+
+            const childExpression = new ExpressionNode({row: {
+                child: undefined
+            }});
+            const parentExpression = new ExpressionNode({row: {
+                child: childExpression
+            }});
+            const select = new SelectNode({row: {
+                child: parentExpression
+            }});
+
+            assert.ok(
+                childExpression.findParentInstance(SelectNode) === select,
+                "find SelectNode"
+            );
+            assert.ok(
+                childExpression.findParentInstance(ExpressionNode) === parentExpression,
+                "find ExpressionNode"
+            );
+        });
+
+    });
+
 });
+
+function createClass<T>() {
+    return class TestNode extends AbstractNode<T> {
+        // eslint-disable-next-line class-methods-use-this
+        template() {
+            return [];
+        }
+    };
+}
