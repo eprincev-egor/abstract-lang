@@ -42,14 +42,16 @@ describe("Cursor.node.spec.ts node methods", () => {
 
         it("call Node.parse and return node instance", () => {
             const node = cursor.parse(WordNode);
-            assert.deepEqual( node.row, {word: "hello"} );
+            assert.deepStrictEqual( node.row, {word: "hello"} );
             assert.ok( cursor.beforeValue(" ") );
         });
 
         it("correct node.start and node.end position", () => {
             const node = cursor.parse(WordNode);
-            assert.strictEqual( node.start, 0 );
-            assert.strictEqual( node.end, 5 );
+            assert.deepStrictEqual(node.position, {
+                start: 0,
+                end: 5
+            });
         });
     });
 

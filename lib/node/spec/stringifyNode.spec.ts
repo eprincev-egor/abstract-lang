@@ -86,22 +86,19 @@ describe("stringifyNode(node, spaces?)", () => {
             row: {
                 condition: "level3",
                 body: "level3;"
-            },
-            position: {start: 0, end: 0}
+            }
         });
         const level2 = new IfStatement({
             row: {
                 condition: "level2",
                 body: level3
-            },
-            position: {start: 0, end: 0}
+            }
         });
         const level1 = new IfStatement({
             row: {
                 condition: "level1",
                 body: level2
-            },
-            position: {start: 0, end: 0}
+            }
         });
 
         testStringifyNode({

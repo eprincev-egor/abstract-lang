@@ -12,9 +12,14 @@ export interface AnyRow {
     [key: string]: any;
 }
 
+export interface NodePosition {
+    start: number;
+    end: number;
+}
+
 export interface NodeParams<TRow extends AnyRow> {
     row: TRow;
-    position: {
+    position?: {
         start: number;
         end: number;
     };
@@ -22,13 +27,14 @@ export interface NodeParams<TRow extends AnyRow> {
 
 export abstract class AbstractNode<TRow extends AnyRow> {
 
+    /** object with node attributes */
     readonly row: Readonly<TRow>;
-    readonly start: number;
-    readonly end: number;
+    /** if node has been parsed, then we a have position within source code */
+    readonly position?: NodePosition;
+
     constructor(params: NodeParams<TRow>) {
         this.row = params.row;
-        this.start = params.position.start;
-        this.end = params.position.end;
+        this.position = params.position;
     }
 
     abstract template(): TemplateElement | TemplateElement[];
