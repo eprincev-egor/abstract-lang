@@ -5,7 +5,6 @@ import {
     NodeClass
 } from "../node";
 import { SyntaxError } from "./SyntaxError";
-import { cursorTo } from "readline";
 
 /** Text cursor between some tokens */
 export class Cursor {
