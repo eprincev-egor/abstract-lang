@@ -1,0 +1,8 @@
+- node.clone(Partial row)
+- node.equal(node)
+- node.filterChildren(cb)
+- node.findParent(cb)
+- node.filterParents(cb)
+- SyntaxError.at(node)
+- node.toJSON()
+- assertNode(Node, { input: "...", json: {}, pretty: "...", minify: "..." })
