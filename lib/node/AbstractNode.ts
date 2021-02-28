@@ -41,6 +41,27 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         setParent(this, Object.values(this.row));
     }
 
+    clone(): this {
+        const Node = this.constructor;
+        const clone = Object.create(Node.prototype) as this;
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        (clone as any).row = deepClone(this.row);
+
+        setParent(clone, Object.values(clone.row));
+
+        const position = this.position;
+        if ( position ) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            (clone as any).position = {
+                start: position.start,
+                end: position.end
+            };
+        }
+
+        return clone;
+    }
+
     findParentInstance<T extends AbstractNode<AnyRow>>(
         Node: (new(... args: any[]) => T)
     ): T | undefined {
@@ -104,4 +125,59 @@ function setParent(
             setParent(parent, Object.values(child), stack);
         }
     }
+}
+
+function deepClone<T>(
+    value: T,
+    stack: WeakMap<any, any> = new WeakMap()
+): T {
+    if ( isPrimitive(value) ) {
+        return value;
+    }
+
+    if ( value instanceof Date ) {
+        return new Date( +value ) as unknown as T;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const existentClone = stack.get(value);
+    if ( existentClone ) {
+        return existentClone as unknown as T;
+    }
+
+    if ( value instanceof AbstractNode ) {
+        return value.clone();
+    }
+
+    if ( Array.isArray(value) ) {
+        const originalArray = value;
+        const arrayClone: any[] = [];
+        stack.set(originalArray, arrayClone);
+
+        for (const item of originalArray) {
+            const itemClone = deepClone(item, stack) as unknown;
+            arrayClone.push(itemClone);
+        }
+
+        return arrayClone as unknown as T;
+    }
+
+    const originalObject = value;
+    const objectClone: {[key: string]: any} = {};
+    stack.set(originalObject, objectClone);
+
+    for (const key in originalObject) {
+        objectClone[ key ] = deepClone( originalObject[ key ], stack );
+    }
+
+    return objectClone as unknown as T;
+}
+
+function isPrimitive(value: any): boolean {
+    return (
+        typeof value === "number" ||
+        typeof value === "string" ||
+        typeof value === "function" ||
+        value == undefined
+    );
 }
