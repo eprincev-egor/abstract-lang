@@ -41,7 +41,9 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         setParent(this, Object.values(this.row));
     }
 
-    findParentInstance<T extends AbstractNode<AnyRow>>(Node: (new(... args: any[]) => T)): T | undefined {
+    findParentInstance<T extends AbstractNode<AnyRow>>(
+        Node: (new(... args: any[]) => T)
+    ): T | undefined {
         let parent = this.parent;
         while ( parent ) {
             if ( parent instanceof Node ) {
@@ -51,6 +53,27 @@ export abstract class AbstractNode<TRow extends AnyRow> {
             parent = parent.parent;
         }
     }
+
+    filterChildrenByInstance<T extends AbstractNode<AnyRow>>(
+        Node: (new(... args: any[]) => T)
+    ): T[] {
+        const children: T[] = [];
+        for (const value of Object.values(this.row)) {
+            if ( value instanceof Node ) {
+                const child = value;
+                children.push(child);
+            }
+
+            if ( value instanceof AbstractNode ) {
+                const node = value;
+                const subChildren = node.filterChildrenByInstance(Node);
+                children.push(...subChildren);
+            }
+        }
+
+        return children;
+    }
+
 
     abstract template(): TemplateElement | TemplateElement[];
 
