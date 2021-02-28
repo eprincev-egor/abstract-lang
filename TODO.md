@@ -1,10 +1,10 @@
-- node.equal(node)
+- assertNode(Node, { input: "...", json: {}, pretty: "...", minify: "..." })
+- add tests for json example
+- SyntaxError.at(node)
 - node.filterChildren(cb)
 - node.findParent(cb)
 - node.filterParents(cb)
-- SyntaxError.at(node)
-- assertNode(Node, { input: "...", json: {}, pretty: "...", minify: "..." })
+- node.equal(node)
 - create README
-- add tests for json example
 - add simple html example
 - configure docs
