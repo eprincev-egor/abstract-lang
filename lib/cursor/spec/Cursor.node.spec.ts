@@ -4,7 +4,9 @@ import { AbstractNode } from "../../node";
 import {
     Token, Tokenizer,
     defaultMap,
-    WordToken
+    WordToken,
+    DigitsToken,
+    SpaceToken
 } from "../../token";
 
 describe("Cursor.node.spec.ts node methods", () => {
@@ -51,6 +53,80 @@ describe("Cursor.node.spec.ts node methods", () => {
             assert.deepStrictEqual(node.position, {
                 start: 0,
                 end: 5
+            });
+        });
+
+        it("set node.parent", () => {
+            interface OperatorRow {
+                left: string | Operator;
+                operator: string;
+                right: string | Operator;
+            }
+            class Operator extends AbstractNode<OperatorRow> {
+                static entry() {
+                    return true;
+                }
+
+                static parse(cursor: Cursor): OperatorRow {
+                    const left = Operator.parseOperand(cursor);
+                    cursor.skipAll(SpaceToken);
+
+                    const operator = cursor.nextToken.value;
+                    cursor.skipOne();
+
+                    cursor.skipAll(SpaceToken);
+                    const right = Operator.parseOperand(cursor);
+
+                    return {left, operator, right};
+                }
+
+                static parseOperand(cursor: Cursor): string | Operator {
+                    if ( cursor.beforeValue("(") ) {
+                        cursor.skipOne();
+                        cursor.skipAll(SpaceToken);
+
+                        const operator = cursor.parse(Operator);
+
+                        cursor.skipAll(SpaceToken);
+                        cursor.readValue(")");
+
+                        return operator;
+                    }
+
+                    const numb = cursor.read(DigitsToken).value;
+                    return numb;
+                }
+
+                template() {
+                    const {left, operator, right} = this.row;
+                    return [left, operator, right];
+                }
+            }
+
+            tokens = Tokenizer.tokenize(
+                defaultMap,
+                "(1 + 2) - (3 + 4)"
+            );
+            cursor = new Cursor(tokens);
+
+            const node = cursor.parse(Operator);
+
+            assert.ok( node.row.left instanceof Operator, "left is operator" );
+            assert.ok( node.row.left.parent === node, "correct left parent" );
+            assert.deepStrictEqual( node.row.left.row, {
+                left: "1",
+                operator: "+",
+                right: "2"
+            });
+
+            assert.strictEqual( node.row.operator, "-" );
+
+            assert.ok( node.row.right instanceof Operator, "right is operator" );
+            assert.ok( node.row.left.parent === node, "correct right parent" );
+            assert.deepStrictEqual( node.row.right.row, {
+                left: "3",
+                operator: "+",
+                right: "4"
             });
         });
     });
