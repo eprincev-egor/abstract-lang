@@ -1,4 +1,4 @@
-- node.clone(Partial row)
+- node.clone(changes)
 - node.equal(node)
 - node.filterChildren(cb)
 - node.findParent(cb)
@@ -6,3 +6,7 @@
 - SyntaxError.at(node)
 - node.toJSON()
 - assertNode(Node, { input: "...", json: {}, pretty: "...", minify: "..." })
+- create README
+- add tests for json example
+- add simple html example
+- configure docs
