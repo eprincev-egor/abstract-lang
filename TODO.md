@@ -1,4 +1,3 @@
-- node.toJSON()
 - node.equal(node)
 - node.filterChildren(cb)
 - node.findParent(cb)

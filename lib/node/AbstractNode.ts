@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Cursor } from "../cursor";
 import { stringifyNode, Spaces, TemplateElement } from "./stringifyNode";
 
@@ -26,6 +29,15 @@ export interface NodeParams<TRow extends AnyRow> {
     };
 }
 
+export type JsonRow<TRow extends AnyRow> = {
+    [key in keyof TRow]: JsonValue< TRow[key] >;
+};
+export type JsonValue<T extends any> = (
+    T extends AbstractNode<any> ?
+        ReturnType<T["toJSON"]> :
+        T
+);
+
 export abstract class AbstractNode<TRow extends AnyRow> {
 
     /** reference to parent node */
@@ -45,7 +57,6 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         const Node = this.constructor;
         const clone = Object.create(Node.prototype) as this;
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (clone as any).row = deepClone({
             ...this.row,
             ...changes
@@ -55,7 +66,6 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
         const position = this.position;
         if ( position ) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             (clone as any).position = {
                 start: position.start,
                 end: position.end
@@ -104,6 +114,11 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     toString(spaces?: Spaces): string {
         return stringifyNode(this, spaces);
     }
+
+    toJSON(): JsonRow<TRow> {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return toJSON(this.row);
+    }
 }
 
 function setParent(
@@ -142,7 +157,6 @@ function deepClone<T>(
         return new Date( +value ) as unknown as T;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const existentClone = stack.get(value);
     if ( existentClone ) {
         return existentClone as unknown as T;
@@ -174,6 +188,39 @@ function deepClone<T>(
     }
 
     return objectClone as unknown as T;
+}
+
+function toJSON(value: any, stack: any[] = []): any {
+    if ( isPrimitive(value) ) {
+        return value;
+    }
+
+    if ( value instanceof Date ) {
+        return value.toISOString();
+    }
+
+    if ( stack.includes(value) ) {
+        throw new Error("Cannot converting circular structure to JSON");
+    }
+    stack.push(value);
+
+    if ( value instanceof AbstractNode ) {
+        return value.toJSON();
+    }
+
+    if ( Array.isArray(value) ) {
+        return value.map((item) =>
+            toJSON(item, stack)
+        );
+    }
+
+    const jsonObject: any = {};
+    for (const key in value) {
+        const jsonValue = toJSON( value[ key ], stack );
+        jsonObject[ key ] = jsonValue;
+    }
+
+    return jsonObject;
 }
 
 function isPrimitive(value: any): boolean {
