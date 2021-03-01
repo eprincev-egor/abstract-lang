@@ -1,5 +1,3 @@
-- assertNode(Node, { input: "...", json: {}, pretty: "...", minify: "..." })
-- add tests for json example
 - SyntaxError.at(node)
 - node.filterChildren(cb)
 - node.findParent(cb)
