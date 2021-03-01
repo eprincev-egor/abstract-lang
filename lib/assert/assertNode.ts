@@ -24,6 +24,7 @@ export function assertNode<TNode extends AbstractNode<any>>(
     }
     else {
         testParsing(test);
+        testEntry(test);
     }
 
     function testError(test: ErrorTest): void {
@@ -65,7 +66,24 @@ export function assertNode<TNode extends AbstractNode<any>>(
             test.json,
             "invalid json on minify:\n" + test.minify + "\n\n"
         );
+    }
 
+    function testEntry(test: SuccessTest<TNode>): void {
+        assert.strictEqual(
+            entry(test.input),
+            true,
+            "invalid entry on input:\n" + test.input + "\n\n"
+        );
+        assert.strictEqual(
+            entry(test.pretty),
+            true,
+            "invalid entry on pretty:\n" + test.pretty + "\n\n"
+        );
+        assert.strictEqual(
+            entry(test.minify),
+            true,
+            "invalid entry on minify:\n" + test.minify + "\n\n"
+        );
     }
 
     function parse(code: string) {
@@ -73,5 +91,12 @@ export function assertNode<TNode extends AbstractNode<any>>(
         const cursor = new Cursor(tokens);
         const node = cursor.parse(Node);
         return node;
+    }
+
+    function entry(code: string) {
+        const tokens = Tokenizer.tokenize(defaultMap, code);
+        const cursor = new Cursor(tokens);
+        const entry = cursor.before(Node);
+        return entry;
     }
 }

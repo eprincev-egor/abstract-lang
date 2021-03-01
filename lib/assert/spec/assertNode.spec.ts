@@ -13,7 +13,8 @@ describe("assertNode", () => {
         right: string;
     }
     class BaseOperator extends AbstractNode<OperatorRow> {
-        static entry() {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        static entry(cursor: Cursor) {
             return true;
         }
 
@@ -160,6 +161,57 @@ describe("assertNode", () => {
             );
         });
 
+        it("invalid entry input", () => {
+            TestNode.entry = function() {
+                return false;
+            };
+
+            assert.throws(() => {
+                assertNode(TestNode, test);
+            }, (err: Error) =>
+                err instanceof assert.AssertionError &&
+                err.expected === true &&
+                err.actual === false &&
+                err.message.includes("invalid entry on input:\n1+ 2\n\n")
+            );
+        });
+
+        it("invalid entry pretty", () => {
+            TestNode.entry = function(cursor: Cursor) {
+                if ( cursor.tokens.join("") === test.pretty ) {
+                    return false;
+                }
+                return true;
+            };
+
+            assert.throws(() => {
+                assertNode(TestNode, test);
+            }, (err: Error) =>
+                err instanceof assert.AssertionError &&
+                err.expected === true &&
+                err.actual === false &&
+                err.message.includes("invalid entry on pretty:\n1 + 2\n\n")
+            );
+        });
+
+
+        it("invalid entry minify", () => {
+            TestNode.entry = function(cursor: Cursor) {
+                if ( cursor.tokens.join("") === test.minify ) {
+                    return false;
+                }
+                return true;
+            };
+
+            assert.throws(() => {
+                assertNode(TestNode, test);
+            }, (err: Error) =>
+                err instanceof assert.AssertionError &&
+                err.expected === true &&
+                err.actual === false &&
+                err.message.includes("invalid entry on minify:\n1+2\n\n")
+            );
+        });
     });
 
     describe("valid parsing", () => {
