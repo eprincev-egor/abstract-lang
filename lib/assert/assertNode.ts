@@ -4,22 +4,31 @@ import { defaultMap, Tokenizer } from "../token";
 import assert from "assert";
 
 export interface SuccessTest<TNode extends AbstractNode<any>> {
+    /** input string for parsing */
     input: string;
-    json: ReturnType< TNode["toJSON"] >;
-    pretty: string;
-    minify: string;
+    /** expected parsing result */
+    shouldBe: {
+        /** expected of node.toJSON() result */
+        json: ReturnType< TNode["toJSON"] >;
+        /** expected result of node.toString(PrettySpaces), by default is input */
+        pretty?: string;
+        /** expected result of node.toString(MinifySpaces), by default is input */
+        minify?: string;
+    };
 }
 
 export interface ErrorTest {
+    /** input string for parsing */
     input: string;
-    error: RegExp;
+    /** expected error message on parsing */
+    throws: RegExp;
 }
 
 export function assertNode<TNode extends AbstractNode<any>>(
     Node: NodeClass<TNode>,
     test: SuccessTest<TNode> | ErrorTest
 ): void {
-    if ( "error" in test ) {
+    if ( "throws" in test ) {
         testError(test);
     }
     else {
@@ -31,58 +40,60 @@ export function assertNode<TNode extends AbstractNode<any>>(
         assert.throws(() => {
             parse(test.input);
         }, (err: Error) =>
-            test.error.test(err.message)
+            test.throws.test(err.message)
         );
     }
 
     function testParsing(test: SuccessTest<TNode>): void {
+        const pretty = test.shouldBe.pretty || test.input;
+        const minify = test.shouldBe.minify || test.input;
 
         const node = parse(test.input);
         assert.deepStrictEqual(
             node.toJSON(),
-            test.json,
+            test.shouldBe.json,
             "invalid json on input:\n" + test.input + "\n\n"
         );
         assert.strictEqual(
             node.toString(PrettySpaces),
-            test.pretty,
+            pretty,
             "invalid pretty on input:\n" + test.input + "\n\n"
         );
         assert.strictEqual(
             node.toString(MinifySpaces),
-            test.minify,
+            minify,
             "invalid minify on input:\n" + test.input + "\n\n"
         );
 
 
         assert.deepStrictEqual(
-            parse(test.pretty).toJSON(),
-            test.json,
-            "invalid json on pretty:\n" + test.pretty + "\n\n"
+            parse(pretty).toJSON(),
+            test.shouldBe.json,
+            "invalid json on pretty:\n" + pretty + "\n\n"
         );
 
         assert.deepStrictEqual(
-            parse(test.minify).toJSON(),
-            test.json,
-            "invalid json on minify:\n" + test.minify + "\n\n"
+            parse(minify).toJSON(),
+            test.shouldBe.json,
+            "invalid json on minify:\n" + minify + "\n\n"
         );
     }
 
     function testEntry(test: SuccessTest<TNode>): void {
-        assert.strictEqual(
+        const pretty = test.shouldBe.pretty || test.input;
+        const minify = test.shouldBe.minify || test.input;
+
+        assert.ok(
             entry(test.input),
-            true,
             "invalid entry on input:\n" + test.input + "\n\n"
         );
-        assert.strictEqual(
-            entry(test.pretty),
-            true,
-            "invalid entry on pretty:\n" + test.pretty + "\n\n"
+        assert.ok(
+            entry(pretty),
+            "invalid entry on pretty:\n" + pretty + "\n\n"
         );
-        assert.strictEqual(
-            entry(test.minify),
-            true,
-            "invalid entry on minify:\n" + test.minify + "\n\n"
+        assert.ok(
+            entry(minify),
+            "invalid entry on minify:\n" + minify + "\n\n"
         );
     }
 

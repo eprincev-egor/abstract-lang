@@ -1,9 +1,8 @@
 import assert from "assert";
 import { DigitsToken, SpaceToken } from "../../token";
-import { Cursor } from "../../cursor";
+import { Cursor, SyntaxError } from "../../cursor";
 import { AbstractNode, Spaces, _ } from "../../node";
 import { assertNode, SuccessTest } from "../assertNode";
-import { SyntaxError } from "cursor/SyntaxError";
 
 describe("assertNode", () => {
 
@@ -46,13 +45,15 @@ describe("assertNode", () => {
 
         const test: SuccessTest<BaseOperator> = {
             input: "1+ 2",
-            json: {
-                left: "1",
-                operator: "+",
-                right: "2"
-            },
-            pretty: "1 + 2",
-            minify: "1+2"
+            shouldBe: {
+                json: {
+                    left: "1",
+                    operator: "+",
+                    right: "2"
+                },
+                pretty: "1 + 2",
+                minify: "1+2"
+            }
         };
 
         it("invalid json", () => {
@@ -64,7 +65,7 @@ describe("assertNode", () => {
                 assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
-                JSON.stringify(err.expected) === JSON.stringify(test.json) &&
+                JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
                 JSON.stringify(err.actual) === JSON.stringify({
                     left: "wrong",
                     operator: "+",
@@ -92,7 +93,7 @@ describe("assertNode", () => {
         it("invalid minify", () => {
             TestNode.prototype.toString = function(spaces: Spaces) {
                 const originalString = BaseOperator.prototype.toString.call(this, spaces);
-                if ( originalString === test.minify ) {
+                if ( originalString === test.shouldBe.minify ) {
                     return "wrong";
                 }
 
@@ -111,7 +112,7 @@ describe("assertNode", () => {
 
         it("invalid parsing pretty", () => {
             TestNode.parse = function(cursor: Cursor): OperatorRow {
-                if ( cursor.tokens.join("") === test.pretty ) {
+                if ( cursor.tokens.join("") === test.shouldBe.pretty ) {
                     return {
                         left: "100",
                         operator: "+",
@@ -125,7 +126,7 @@ describe("assertNode", () => {
                 assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
-                JSON.stringify(err.expected) === JSON.stringify(test.json) &&
+                JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
                 JSON.stringify(err.actual) === JSON.stringify({
                     left: "100",
                     operator: "+",
@@ -137,7 +138,7 @@ describe("assertNode", () => {
 
         it("invalid parsing minify", () => {
             TestNode.parse = function(cursor: Cursor): OperatorRow {
-                if ( cursor.tokens.join("") === test.minify ) {
+                if ( cursor.tokens.join("") === test.shouldBe.minify ) {
                     return {
                         left: "1",
                         operator: "+",
@@ -151,7 +152,7 @@ describe("assertNode", () => {
                 assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
-                JSON.stringify(err.expected) === JSON.stringify(test.json) &&
+                JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
                 JSON.stringify(err.actual) === JSON.stringify({
                     left: "1",
                     operator: "+",
@@ -178,7 +179,7 @@ describe("assertNode", () => {
 
         it("invalid entry pretty", () => {
             TestNode.entry = function(cursor: Cursor) {
-                if ( cursor.tokens.join("") === test.pretty ) {
+                if ( cursor.tokens.join("") === test.shouldBe.pretty ) {
                     return false;
                 }
                 return true;
@@ -197,7 +198,7 @@ describe("assertNode", () => {
 
         it("invalid entry minify", () => {
             TestNode.entry = function(cursor: Cursor) {
-                if ( cursor.tokens.join("") === test.minify ) {
+                if ( cursor.tokens.join("") === test.shouldBe.minify ) {
                     return false;
                 }
                 return true;
@@ -219,9 +220,31 @@ describe("assertNode", () => {
         it("success parsing test", () => {
             assertNode(TestNode, {
                 input: "100 -3",
-                json: {left: "100", operator: "-", right: "3"},
-                pretty: "100 - 3",
-                minify: "100-3"
+                shouldBe: {
+                    json: {left: "100", operator: "-", right: "3"},
+                    pretty: "100 - 3",
+                    minify: "100-3"
+                }
+            });
+        });
+
+        it("pretty by default is input", () => {
+            assertNode(TestNode, {
+                input: "100 - 3",
+                shouldBe: {
+                    json: {left: "100", operator: "-", right: "3"},
+                    minify: "100-3"
+                }
+            });
+        });
+
+        it("minify by default is input", () => {
+            assertNode(TestNode, {
+                input: "100-3",
+                shouldBe: {
+                    json: {left: "100", operator: "-", right: "3"},
+                    pretty: "100 - 3"
+                }
             });
         });
 
@@ -232,7 +255,7 @@ describe("assertNode", () => {
 
             assertNode(TestNode, {
                 input: "200",
-                error: /expected operator/
+                throws: /expected operator/
             });
         });
     });
@@ -243,7 +266,7 @@ describe("assertNode", () => {
             assert.throws(() => {
                 assertNode(TestNode, {
                     input: "200 + 200",
-                    error: /expected operator/
+                    throws: /expected operator/
                 });
             }, (err: Error) =>
                 err.message.includes("Missing expected exception")
