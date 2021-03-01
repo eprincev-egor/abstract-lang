@@ -12,6 +12,8 @@ describe("AbstractNode.toJSON.spec.ts", () => {
         it("test simple data", () => {
             const testDate = new Date();
             const node = new TestNode({row: {
+                boolTrue: true,
+                boolFalse: false,
                 numb: 1,
                 str: "hello",
                 date: testDate,
@@ -21,6 +23,8 @@ describe("AbstractNode.toJSON.spec.ts", () => {
 
             const json = node.toJSON();
             assert.deepStrictEqual(json, {
+                boolTrue: true,
+                boolFalse: false,
                 numb: 1,
                 str: "hello",
                 date: testDate.toISOString(),

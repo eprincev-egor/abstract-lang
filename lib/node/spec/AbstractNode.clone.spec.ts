@@ -18,6 +18,8 @@ describe("AbstractNode.clone.spec.ts", () => {
 
         it("should have same row object", () => {
             const TestNode = createClass<{
+                boolTrue: boolean;
+                boolFalse: boolean;
                 numb: number;
                 str: string;
                 date: Date;
@@ -26,6 +28,8 @@ describe("AbstractNode.clone.spec.ts", () => {
             }>();
             const testDate = new Date();
             const node = new TestNode({row: {
+                boolTrue: true,
+                boolFalse: false,
                 numb: 1,
                 str: "hello",
                 date: testDate,
@@ -36,6 +40,8 @@ describe("AbstractNode.clone.spec.ts", () => {
 
             assert.ok( clone.row !== node.row, "clone.row is new object" );
             assert.deepStrictEqual(clone.row, {
+                boolTrue: true,
+                boolFalse: false,
                 numb: 1,
                 str: "hello",
                 date: testDate,

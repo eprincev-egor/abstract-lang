@@ -40,7 +40,8 @@ export function toJSON(value: any, stack: any[] = []): any {
 
 function hasMethodToJson(value: any): value is {toJSON(): any} {
     return (
-        !!value &&
+        value != undefined &&
+        typeof value === "object" &&
         "toJSON" in value &&
         typeof value.toJSON === "function"
     );
