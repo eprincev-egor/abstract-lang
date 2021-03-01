@@ -1,11 +1,16 @@
-import { AbstractNode, Cursor, EolToken, SpaceToken } from "abstract-lang";
-import { JsonNode } from "./JsonNode";
+import {
+    AbstractNode,
+    Cursor,
+    EolToken, SpaceToken,
+    TemplateElement, _
+} from "abstract-lang";
+import { JsonElement } from "./JsonNode";
 import { StringLiteral } from "./StringLiteral";
 import { cycleDeps } from "./cycleDeps";
 
 export interface ObjectItemRow {
     key: StringLiteral;
-    value: JsonNode;
+    value: JsonElement;
 }
 
 export class ObjectItem extends AbstractNode<ObjectItemRow> {
@@ -21,13 +26,16 @@ export class ObjectItem extends AbstractNode<ObjectItemRow> {
         cursor.readValue(":");
         cursor.skipAll(SpaceToken, EolToken);
 
-        const value = cursor.parse(cycleDeps.JsonNode);
+        const value = cursor.parse(cycleDeps.JsonNode).row.json;
 
         return {key, value};
     }
 
-    template(): string {
-        const {key, value} = this.row;
-        return key.template() + ": " + value.template();
+    template(): TemplateElement[] {
+        return [
+            this.row.key,
+            ":", _,
+            this.row.value
+        ];
     }
 }

@@ -1,4 +1,8 @@
-import { AbstractNode, Cursor, EolToken, SpaceToken } from "abstract-lang";
+import {
+    AbstractNode,
+    Cursor, EolToken, SpaceToken,
+    TemplateElement, eol, tab
+} from "abstract-lang";
 import { ObjectItem } from "./ObjectItem";
 import { cycleDeps } from "./cycleDeps";
 
@@ -13,10 +17,13 @@ export class ObjectLiteral extends AbstractNode<ObjectRow> {
     }
 
     static parse(cursor: Cursor): ObjectRow {
+        let object: ObjectItem[] = [];
         cursor.readValue("{");
         cursor.skipAll(SpaceToken, EolToken);
 
-        const object = cursor.parseChainOf(ObjectItem, ",");
+        if ( cursor.before(ObjectItem) ) {
+            object = cursor.parseChainOf(ObjectItem, ",");
+        }
 
         cursor.skipAll(SpaceToken, EolToken);
         cursor.readValue("}");
@@ -24,10 +31,24 @@ export class ObjectLiteral extends AbstractNode<ObjectRow> {
         return {object};
     }
 
-    template(): string {
-        return "{" + this.row.object.map((element) =>
-            element.template()
-        ).join(",") + "}";
+    template(): string | TemplateElement[] {
+        if ( this.row.object.length === 0 ) {
+            return "{}";
+        }
+
+        const output: TemplateElement[] = [
+            "{", eol
+        ];
+        for (const item of this.row.object) {
+            if ( output.length > 2 ) {
+                output.push(",", eol);
+            }
+
+            output.push(tab, item);
+        }
+
+        output.push(eol, "}");
+        return output;
     }
 }
 

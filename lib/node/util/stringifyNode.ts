@@ -13,7 +13,7 @@ export const PrettySpaces: Spaces = {
 export const MinifySpaces: Spaces = {
     _: "",
     tab: "",
-    eol: " "
+    eol: ""
 };
 /** end of line, default "\n" */
 export const eol = {eol: true};

@@ -5,13 +5,15 @@ import { NullLiteral } from "./NullLiteral";
 import { NumberLiteral } from "./NumberLiteral";
 import { StringLiteral } from "./StringLiteral";
 import { cycleDeps } from "./cycleDeps";
+import { ObjectLiteral } from "./ObjectLiteral";
 
 export type JsonElement = (
     NullLiteral |
     BooleanLiteral |
     NumberLiteral |
     StringLiteral |
-    ArrayLiteral
+    ArrayLiteral |
+    ObjectLiteral
 );
 
 export interface JsonRow {
@@ -20,13 +22,20 @@ export interface JsonRow {
 
 export class JsonNode extends AbstractNode<JsonRow> {
 
-    static entry(): boolean {
-        return true;
+    static entry(cursor: Cursor): boolean {
+        return (
+            cursor.before(NullLiteral) ||
+            cursor.before(BooleanLiteral) ||
+            cursor.before(NumberLiteral) ||
+            cursor.before(StringLiteral) ||
+            cursor.before(ArrayLiteral) ||
+            cursor.before(ObjectLiteral)
+        );
     }
 
     static parse(cursor: Cursor): JsonRow {
 
-        const {ArrayLiteral} = cycleDeps;
+        const {ArrayLiteral, ObjectLiteral} = cycleDeps;
 
         let item!: JsonElement;
         if ( cursor.before(NullLiteral) ) {
@@ -44,12 +53,15 @@ export class JsonNode extends AbstractNode<JsonRow> {
         else if ( cursor.before(ArrayLiteral) ) {
             item = cursor.parse(ArrayLiteral);
         }
+        else {
+            item = cursor.parse(ObjectLiteral);
+        }
 
         return {json: item};
     }
 
-    template(): string {
-        return this.row.json.template();
+    template(): JsonElement {
+        return this.row.json;
     }
 }
 

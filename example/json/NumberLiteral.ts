@@ -12,7 +12,10 @@ export interface NumberRow {
 export class NumberLiteral extends AbstractNode<NumberRow> {
 
     static entry(cursor: Cursor): boolean {
-        return cursor.beforeToken(DigitsToken);
+        return (
+            cursor.beforeToken(DigitsToken) ||
+            cursor.beforeValue("-")
+        );
     }
 
     static parse(cursor: Cursor): NumberRow {

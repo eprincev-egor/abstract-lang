@@ -1,9 +1,13 @@
-import { AbstractNode, Cursor, EolToken, SpaceToken } from "abstract-lang";
-import { JsonNode } from "./JsonNode";
+import {
+    AbstractNode,
+    Cursor, EolToken, SpaceToken,
+    TemplateElement, _
+} from "abstract-lang";
+import { JsonElement } from "./JsonNode";
 import { cycleDeps } from "./cycleDeps";
 
 export interface ArrayRow {
-    array: readonly JsonNode[];
+    array: readonly JsonElement[];
 }
 
 export class ArrayLiteral extends AbstractNode<ArrayRow> {
@@ -13,10 +17,17 @@ export class ArrayLiteral extends AbstractNode<ArrayRow> {
     }
 
     static parse(cursor: Cursor): ArrayRow {
+        const {JsonNode} = cycleDeps;
+        let array: JsonElement[] = [];
+
         cursor.readValue("[");
         cursor.skipAll(SpaceToken, EolToken);
 
-        const array = cursor.parseChainOf(cycleDeps.JsonNode, ",");
+        if ( cursor.before(JsonNode) ) {
+            array = cursor.parseChainOf(JsonNode, ",").map((node) =>
+                node.row.json
+            );
+        }
 
         cursor.skipAll(SpaceToken, EolToken);
         cursor.readValue("]");
@@ -24,10 +35,19 @@ export class ArrayLiteral extends AbstractNode<ArrayRow> {
         return {array};
     }
 
-    template(): string {
-        return "[" + this.row.array.map((element) =>
-            element.template()
-        ).join(",") + "]";
+    template(): TemplateElement[] {
+        const output: TemplateElement[] = ["["];
+
+        for (const item of this.row.array) {
+            if ( output.length > 1 ) {
+                output.push(",", _);
+            }
+
+            output.push(item);
+        }
+
+        output.push("]");
+        return output;
     }
 }
 

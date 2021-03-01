@@ -18,13 +18,10 @@ export class BooleanLiteral extends AbstractNode<BooleanRow> {
             cursor.readValue("true");
             return {boolean: true};
         }
-        else if ( cursor.beforeValue("false") ) {
+        else {
             cursor.readValue("false");
             return {boolean: false};
         }
-
-        // TODO: use cursor.throwError()
-        throw new Error("syntax");
     }
 
     template(): string {

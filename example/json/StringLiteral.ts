@@ -41,6 +41,6 @@ export class StringLiteral extends AbstractNode<StringRow> {
     }
 
     template(): string {
-        return this.row.string;
+        return "\"" + this.row.string.replace(/\\/g, "\\\\") + "\"";
     }
 }
