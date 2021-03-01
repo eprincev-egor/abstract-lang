@@ -5,10 +5,15 @@ export interface Spaces {
     tab: string;
     eol: string;
 }
-export const DefaultTemplateOptions: Spaces = {
+export const PrettySpaces: Spaces = {
     _: " ",
     tab: "    ",
     eol: "\n"
+};
+export const MinifySpaces: Spaces = {
+    _: "",
+    tab: "",
+    eol: " "
 };
 /** end of line, default "\n" */
 export const eol = {eol: true};
@@ -31,7 +36,7 @@ export type TemplateElement = (
 
 export function stringifyNode(
     node: AbstractNode<AnyRow>,
-    spaces: Spaces = DefaultTemplateOptions
+    spaces: Spaces = PrettySpaces
 ): string {
     let output = "";
 

@@ -1,5 +1,5 @@
 import { Cursor } from "../cursor";
-import { AbstractNode, NodeClass } from "../node";
+import { AbstractNode, MinifySpaces, NodeClass, PrettySpaces } from "../node";
 import { defaultMap, Tokenizer } from "../token";
 import assert from "assert";
 
@@ -19,21 +19,59 @@ export function assertNode<TNode extends AbstractNode<any>>(
     Node: NodeClass<TNode>,
     test: SuccessTest<TNode> | ErrorTest
 ): void {
-    if ( !("json" in test) ) return;
+    if ( "error" in test ) {
+        testError(test);
+    }
+    else {
+        testParsing(test);
+    }
 
-    const tokens = Tokenizer.tokenize(defaultMap, test.input);
-    const cursor = new Cursor(tokens);
-    const node = cursor.parse(Node);
+    function testError(test: ErrorTest): void {
+        assert.throws(() => {
+            parse(test.input);
+        }, (err: Error) =>
+            test.error.test(err.message)
+        );
+    }
 
-    assert.deepStrictEqual(
-        node.toJSON(),
-        test.json,
-        "invalid json on input:\n" + test.input + "\n\n"
-    );
+    function testParsing(test: SuccessTest<TNode>): void {
 
-    assert.strictEqual(
-        node.toString(),
-        test.pretty,
-        "invalid pretty on input:\n" + test.input + "\n\n"
-    );
+        const node = parse(test.input);
+        assert.deepStrictEqual(
+            node.toJSON(),
+            test.json,
+            "invalid json on input:\n" + test.input + "\n\n"
+        );
+        assert.strictEqual(
+            node.toString(PrettySpaces),
+            test.pretty,
+            "invalid pretty on input:\n" + test.input + "\n\n"
+        );
+        assert.strictEqual(
+            node.toString(MinifySpaces),
+            test.minify,
+            "invalid minify on input:\n" + test.input + "\n\n"
+        );
+
+
+        assert.deepStrictEqual(
+            parse(test.pretty).toJSON(),
+            test.json,
+            "invalid json on pretty:\n" + test.pretty + "\n\n"
+        );
+
+        assert.deepStrictEqual(
+            parse(test.minify).toJSON(),
+            test.json,
+            "invalid json on minify:\n" + test.minify + "\n\n"
+        );
+
+    }
+
+    function parse(code: string) {
+        const tokens = Tokenizer.tokenize(defaultMap, code);
+        const cursor = new Cursor(tokens);
+        const node = cursor.parse(Node);
+        return node;
+    }
 }

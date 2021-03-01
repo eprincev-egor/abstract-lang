@@ -83,4 +83,8 @@ export class Token {
             position: this.position
         };
     }
+
+    toString(): string {
+        return this.value;
+    }
 }
