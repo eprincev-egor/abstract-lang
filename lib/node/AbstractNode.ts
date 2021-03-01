@@ -32,12 +32,30 @@ export interface NodeParams<TRow extends AnyRow> {
     };
 }
 
-export type JsonRow<TRow extends AnyRow> = {
-    [key in keyof TRow]: JsonValue< TRow[key] >;
+export type NodeJson<TRow extends AnyRow> = {
+    [key in keyof TRow]: NodeJsonValue< TRow[key] >;
 };
-export type JsonValue<T extends any> = (
+export type NodeJsonValue<T extends any> = (
     T extends AbstractNode<any> ?
-        ReturnType<T["toJSON"]> :
+        NodeJson<T["row"]> :
+    T extends Array<any> ?
+        Array< NodeJsonValue< T[0] > > :
+    T extends ReadonlyArray<any> ?
+        ReadonlyArray< NodeJsonValue< T[0] > > :
+    T extends string ?
+        string :
+    T extends number ?
+        string :
+    T extends boolean ?
+        boolean :
+    T extends undefined ?
+        undefined :
+    T extends null ?
+        null :
+    T extends Date ?
+        string :
+    T extends AnyRow ?
+        NodeJson<T> :
         T
 );
 
@@ -118,7 +136,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         return stringifyNode(this, spaces);
     }
 
-    toJSON(): JsonRow<TRow> {
-        return toJSON(this.row) as unknown as JsonRow<TRow>;
+    toJSON(): NodeJson<TRow> {
+        return toJSON(this.row) as unknown as NodeJson<TRow>;
     }
 }
