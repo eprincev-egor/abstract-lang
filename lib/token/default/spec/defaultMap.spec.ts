@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import assert from "assert";
 import { Tokenizer } from "../../Tokenizer";
 import { BracketsToken } from "../BracketsToken";
 import { defaultMap } from "../defaultMap";

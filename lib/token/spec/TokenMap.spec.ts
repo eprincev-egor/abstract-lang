@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import * as assert from "assert";
+import assert from "assert";
 import { Token, TokenDescription } from "../Token";
 import { TokenMap } from "../TokenMap";
 

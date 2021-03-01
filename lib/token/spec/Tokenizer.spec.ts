@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import assert from "assert";
 import { DigitsToken } from "../default/DigitsToken";
 import { SpaceToken } from "../default/SpaceToken";
 import { Tokenizer } from "../Tokenizer";
