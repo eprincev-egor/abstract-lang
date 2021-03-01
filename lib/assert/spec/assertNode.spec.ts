@@ -190,7 +190,7 @@ describe("assertNode", () => {
         it("missing exception", () => {
             assert.throws(() => {
                 assertNode(TestNode, {
-                    input: "200 ",
+                    input: "200 + 200",
                     error: /expected operator/
                 });
             }, (err: Error) =>

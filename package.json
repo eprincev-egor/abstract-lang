@@ -6,7 +6,7 @@
   "types": "lib/index.ts",
   "scripts": {
     "build": "tsc",
-    "test": "nyc -source-map --produce-source-map --reporter=html --reporter=text-summary mocha",
+    "test": "nyc --source-map --produce-source-map --reporter=html --reporter=text-summary mocha",
     "eslint": "eslint --ext .js,.ts lib && eslint --ext .js,.ts example",
     "eslint-fix": "eslint --fix --ext .js,.ts lib && eslint --fix --ext .js,.ts example",
     "postinstall": "node postinstall/postinstall.js"
