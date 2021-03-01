@@ -1,16 +1,18 @@
 import { WordToken } from "../../token";
 import { Cursor } from "../../cursor";
-import { AbstractNode } from "../../node";
+import { AbstractNode, NodeClass } from "../../node";
 import { assertNode } from "../assertNode";
+import assert from "assert";
 
 describe("assertNode", () => {
 
-    it("valid node", () => {
-        interface WordRow {
-            word: string;
-        }
+    interface WordRow {
+        word: string;
+    }
+    let WordNode!: NodeClass<AbstractNode<WordRow>>;
 
-        class WordNode extends AbstractNode<WordRow> {
+    beforeEach(() => {
+        WordNode = class WordNode extends AbstractNode<WordRow> {
 
             static entry(cursor: Cursor) {
                 return cursor.beforeToken(WordToken);
@@ -24,16 +26,43 @@ describe("assertNode", () => {
             template() {
                 return this.row.word;
             }
-        }
+        };
+    });
 
-        assertNode(WordNode, {
-            input: "hello",
-            json: {
-                word: "hello"
-            },
-            pretty: "hello",
-            minify: "hello"
-        });
+    it("invalid json", () => {
+        assert.throws(() => {
+            assertNode(WordNode, {
+                input: "correct",
+                json: {
+                    word: "wrong"
+                },
+                pretty: "correct",
+                minify: "correct"
+            });
+        }, (err: Error) =>
+            err instanceof assert.AssertionError &&
+            JSON.stringify(err.expected) === "{\"word\":\"wrong\"}" &&
+            JSON.stringify(err.actual) === "{\"word\":\"correct\"}" &&
+            err.message.includes("invalid json on input:\ncorrect\n\n")
+        );
+    });
+
+    it("invalid pretty", () => {
+        assert.throws(() => {
+            assertNode(WordNode, {
+                input: "correct",
+                json: {
+                    word: "correct"
+                },
+                pretty: "wrong",
+                minify: "correct"
+            });
+        }, (err: Error) =>
+            err instanceof assert.AssertionError &&
+            JSON.stringify(err.expected) === "\"wrong\"" &&
+            JSON.stringify(err.actual) === "\"correct\"" &&
+            err.message.includes("invalid pretty on input:\ncorrect\n\n")
+        );
     });
 
 });
