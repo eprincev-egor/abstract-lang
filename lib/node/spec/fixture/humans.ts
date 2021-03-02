@@ -16,7 +16,12 @@ const oliver = new TestNode({row: {
     child: jane
 }});
 
-export const humans = {
+Object.freeze(bob);
+Object.freeze(jack);
+Object.freeze(jane);
+Object.freeze(oliver);
+
+export const humans = Object.freeze({
     root: oliver,
     leaf: bob,
 
@@ -24,4 +29,4 @@ export const humans = {
     jack,
     jane,
     oliver
-};
+});

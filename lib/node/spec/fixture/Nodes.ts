@@ -8,9 +8,12 @@ export const ExpressionNode = createClass<any>();
 
 /** node with empty row */
 export const empty = new TestNode({row: {}});
+Object.freeze(empty);
 
 export const child = new TestNode({row: {}});
 export const parent = new TestNode({row: {child}});
+Object.freeze(child);
+Object.freeze(empty);
 /** parent with one child */
 export const oneChild = {parent, child};
 
@@ -25,6 +28,7 @@ export const primitive = new TestNode({row: {
     arr: [{hello: "world"}],
     obj: {hello: [{str: "world"}]}
 }});
+Object.freeze(primitive);
 
 
 const array1: any[] = [];
@@ -40,3 +44,4 @@ b.c = c;
 export const infinityRecursion = new TestNode({row: {
     c
 }});
+Object.freeze(infinityRecursion);

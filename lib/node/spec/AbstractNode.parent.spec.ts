@@ -82,7 +82,9 @@ describe("AbstractNode.parent.spec.ts", () => {
         });
 
         it("node.row contains infinity recursion", () => {
-            new TestNode({row: {value: infinityRecursion}});
+            new TestNode({
+                row: infinityRecursion.row
+            });
             assert.ok(true, "no errors");
         });
     });
