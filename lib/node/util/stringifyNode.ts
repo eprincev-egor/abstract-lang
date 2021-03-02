@@ -124,10 +124,7 @@ function stringifyElement(
     spaces: Spaces,
     element: PrimitiveTemplateElement
 ): string {
-    if ( element === eol ) {
-        return spaces.eol;
-    }
-    else if ( element === tab ) {
+    if ( element === tab ) {
         return spaces.tab;
     }
     else if ( element === _ ) {

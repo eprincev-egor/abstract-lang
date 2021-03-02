@@ -45,7 +45,9 @@ describe("AbstractNode.filterChildrenByInstance.spec.ts", () => {
             const SelectNode = createClass<{child?: any}>();
             const ExpressionNode = createClass<{child?: any}>();
 
-            const expression1 = new ExpressionNode({row: {}});
+            const expression1 = new ExpressionNode({row: {
+                child: false
+            }});
             const expression2 = new ExpressionNode({row: {
                 child: expression1
             }});

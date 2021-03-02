@@ -5,6 +5,7 @@ import {
     Token, Tokenizer,
     defaultMap
 } from "../../token";
+import { SourceCode } from "../SourceCode";
 
 describe("SyntaxError", () => {
     const codeExample = `    readWord(): string {
@@ -141,4 +142,14 @@ describe("SyntaxError", () => {
             "\n  32 |    }"
         );
     });
+
+    it("throw on outside token", () => {
+        const code = new SourceCode(tokens);
+        assert.throws(() => {
+            code.getCoords(987654321);
+        }, (err: Error) =>
+            /not found line for char position: 987654321/.test(err.message)
+        );
+    });
+
 });

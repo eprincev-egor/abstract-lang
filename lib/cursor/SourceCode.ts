@@ -39,10 +39,4 @@ export class SourceCode {
         );
         return fragment;
     }
-
-    toString(): string {
-        return this.lines.map((line) =>
-            line.toString()
-        ).join("\n");
-    }
 }

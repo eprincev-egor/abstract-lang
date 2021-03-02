@@ -35,6 +35,7 @@ describe("Cursor.node.spec.ts node methods", () => {
             return {word};
         }
 
+        // istanbul ignore next
         template() {
             return this.row.word;
         }
@@ -63,6 +64,7 @@ describe("Cursor.node.spec.ts node methods", () => {
                 right: string | Operator;
             }
             class Operator extends AbstractNode<OperatorRow> {
+                // istanbul ignore next
                 static entry() {
                     return true;
                 }
@@ -97,6 +99,7 @@ describe("Cursor.node.spec.ts node methods", () => {
                     return numb;
                 }
 
+                // istanbul ignore next
                 template() {
                     const {left, operator, right} = this.row;
                     return [left, operator, right];

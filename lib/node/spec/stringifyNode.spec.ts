@@ -129,4 +129,16 @@ describe("stringifyNode(node, spaces?)", () => {
         });
     });
 
+    it("serialize empty child", () => {
+        const child = Object.create(AbstractNode.prototype) as AbstractNode<any>;
+        child.template = () => [];
+
+        testStringifyNode({
+            template: () => [
+                tab, child, eol
+            ],
+            expectedString: "\n"
+        });
+    });
+
 });
