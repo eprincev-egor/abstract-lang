@@ -4,7 +4,8 @@ import {
     stringifyNode, Spaces, TemplateElement,
     setParent,
     toJSON,
-    deepClone
+    deepClone,
+    forEachChildNode
 } from "./util";
 
 
@@ -148,6 +149,22 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         return children;
     }
 
+    filterChildren(
+        iteration: (node: AbstractNode<AnyRow>) => boolean
+    ): Array<AbstractNode<AnyRow>> {
+
+        const children: Array<AbstractNode<AnyRow>> = [];
+
+        forEachChildNode(this, (node) => {
+            const result = iteration( node );
+
+            if ( result ) {
+                children.push( node );
+            }
+        });
+
+        return children;
+    }
 
     abstract template(): TemplateElement | TemplateElement[];
 
