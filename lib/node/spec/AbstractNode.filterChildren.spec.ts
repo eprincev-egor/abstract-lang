@@ -1,4 +1,9 @@
-import { empty, oneChild, humans } from "./fixture";
+import {
+    TestNode,
+    empty, oneChild, humans,
+    infinityRecursion,
+    primitive
+} from "./fixture";
 import assert from "assert";
 
 const getAnyChild = () => true;
@@ -26,6 +31,30 @@ describe("AbstractNode.filterChildren.spec.ts", () => {
             assert.strictEqual(result.length, 2);
             assert.ok(result[0] === humans.jack);
             assert.ok(result[1] === humans.bob);
+        });
+
+        it("infinity recursion", () => {
+            const result = infinityRecursion.filterChildren(getAnyChild);
+            assert.strictEqual(result.length, 0);
+        });
+
+        it("scan array of models", () => {
+            const node = new TestNode({row: {
+                items: [empty.clone(), primitive.clone()]
+            }});
+            const result = node.filterChildren(getAnyChild);
+            assert.strictEqual(result.length, 2);
+        });
+
+        it("scan dictionary of models", () => {
+            const node = new TestNode({row: {
+                dictionary: {
+                    a: empty.clone(),
+                    b: primitive.clone()
+                }
+            }});
+            const result = node.filterChildren(getAnyChild);
+            assert.strictEqual(result.length, 2);
         });
 
     });

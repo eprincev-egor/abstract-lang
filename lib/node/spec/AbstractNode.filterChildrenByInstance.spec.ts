@@ -1,4 +1,7 @@
-import { TestNode, ExpressionNode, SelectNode, empty, oneChild } from "./fixture";
+import {
+    TestNode, ExpressionNode, SelectNode,
+    empty, oneChild, infinityRecursion, primitive
+} from "./fixture";
 import assert from "assert";
 
 describe("AbstractNode.filterChildrenByInstance.spec.ts", () => {
@@ -55,6 +58,31 @@ describe("AbstractNode.filterChildrenByInstance.spec.ts", () => {
             assert.ok(result[0] === expression2, "expression2");
             assert.ok(result[1] === expression1, "expression1");
         });
+
+        it("infinity recursion", () => {
+            const result = infinityRecursion.filterChildrenByInstance(TestNode);
+            assert.strictEqual(result.length, 0);
+        });
+
+        it("scan array of models", () => {
+            const node = new TestNode({row: {
+                items: [empty.clone(), primitive.clone()]
+            }});
+            const result = node.filterChildrenByInstance(TestNode);
+            assert.strictEqual(result.length, 2);
+        });
+
+        it("scan dictionary of models", () => {
+            const node = new TestNode({row: {
+                dictionary: {
+                    a: empty.clone(),
+                    b: primitive.clone()
+                }
+            }});
+            const result = node.filterChildrenByInstance(TestNode);
+            assert.strictEqual(result.length, 2);
+        });
+
     });
 
 });

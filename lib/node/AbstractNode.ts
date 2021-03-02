@@ -132,21 +132,9 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     filterChildrenByInstance<T extends AbstractNode<AnyRow>>(
         Node: (new(... args: any[]) => T)
     ): T[] {
-        const children: T[] = [];
-        for (const value of Object.values(this.row)) {
-            if ( value instanceof Node ) {
-                const child = value;
-                children.push(child);
-            }
-
-            if ( value instanceof AbstractNode ) {
-                const node = value;
-                const subChildren = node.filterChildrenByInstance(Node);
-                children.push(...subChildren);
-            }
-        }
-
-        return children;
+        return this.filterChildren((node) =>
+            node instanceof Node
+        ) as T[];
     }
 
     filterChildren(
@@ -155,7 +143,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
         const children: Array<AbstractNode<AnyRow>> = [];
 
-        forEachChildNode(this, (node) => {
+        forEachChildNode(this.row, (node) => {
             const result = iteration( node );
 
             if ( result ) {

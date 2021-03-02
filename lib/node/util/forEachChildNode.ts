@@ -1,17 +1,36 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { AbstractNode, AnyRow } from "../AbstractNode";
+import { isPrimitive } from "./isPrimitive";
 
 export function forEachChildNode(
-    root: AbstractNode<AnyRow>,
-    iteration: (node: AbstractNode<AnyRow>) => void
+    root: unknown,
+    iteration: (node: AbstractNode<AnyRow>) => void,
+    stack: any[] = []
 ): void {
-    for (const key in root.row) {
-        const value = root.row[ key ];
+    if ( isPrimitive(root) || root instanceof Date ) {
+        return;
+    }
 
-        if ( value instanceof AbstractNode ) {
-            const child = value;
-            iteration(child);
-            forEachChildNode(child, iteration);
+    if ( stack.includes(root) ) {
+        return;
+    }
+    stack.push(root);
+
+    if ( root instanceof AbstractNode ) {
+        iteration(root);
+        forEachChildNode(root.row, iteration, stack);
+        return;
+    }
+
+    if ( Array.isArray(root) ) {
+        for (const item of root) {
+            forEachChildNode(item, iteration, stack);
         }
+        return;
+    }
+
+    const object = root as {[key: string]: any};
+    for (const key in object) {
+        const value = object[ key ] as unknown;
+        forEachChildNode(value, iteration, stack);
     }
 }
