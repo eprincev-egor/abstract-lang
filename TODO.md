@@ -1,4 +1,5 @@
 - SyntaxError.at(node)
+- colorize console message
 - node.filterChildren(cb)
 - node.findParent(cb)
 - node.filterParents(cb)

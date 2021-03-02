@@ -109,6 +109,25 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         }
     }
 
+    filterParents(
+        iteration: (node: AbstractNode<AnyRow>) => boolean
+    ): AbstractNode<AnyRow>[] {
+        const parents: Array<AbstractNode<AnyRow>> = [];
+        let parent = this.parent;
+
+        while ( parent ) {
+            const result = iteration( parent );
+
+            if ( result ) {
+                parents.push( parent );
+            }
+
+            parent = parent.parent;
+        }
+
+        return parents;
+    }
+
     filterChildrenByInstance<T extends AbstractNode<AnyRow>>(
         Node: (new(... args: any[]) => T)
     ): T[] {
