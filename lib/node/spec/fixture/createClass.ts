@@ -1,4 +1,4 @@
-import { AbstractNode } from "../AbstractNode";
+import { AbstractNode } from "../../AbstractNode";
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function createClass<T>() {

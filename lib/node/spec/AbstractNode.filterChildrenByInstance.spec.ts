@@ -1,28 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { createClass } from "./util";
+import { TestNode, ExpressionNode, SelectNode, empty, oneChild } from "./fixture";
 import assert from "assert";
 
 describe("AbstractNode.filterChildrenByInstance.spec.ts", () => {
 
     describe("node.filterChildrenByInstance(SomeNode)", () => {
-        const TestNode = createClass<{child?: any}>();
 
         it("no children", () => {
-            const node = new TestNode({row: {}});
-            const result = node.filterChildrenByInstance(TestNode);
+            const result = empty.filterChildrenByInstance(TestNode);
             assert.deepStrictEqual(result, []);
         });
 
         it("one child", () => {
-            const child = new TestNode({row: {}});
-            const parent = new TestNode({row: {
-                child
-            }});
-
-            const result = parent.filterChildrenByInstance(TestNode);
+            const result = oneChild.parent.filterChildrenByInstance(TestNode);
             assert.strictEqual(result.length, 1);
-            assert.ok(result[0] === child);
+            assert.ok(result[0] === oneChild.child);
         });
 
         it("many children", () => {
@@ -42,9 +33,6 @@ describe("AbstractNode.filterChildrenByInstance.spec.ts", () => {
         });
 
         it("filter correct instances", () => {
-            const SelectNode = createClass<{child?: any}>();
-            const ExpressionNode = createClass<{child?: any}>();
-
             const expression1 = new ExpressionNode({row: {
                 child: false
             }});

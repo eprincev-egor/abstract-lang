@@ -1,28 +1,13 @@
 /* eslint-disable unicorn/filename-case */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { createClass } from "./util";
+import { TestNode, primitive, testDate, infinityRecursion } from "./fixture";
 import assert from "assert";
 
 describe("AbstractNode.toJSON.spec.ts", () => {
 
     describe("node.toJSON()", () => {
-        const TestNode = createClass<any>();
 
         it("test simple data", () => {
-            const testDate = new Date();
-            const node = new TestNode({row: {
-                boolTrue: true,
-                boolFalse: false,
-                numb: 1,
-                str: "hello",
-                date: testDate,
-                arr: [{hello: "world"}],
-                obj: {hello: [{str: "world"}]}
-            }});
-
-            const json = node.toJSON();
-            assert.deepStrictEqual(json, {
+            assert.deepStrictEqual(primitive.toJSON(), {
                 boolTrue: true,
                 boolFalse: false,
                 numb: 1,
@@ -58,19 +43,8 @@ describe("AbstractNode.toJSON.spec.ts", () => {
         });
 
         it("infinity recursion", () => {
-            const a: any = {};
-            const b: any = {a, arr: [a]};
-            const c: any = {a, b, arr: [a, b]};
-            a.c = c;
-            a.b = b;
-            b.c = c;
-
-            const node = new TestNode({row: {
-                c
-            }});
-
             assert.throws(() => {
-                node.toJSON();
+                infinityRecursion.toJSON();
             }, (err: Error) =>
                 err.message === "Cannot converting circular structure to JSON"
             );

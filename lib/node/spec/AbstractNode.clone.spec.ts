@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { createClass } from "./util";
+import {
+    TestNode,
+    infinityRecursion, empty,
+    primitive, testDate,
+    oneChild
+} from "./fixture";
 import assert from "assert";
 
 describe("AbstractNode.clone.spec.ts", () => {
@@ -8,37 +12,16 @@ describe("AbstractNode.clone.spec.ts", () => {
     describe("node.clone()", () => {
 
         it("check instance", () => {
-            const TestNode = createClass();
-            const node = new TestNode({row: {}});
-            const clone = node.clone();
+            const clone = empty.clone();
 
             assert.ok( clone instanceof TestNode, "correct instance" );
-            assert.ok( clone !== node, "returned new object" );
+            assert.ok( clone !== empty, "returned new object" );
         });
 
         it("should have same row object", () => {
-            const TestNode = createClass<{
-                boolTrue: boolean;
-                boolFalse: boolean;
-                numb: number;
-                str: string;
-                date: Date;
-                arr: any[];
-                obj: {[key: string]: any};
-            }>();
-            const testDate = new Date();
-            const node = new TestNode({row: {
-                boolTrue: true,
-                boolFalse: false,
-                numb: 1,
-                str: "hello",
-                date: testDate,
-                arr: [{hello: "world"}],
-                obj: {hello: [{str: "world"}]}
-            }});
-            const clone = node.clone();
+            const clone = primitive.clone();
 
-            assert.ok( clone.row !== node.row, "clone.row is new object" );
+            assert.ok( clone.row !== primitive.row, "clone.row is new object" );
             assert.deepStrictEqual(clone.row, {
                 boolTrue: true,
                 boolFalse: false,
@@ -51,43 +34,24 @@ describe("AbstractNode.clone.spec.ts", () => {
         });
 
         it("node.row with infinity recursion", () => {
-            const TestNode = createClass<{value: any}>();
+            const clone = infinityRecursion.clone();
 
-            const a: any = {};
-            const b: any = {a, arr: [a]};
-            const c: any = {a, b, arr: [a, b]};
-            a.c = c;
-            a.b = b;
-            b.c = c;
-
-            const node = new TestNode({
-                row: {
-                    value: c
-                }
-            });
-            const clone = node.clone();
-
-            assert.ok( clone.row.value.a, "has a" );
-            assert.ok( clone.row.value.a.b, "has a.b" );
-            assert.ok( clone.row.value.a.b.c, "has a.b.c" );
-            assert.ok( clone.row.value.a.b.c.arr[0], "has a.b.c.arr[0]" );
-            assert.ok( clone.row.value.a.b.c.arr[1], "has a.b.c.arr[1]" );
+            assert.ok( clone.row.c.a, "has c.a" );
+            assert.ok( clone.row.c.a.b, "has c.a.b" );
+            assert.ok( clone.row.c.a.b.c, "has c.a.b.c" );
+            assert.ok( clone.row.c.a.b.c.arr[0], "has c.a.b.c.arr[0]" );
+            assert.ok( clone.row.c.a.b.c.arr[1], "has c.a.b.c.arr[1]" );
         });
 
         it("correct clone child Node", () => {
-            const TestNode = createClass<{child?: any}>();
-            const child = new TestNode({row: {}});
-            const parent = new TestNode({row: {child}});
-
-            const clone = parent.clone();
+            const clone = oneChild.parent.clone();
 
             assert.ok( clone.row.child instanceof TestNode, "correct instance" );
-            assert.ok( clone.row.child !== child, "child is new object" );
+            assert.ok( clone.row.child !== oneChild.child, "child is new object" );
             assert.ok( clone.row.child.parent === clone, "correct new child.parent" );
         });
 
         it("correct clone position", () => {
-            const TestNode = createClass();
             const node = new TestNode({
                 row: {},
                 position: {start: 100, end: 200}
@@ -103,7 +67,6 @@ describe("AbstractNode.clone.spec.ts", () => {
         });
 
         it("clone with changes", () => {
-            const TestNode = createClass<any>();
             const node = new TestNode({row: {
                 a: 1,
                 b: 2
@@ -119,9 +82,8 @@ describe("AbstractNode.clone.spec.ts", () => {
         });
 
         it("clone with changes, check new child.parent", () => {
-            const TestNode = createClass<{child?: any}>();
             const child = new TestNode({row: {}});
-            const parent = new TestNode({row: {}});
+            const parent = new TestNode({row: {child}});
 
             const clone = parent.clone({
                 child
