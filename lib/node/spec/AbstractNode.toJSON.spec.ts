@@ -12,6 +12,10 @@ describe("AbstractNode.toJSON.spec.ts", () => {
                 boolFalse: false,
                 numb: 1,
                 str: "hello",
+                // eslint-disable-next-line unicorn/no-null
+                NaN: null,
+                // eslint-disable-next-line unicorn/no-null
+                null: null,
                 date: testDate.toISOString(),
                 arr: [{hello: "world"}],
                 obj: {hello: [{str: "world"}]}

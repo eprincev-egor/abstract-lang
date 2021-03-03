@@ -13,6 +13,10 @@ export function deepClone<T>(
         return new Date( +value ) as unknown as T;
     }
 
+    if ( value instanceof RegExp ) {
+        return new RegExp(value.source, value.flags) as unknown as T;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const existentClone = stack.get(value);
     if ( existentClone ) {

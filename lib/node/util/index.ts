@@ -3,3 +3,4 @@ export * from "./setParent";
 export * from "./toJSON";
 export * from "./stringifyNode";
 export * from "./forEachChildNode";
+export * from "./deepEqual";

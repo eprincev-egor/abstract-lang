@@ -7,6 +7,10 @@ import { isPrimitive } from "./isPrimitive";
 
 export function toJSON(value: any, stack: any[] = []): any {
     if ( isPrimitive(value) ) {
+        if ( Number.isNaN(value) ) {
+            // eslint-disable-next-line unicorn/no-null
+            return null;
+        }
         return value;
     }
 
@@ -29,9 +33,21 @@ export function toJSON(value: any, stack: any[] = []): any {
         );
     }
 
+    const originalObject = value;
     const jsonObject: any = {};
-    for (const key in value) {
-        const jsonValue = toJSON( value[ key ], stack );
+    for (const key in originalObject) {
+        const originalValue = originalObject[ key ];
+        if ( typeof originalValue === "function" ) {
+            continue;
+        }
+        if ( originalValue === undefined ) {
+            continue;
+        }
+        if ( originalValue instanceof RegExp ) {
+            continue;
+        }
+
+        const jsonValue = toJSON( originalValue, stack );
         jsonObject[ key ] = jsonValue;
     }
 

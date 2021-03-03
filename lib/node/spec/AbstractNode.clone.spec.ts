@@ -2,7 +2,7 @@
 import {
     TestNode,
     infinityRecursion, empty,
-    primitive, testDate,
+    primitive,
     oneChild
 } from "./fixture";
 import assert from "assert";
@@ -22,15 +22,7 @@ describe("AbstractNode.clone.spec.ts", () => {
             const clone = primitive.clone();
 
             assert.ok( clone.row !== primitive.row, "clone.row is new object" );
-            assert.deepStrictEqual(clone.row, {
-                boolTrue: true,
-                boolFalse: false,
-                numb: 1,
-                str: "hello",
-                date: testDate,
-                arr: [{hello: "world"}],
-                obj: {hello: [{str: "world"}]}
-            });
+            assert.deepStrictEqual(clone.row, primitive.row);
         });
 
         it("node.row with infinity recursion", () => {

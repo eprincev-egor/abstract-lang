@@ -5,7 +5,8 @@ import {
     setParent,
     toJSON,
     deepClone,
-    forEachChildNode
+    forEachChildNode,
+    deepEqual
 } from "./util";
 
 
@@ -49,8 +50,6 @@ export type NodeJsonValue<T extends any> = (
         string :
     T extends boolean ?
         boolean :
-    T extends undefined ?
-        undefined :
     T extends null ?
         null :
     T extends Date ?
@@ -75,6 +74,14 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         setParent(this, Object.values(this.row));
     }
 
+    /** deep equal this.row and node.row */
+    equal(node: this): boolean {
+        return deepEqual(this.row, node.row);
+    }
+
+    // eslint-disable-next-line no-trailing-spaces
+    /** returns a new node with applied changes:  
+     * clone.row = {...node.row, ...changes} */
     clone(changes: Partial<TRow> = {}): this {
         const Node = this.constructor;
         const clone = Object.create(Node.prototype) as this;
@@ -160,6 +167,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         return stringifyNode(this, spaces);
     }
 
+    /** convert node to plain json structure */
     toJSON(): NodeJson<TRow> {
         return toJSON(this.row) as unknown as NodeJson<TRow>;
     }

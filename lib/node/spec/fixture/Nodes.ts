@@ -20,6 +20,15 @@ export const oneChild = {parent, child};
 export const testDate = new Date();
 /** node containing primitive values inside node.row */
 export const primitive = new TestNode({row: {
+    NaN: Number.NaN,
+    // eslint-disable-next-line unicorn/no-null
+    null: null,
+    undefined,
+    regExp: /\\test/gim,
+    // istanbul ignore next
+    func() {
+        return "";
+    },
     boolTrue: true,
     boolFalse: false,
     numb: 1,

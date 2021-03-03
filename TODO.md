@@ -1,6 +1,5 @@
 - SyntaxError.at(node)
 - colorize console message
-- node.equal(node)
 - create README
 - add simple html example
 - configure docs
