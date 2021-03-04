@@ -4,7 +4,7 @@ import { Token, TokenDescription } from "../Token";
  * End of line.
  * Mac/Windows/Unix
  */
-export class EolToken extends Token {
+export class EndOfLineToken extends Token {
 
     static description: TokenDescription = {
         entry: /[\n\r]/,

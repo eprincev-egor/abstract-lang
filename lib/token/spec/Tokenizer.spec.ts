@@ -5,12 +5,12 @@ import { Tokenizer } from "../Tokenizer";
 import { TokenMap } from "../TokenMap";
 import { Token, TokenDescription } from "../Token";
 import { EndOfFleToken } from "../EndOfFileToken";
-import { EolToken } from "../default/EolToken";
+import { EndOfLineToken } from "../default/EndOfLineToken";
 
 describe("Tokenizer", () => {
 
     const map = new TokenMap([
-        EolToken,
+        EndOfLineToken,
         SpaceToken,
         DigitsToken
     ]);

@@ -6,7 +6,7 @@ import {
     SpaceToken,
     WordToken,
     EndOfFleToken,
-    EolToken
+    EndOfLineToken
 } from "../../token";
 
 describe("Cursor.token.spec.ts token methods", () => {
@@ -105,9 +105,9 @@ describe("Cursor.token.spec.ts token methods", () => {
         it("don't change position if the next token has a different class", () => {
             tokens = [
                 new SpaceToken(" ", 0),
-                new EolToken("\r", 1),
+                new EndOfLineToken("\r", 1),
                 new SpaceToken(" ", 2),
-                new EolToken("\n", 3),
+                new EndOfLineToken("\n", 3),
                 new WordToken("correct", 4),
                 new EndOfFleToken(11)
             ];
@@ -120,15 +120,15 @@ describe("Cursor.token.spec.ts token methods", () => {
         it("skip all tokens with same classes", () => {
             tokens = [
                 new SpaceToken(" ", 0),
-                new EolToken("\r", 1),
+                new EndOfLineToken("\r", 1),
                 new SpaceToken(" ", 2),
-                new EolToken("\n", 3),
+                new EndOfLineToken("\n", 3),
                 new WordToken("correct", 4),
                 new EndOfFleToken(11)
             ];
             cursor = new Cursor(tokens);
 
-            cursor.skipAll(SpaceToken, EolToken);
+            cursor.skipAll(SpaceToken, EndOfLineToken);
             assert.ok( cursor.beforeValue("correct"), "before correct token" );
         });
 

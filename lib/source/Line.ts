@@ -1,4 +1,4 @@
-import { EndOfFleToken, EolToken, Token } from "../token";
+import { EndOfFleToken, EndOfLineToken, Token } from "../token";
 
 export interface LineParams {
     number: number;
@@ -16,7 +16,7 @@ export class Line {
         for (let i = 0, n = tokens.length; i < n; i++) {
             const token = tokens[i];
 
-            if ( token instanceof EolToken || token instanceof EndOfFleToken ) {
+            if ( token instanceof EndOfLineToken || token instanceof EndOfFleToken ) {
                 const line = new Line({
                     firstCharPosition,
                     number: lines.length + 1,

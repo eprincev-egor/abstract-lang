@@ -1,6 +1,6 @@
 import {
     AbstractNode,
-    Cursor, EolToken, SpaceToken,
+    Cursor, EndOfLineToken, SpaceToken,
     TemplateElement, _
 } from "abstract-lang";
 import { JsonElement } from "./JsonNode";
@@ -21,7 +21,7 @@ export class ArrayLiteral extends AbstractNode<ArrayRow> {
         let array: JsonElement[] = [];
 
         cursor.readValue("[");
-        cursor.skipAll(SpaceToken, EolToken);
+        cursor.skipAll(SpaceToken, EndOfLineToken);
 
         if ( cursor.before(JsonNode) ) {
             array = cursor.parseChainOf(JsonNode, ",").map((node) =>
@@ -29,7 +29,7 @@ export class ArrayLiteral extends AbstractNode<ArrayRow> {
             );
         }
 
-        cursor.skipAll(SpaceToken, EolToken);
+        cursor.skipAll(SpaceToken, EndOfLineToken);
         cursor.readValue("]");
 
         return {array};

@@ -1,6 +1,6 @@
 export * from "./BracketsToken";
 export * from "./DigitsToken";
-export * from "./EolToken";
+export * from "./EndOfLineToken";
 export * from "./OperatorsToken";
 export * from "./QuotesToken";
 export * from "./SpaceToken";

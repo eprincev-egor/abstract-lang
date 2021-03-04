@@ -1,4 +1,4 @@
-import { Token, TokenClass, EndOfFleToken, SpaceToken, EolToken } from "../token";
+import { Token, TokenClass, EndOfFleToken, SpaceToken, EndOfLineToken } from "../token";
 import {
     AbstractNode,
     AnyRow,
@@ -129,14 +129,14 @@ export class Cursor {
             const node = this.parse(Node);
             nodes.push(node);
 
-            this.skipAll(SpaceToken, EolToken);
+            this.skipAll(SpaceToken, EndOfLineToken);
 
             if ( delimiter ) {
                 if ( !this.beforeValue(delimiter) ) {
                     break;
                 }
                 this.readValue(delimiter);
-                this.skipAll(SpaceToken, EolToken);
+                this.skipAll(SpaceToken, EndOfLineToken);
             }
             else if ( !this.before(Node) ) {
                 break;

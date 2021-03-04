@@ -1,7 +1,7 @@
 import {
     AbstractNode,
     Cursor,
-    EolToken, SpaceToken,
+    EndOfLineToken, SpaceToken,
     TemplateElement, _
 } from "abstract-lang";
 import { JsonElement } from "./JsonNode";
@@ -22,9 +22,9 @@ export class ObjectItem extends AbstractNode<ObjectItemRow> {
     static parse(cursor: Cursor): ObjectItemRow {
         const key = cursor.parse(StringLiteral);
 
-        cursor.skipAll(SpaceToken, EolToken);
+        cursor.skipAll(SpaceToken, EndOfLineToken);
         cursor.readValue(":");
-        cursor.skipAll(SpaceToken, EolToken);
+        cursor.skipAll(SpaceToken, EndOfLineToken);
 
         const value = cursor.parse(cycleDeps.JsonNode).row.json;
 
