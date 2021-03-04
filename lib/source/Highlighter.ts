@@ -1,5 +1,9 @@
+import { Token } from "token";
 import { Fragment } from "./Fragment";
 import { Line } from "./Line";
+import { SourceCode } from "./SourceCode";
+
+const NEAR_LINES_QUANTITY = 4;
 
 export interface Underline {
     line: number;
@@ -13,8 +17,23 @@ export interface HighlighterParams {
 
 export class Highlighter {
 
-    static highlight(params: HighlighterParams): string {
-        return new Highlighter(params).print();
+    static highlightToken(code: SourceCode, token: Token): string {
+        const coords = code.getCoords(token.position);
+
+        const startLine = Math.max(
+            coords.line - 1 - NEAR_LINES_QUANTITY, 0
+        );
+        const endLine = coords.line + NEAR_LINES_QUANTITY;
+        const fragment = code.getFragment(startLine, endLine);
+
+        const highlighter = new Highlighter({
+            fragment,
+            underline: {
+                ...coords,
+                length: token.value.length
+            }
+        });
+        return highlighter.highlight();
     }
 
     private fragment: Fragment;
@@ -24,7 +43,7 @@ export class Highlighter {
         this.underline = params.underline;
     }
 
-    private print() {
+    private highlight() {
         const code: string[] = [];
 
         if ( this.fragment.existsLinesBefore ) {
@@ -42,7 +61,7 @@ export class Highlighter {
         }
 
 
-        return code.join("\n");
+        return "\n" + code.join("\n");
     }
 
     private printLine(line: Line): string {

@@ -4,8 +4,6 @@ import { Cursor } from "../cursor";
 import { Coords, SourceCode } from "./SourceCode";
 import { Highlighter } from "./Highlighter";
 
-const NEAR_LINES_QUANTITY = 4;
-
 export interface SyntaxErrorParams {
     message: string;
     coords: Coords;
@@ -19,25 +17,12 @@ export class SyntaxError extends Error {
         const code = SourceCode.fromTokens(cursor.tokens);
         const coords = code.getCoords(token.position);
 
-        const startLine = Math.max(
-            coords.line - 1 - NEAR_LINES_QUANTITY, 0
-        );
-        const endLine = coords.line + NEAR_LINES_QUANTITY;
-        const fragment = code.getFragment(startLine, endLine);
-        const highlightedFragment = Highlighter.highlight({
-            fragment,
-            underline: {
-                ...coords,
-                length: token.value.length
-            }
-        });
-
         return new SyntaxError({
             message: [
                 `SyntaxError: ${message}`,
                 `line ${coords.line}, column ${coords.column}`,
                 "",
-                highlightedFragment
+                Highlighter.highlightToken(code, token)
             ].join("\n"),
             token,
             coords

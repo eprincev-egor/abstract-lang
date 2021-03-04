@@ -1,45 +1,13 @@
 import assert from "assert";
+import { codeExample } from "./fixture";
 import { Cursor } from "../../cursor/Cursor";
 import { SyntaxError } from "../SyntaxError";
 import {
     Token, Tokenizer,
     defaultMap
 } from "../../token";
-import { SourceCode } from "../SourceCode";
 
 describe("SyntaxError", () => {
-    const codeExample = `    readWord(): string {
-        let word = "";
-
-        const startIndex = this.i;
-        if ( startIndex === this.lastWordStartIndex ) {
-            this.i = this.lastWordEndIndex!;
-            return this.lastWord!;
-        }
-
-        this.skipSpace();
-
-        for (; this.i < this.n; this.i++) {
-            const symbol = this.str[ this.i ];
-
-            if ( /[^\\w]/.test(symbol) ) {
-                break;
-            }
-
-            word += symbol;
-        }
-
-        this.skipSpace();
-
-        const endIndex = this.i;
-        const lowerWord = word.toLowerCase();
-        
-        this.lastWordStartIndex = startIndex;
-        this.lastWordEndIndex = endIndex;
-        this.lastWord = lowerWord;
-
-        return lowerWord;
-    }`;
     let tokens!: readonly Token[];
     let cursor!: Cursor;
     beforeEach(() => {
@@ -51,9 +19,8 @@ describe("SyntaxError", () => {
     });
 
     const testErrorMessage = "unexpected token";
-    const shouldBeMessage = "SyntaxError: unexpected token";
 
-    it("show 4 lines before invalid token and 4 lines after", () => {
+    it("syntax error on line 10", () => {
         const testToken = tokens.find((token) =>
             token.value === "skipSpace"
         ) as Token;
@@ -63,30 +30,15 @@ describe("SyntaxError", () => {
 
         assert.deepStrictEqual(err.coords, {
             line: 10,
-            column: 14
+            column: 10
         });
 
-        assert.strictEqual(
-            err.message,
-            shouldBeMessage +
-            "\nline 10, column 14" +
-            "\n" +
-            "\n  ...|" +
-            "\n   6 |            this.i = this.lastWordEndIndex!;" +
-            "\n   7 |            return this.lastWord!;" +
-            "\n   8 |        }" +
-            "\n   9 |" +
-            "\n> 10 |        this.skipSpace();" +
-            "\n                   ^^^^^^^^^" +
-            "\n  11 |" +
-            "\n  12 |        for (; this.i < this.n; this.i++) {" +
-            "\n  13 |            const symbol = this.str[ this.i ];" +
-            "\n  14 |" +
-            "\n  ...|"
-        );
+        assert.ok( err.message.includes(
+            "\n> 10 |    this.skipSpace();"
+        ) );
     });
 
-    it("show code fragment with target on first line", () => {
+    it("syntax error on line 1", () => {
         const testToken = tokens.find((token) =>
             token.value === "readWord"
         ) as Token;
@@ -96,25 +48,15 @@ describe("SyntaxError", () => {
 
         assert.deepStrictEqual(err.coords, {
             line: 1,
-            column: 5
+            column: 1
         });
 
-        assert.strictEqual(
-            err.message,
-            shouldBeMessage +
-            "\nline 1, column 5" +
-            "\n" +
-            "\n> 1 |    readWord(): string {" +
-            "\n         ^^^^^^^^" +
-            "\n  2 |        let word = \"\";" +
-            "\n  3 |" +
-            "\n  4 |        const startIndex = this.i;" +
-            "\n  5 |        if ( startIndex === this.lastWordStartIndex ) {" +
-            "\n  ...|"
-        );
+        assert.ok( err.message.includes(
+            "\n> 1 |readWord(): string {"
+        ) );
     });
 
-    it("show code fragment with target before last line", () => {
+    it("syntax error on line 31", () => {
         const testToken = tokens.slice().reverse().find((token) =>
             token.value === "lowerWord"
         ) as Token;
@@ -124,32 +66,12 @@ describe("SyntaxError", () => {
 
         assert.deepStrictEqual(err.coords, {
             line: 31,
-            column: 16
+            column: 12
         });
 
-        assert.strictEqual(
-            err.message,
-            shouldBeMessage +
-            "\nline 31, column 16" +
-            "\n" +
-            "\n  ...|" +
-            "\n  27 |        this.lastWordStartIndex = startIndex;" +
-            "\n  28 |        this.lastWordEndIndex = endIndex;" +
-            "\n  29 |        this.lastWord = lowerWord;" +
-            "\n  30 |" +
-            "\n> 31 |        return lowerWord;" +
-            "\n                     ^^^^^^^^^" +
-            "\n  32 |    }"
-        );
-    });
-
-    it("throw on outside token", () => {
-        const code = SourceCode.fromTokens(tokens);
-        assert.throws(() => {
-            code.getCoords(987654321);
-        }, (err: Error) =>
-            /not found line for char position: 987654321/.test(err.message)
-        );
+        assert.ok( err.message.includes(
+            "\n> 31 |    return lowerWord;"
+        ) );
     });
 
 });
