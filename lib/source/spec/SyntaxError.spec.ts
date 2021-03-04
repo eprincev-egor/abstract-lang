@@ -144,7 +144,7 @@ describe("SyntaxError", () => {
     });
 
     it("throw on outside token", () => {
-        const code = new SourceCode(tokens);
+        const code = SourceCode.fromTokens(tokens);
         assert.throws(() => {
             code.getCoords(987654321);
         }, (err: Error) =>
