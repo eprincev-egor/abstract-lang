@@ -1,6 +1,7 @@
 import assert from "assert";
 import { DigitsToken, SpaceToken } from "../../token";
-import { Cursor, SyntaxError } from "../../cursor";
+import { Cursor } from "../../cursor";
+import { SyntaxError } from "../../source";
 import { AbstractNode, Spaces, _ } from "../../node";
 import { assertNode, SuccessTest } from "../assertNode";
 

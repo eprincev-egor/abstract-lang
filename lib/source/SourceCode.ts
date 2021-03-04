@@ -1,5 +1,5 @@
 import { Token } from "../token";
-import { CodeFragment } from "./CodeFragment";
+import { Fragment } from "./Fragment";
 import { Line } from "./Line";
 
 export interface Coords {
@@ -30,9 +30,9 @@ export class SourceCode {
         throw new Error(`not found line for char position: ${charPosition}`);
     }
 
-    getFragment(token: Token): CodeFragment {
+    getFragment(token: Token): Fragment {
         const coords = this.getCoords(token.position);
-        const fragment = CodeFragment.from(
+        const fragment = Fragment.from(
             this.lines,
             coords,
             token.value.length

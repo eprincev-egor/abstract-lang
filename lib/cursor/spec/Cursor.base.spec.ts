@@ -1,6 +1,6 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SyntaxError } from "../SyntaxError";
+import { SyntaxError } from "../../source";
 import {
     Token, Tokenizer,
     defaultMap,

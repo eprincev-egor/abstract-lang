@@ -4,7 +4,7 @@ import {
     AnyRow,
     NodeClass
 } from "../node";
-import { SyntaxError } from "./SyntaxError";
+import { SyntaxError } from "../source";
 
 /** Text cursor between some tokens */
 export class Cursor {

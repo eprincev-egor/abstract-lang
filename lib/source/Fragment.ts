@@ -8,13 +8,13 @@ export interface FragmentTarget {
 
 const NEAR_LINES_QUANTITY = 4;
 
-export class CodeFragment {
+export class Fragment {
 
     static from(
         allLines: readonly Line[],
         startCoords: Coords,
         targetLength: number
-    ): CodeFragment {
+    ): Fragment {
         const target: FragmentTarget = {
             start: startCoords,
             end: {
@@ -23,7 +23,7 @@ export class CodeFragment {
             }
         };
 
-        return new CodeFragment(
+        return new Fragment(
             allLines,
             target
         );

@@ -1,5 +1,5 @@
 import assert from "assert";
-import { Cursor } from "../Cursor";
+import { Cursor } from "../../cursor/Cursor";
 import { SyntaxError } from "../SyntaxError";
 import {
     Token, Tokenizer,

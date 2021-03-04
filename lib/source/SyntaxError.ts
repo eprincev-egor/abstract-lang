@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/error-message */
 import { Token } from "../token";
-import { Cursor } from "./Cursor";
+import { Cursor } from "../cursor";
 import { Coords, SourceCode } from "./SourceCode";
 
 export interface SyntaxErrorParams {
