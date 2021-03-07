@@ -89,14 +89,18 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     // eslint-disable-next-line no-trailing-spaces
     /** returns a new node with applied changes:  
      * clone.row = {...node.row, ...changes} */
-    clone(changes: Partial<TRow> = {}): this {
+    clone(
+        changes: Partial<TRow> = {},
+        stack: WeakMap<any, any> = new WeakMap()
+    ): this {
         const Node = this.constructor;
         const clone = Object.create(Node.prototype) as this;
+        stack.set(this, clone);
 
         (clone as any).row = deepClone({
             ...this.row,
             ...changes
-        });
+        }, stack);
 
         setParent(clone, Object.values(clone.row));
 
@@ -113,12 +117,14 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     /** returns a clone of this node with deeply replaced nodes */
     replace(
-        replace: <T extends AbstractNode<AnyRow>>(node: T) => T | void
+        replace: <T extends AbstractNode<AnyRow>>(node: T) => T | void,
+        stack: WeakMap<any, any> = new WeakMap()
     ): this {
         const Node = this.constructor;
         const clone = Object.create(Node.prototype) as this;
+        stack.set(this, clone);
 
-        (clone as any).row = deepClone(this.row, replace);
+        (clone as any).row = deepClone(this.row, stack, replace);
 
         setParent(clone, Object.values(clone.row));
 

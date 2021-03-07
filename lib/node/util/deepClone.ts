@@ -6,8 +6,8 @@ type Replacer = <T extends AbstractNode<AnyRow>>(node: T) => T | void;
 
 export function deepClone<T>(
     value: T,
-    replace?: Replacer,
-    stack: WeakMap<any, any> = new WeakMap()
+    stack: WeakMap<any, any>,
+    replace?: Replacer
 ): T {
     if ( isPrimitive(value) ) {
         return value;
@@ -28,7 +28,7 @@ export function deepClone<T>(
     }
 
     if ( value instanceof AbstractNode ) {
-        return deepCloneNode(value, replace);
+        return deepCloneNode(value, stack, replace);
     }
 
     if ( Array.isArray(value) ) {
@@ -47,23 +47,24 @@ export function deepClone<T>(
 
 function deepCloneNode<T extends AbstractNode<any>>(
     originalNode: T,
+    stack: WeakMap<any, any>,
     replace?: Replacer
 ): T {
     if ( replace ) {
         const replaced = replace(originalNode);
 
         if ( replaced === originalNode ) {
-            return originalNode.clone();
+            return originalNode.clone({}, stack);
         }
 
         if ( replaced ) {
             return replaced;
         }
 
-        return originalNode.replace(replace);
+        return originalNode.replace(replace, stack);
     }
 
-    return originalNode.clone() as unknown as T;
+    return originalNode.clone(stack) as unknown as T;
 }
 
 function deepCloneArray<T>(
@@ -77,8 +78,8 @@ function deepCloneArray<T>(
     for (const item of originalArray) {
         const itemClone = deepClone(
             item,
-            replace,
-            stack
+            stack,
+            replace
         );
         arrayClone.push(itemClone);
     }
@@ -97,8 +98,8 @@ function deepClonePojo<T extends {[key: string]: unknown}>(
     for (const key in originalObject) {
         objectClone[ key ] = deepClone(
             originalObject[ key ],
-            replace,
-            stack
+            stack,
+            replace
         );
     }
 

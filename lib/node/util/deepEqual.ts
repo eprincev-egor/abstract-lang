@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { AbstractNode } from "node/AbstractNode";
@@ -8,10 +9,6 @@ export function deepEqual(
     b: unknown,
     stack: WeakMap<any, any> = new WeakMap()
 ): boolean {
-
-    if ( a instanceof AbstractNode && b instanceof AbstractNode ) {
-        return deepEqual(a.row, b.row);
-    }
 
     if ( Number.isNaN(a) && Number.isNaN(b) ) {
         return true;
@@ -25,6 +22,22 @@ export function deepEqual(
         return +a === +b;
     }
 
+    const stackResults = stack.get(a);
+    if ( stackResults ) {
+        if ( stackResults.get(b) ) {
+            return true;
+        }
+        stackResults.set(b, true);
+    }
+    else {
+        stack.set(a, new WeakMap());
+    }
+
+
+    if ( a instanceof AbstractNode && b instanceof AbstractNode ) {
+        return deepEqualObject(a.row, b.row, stack);
+    }
+
     if ( Array.isArray(a) && Array.isArray(b) ) {
         return deepEqualArray(a, b, stack);
     }
@@ -36,12 +49,6 @@ function deepEqualArray(a: any[], b: any[], stack: WeakMap<any, any>) {
     if ( a.length !== b.length ) {
         return false;
     }
-
-    const stackValue = stack.get(a);
-    if ( stackValue ) {
-        return stackValue === b;
-    }
-    stack.set(a, b);
 
     for (let i = 0, n = a.length; i < n; i++) {
         const aItem = a[ i ];
@@ -59,12 +66,6 @@ interface anyObject {
     [key: string]: any;
 }
 function deepEqualObject(a: anyObject, b: anyObject, stack: WeakMap<any, any>) {
-    const stackValue = stack.get(a);
-    if ( stackValue ) {
-        return stackValue === b;
-    }
-    stack.set(a, b);
-
     for (const key in a) {
         const myValue = a[ key ];
         const himValue = b[ key ];

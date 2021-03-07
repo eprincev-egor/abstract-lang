@@ -49,6 +49,11 @@ const c: any = {a, b, arr: [a, b]};
 a.c = c;
 a.b = b;
 b.c = c;
+const someNode = new TestNode({row: {a, b, c}});
+c.someNode = someNode;
+b.someNode = someNode;
+a.someNode = someNode;
+
 /** node containing an object with infinite references inside node.row */
 export const infinityRecursion = new TestNode({row: {
     c

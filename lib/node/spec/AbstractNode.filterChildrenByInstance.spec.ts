@@ -61,7 +61,7 @@ describe("AbstractNode.filterChildrenByInstance.spec.ts", () => {
 
         it("infinity recursion", () => {
             const result = infinityRecursion.filterChildrenByInstance(TestNode);
-            assert.strictEqual(result.length, 0);
+            assert.strictEqual(result.length, 1);
         });
 
         it("scan array of models", () => {
