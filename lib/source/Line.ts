@@ -19,7 +19,7 @@ export class Line {
     containsPosition(charPosition: number): boolean {
         return (
             charPosition >= this.firstCharPosition &&
-            charPosition < this.firstCharPosition + this.text.length
+            charPosition <= this.firstCharPosition + this.text.length
         );
     }
 

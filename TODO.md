@@ -1,4 +1,6 @@
 - SyntaxError.at(node)
+- replace(node, node) (deep scan)
+- RootNode (file or source code) need for linters
 - colorize console message
 - create README
 - add simple html example

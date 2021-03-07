@@ -1,4 +1,3 @@
-import { Token } from "token";
 import { Fragment } from "./Fragment";
 import { Line } from "./Line";
 import { SourceCode } from "./SourceCode";
@@ -10,14 +9,32 @@ export interface Underline {
     column: number;
     length: number;
 }
-export interface HighlighterParams {
+export interface BorderLine {
+    start: number;
+    end: number;
+}
+export type HighlighterParams = {
     fragment: Fragment;
     underline: Underline;
+} | {
+    fragment: Fragment;
+    borderLine: BorderLine;
+}
+
+export interface HighlightToken {
+    position: number;
+    value: string;
+}
+export interface HighlightNode {
+    position: {
+        start: number;
+        end: number;
+    };
 }
 
 export class Highlighter {
 
-    static highlightToken(code: SourceCode, token: Token): string {
+    static highlightToken(code: SourceCode, token: HighlightToken): string {
         const coords = code.getCoords(token.position);
 
         const startLine = Math.max(
@@ -36,11 +53,35 @@ export class Highlighter {
         return highlighter.highlight();
     }
 
+    static highlightNode(code: SourceCode, node: HighlightNode): string {
+        const start = code.getCoords(node.position.start);
+        const end = code.getCoords(node.position.end);
+        const fragment = code.getFragment(
+            start.line - NEAR_LINES_QUANTITY - 1,
+            end.line + NEAR_LINES_QUANTITY
+        );
+
+        const highlighter = new Highlighter({
+            fragment,
+            borderLine: {
+                start: start.line,
+                end: end.line
+            }
+        });
+        return highlighter.highlight();
+    }
+
     private fragment: Fragment;
-    private underline: Underline;
+    private underline?: Underline;
+    private borderLine?: BorderLine;
     private constructor(params: HighlighterParams) {
         this.fragment = params.fragment;
-        this.underline = params.underline;
+        if ( "underline" in params ) {
+            this.underline = params.underline;
+        }
+        else {
+            this.borderLine = params.borderLine;
+        }
     }
 
     private highlight() {
@@ -52,7 +93,9 @@ export class Highlighter {
 
         code.push(
             ...this.fragment.lines.map((line) =>
-                this.printLine(line)
+                this.isSelectedLine(line) ?
+                    this.printSelectedLine(line) :
+                    this.printLine(line)
             )
         );
 
@@ -64,14 +107,16 @@ export class Highlighter {
         return "\n" + code.join("\n");
     }
 
-    private printLine(line: Line): string {
-        if ( line.number === this.underline.line ) {
-            return [
-                `> ${ this.printLineNumber(line) } |${ line.text }`,
-                this.printUnderline()
-            ].join("\n");
+    private printSelectedLine(line: Line) {
+        let output = `> ${ this.printLineNumber(line) } |${ line.text }`;
+        if ( this.underline ) {
+            output += "\n";
+            output += this.printUnderline();
         }
+        return output;
+    }
 
+    private printLine(line: Line) {
         return `  ${ this.printLineNumber(line) } |${ line.text }`;
     }
 
@@ -84,6 +129,10 @@ export class Highlighter {
     }
 
     private printUnderline() {
+        if ( !this.underline ) {
+            return "";
+        }
+
         const spaces = " ".repeat(
             this.underline.column +
             // every line printed with:
@@ -94,5 +143,19 @@ export class Highlighter {
         );
         const underLine = "^".repeat(this.underline.length);
         return `${ spaces }${ underLine }`;
+    }
+
+    private isSelectedLine(line: Line) {
+        if ( this.underline ) {
+            return line.number === this.underline.line;
+        }
+        else if ( this.borderLine ) {
+            return (
+                line.number >= this.borderLine.start &&
+                line.number <= this.borderLine.end
+            );
+        }
+
+        return false;
     }
 }
