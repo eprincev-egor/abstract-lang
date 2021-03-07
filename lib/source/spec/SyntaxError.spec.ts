@@ -1,5 +1,5 @@
 import assert from "assert";
-import { codeExample } from "./fixture";
+import { codeExample } from "../highlighter/spec/fixture";
 import { Cursor } from "../../cursor/Cursor";
 import { SyntaxError } from "../SyntaxError";
 import {

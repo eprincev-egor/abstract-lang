@@ -2,7 +2,7 @@
 import { Token } from "../token";
 import { Cursor } from "../cursor";
 import { Coords, SourceCode } from "./SourceCode";
-import { Highlighter } from "./Highlighter";
+import { TokenHighlighter } from "./highlighter";
 
 export interface SyntaxErrorParams {
     message: string;
@@ -22,7 +22,7 @@ export class SyntaxError extends Error {
                 `SyntaxError: ${message}`,
                 `line ${coords.line}, column ${coords.column}`,
                 "",
-                Highlighter.highlightToken(code, token)
+                TokenHighlighter.highlight(code, token)
             ].join("\n"),
             token,
             coords
