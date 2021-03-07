@@ -7,7 +7,7 @@ import {
 } from "./fixture";
 import assert from "assert";
 
-describe("AbstractNode.clone.spec.ts", () => {
+describe("AbstractNode/clone.spec.ts", () => {
 
     describe("node.clone()", () => {
 

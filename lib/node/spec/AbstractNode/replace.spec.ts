@@ -7,7 +7,7 @@ import {
 } from "./fixture";
 import assert from "assert";
 
-describe("AbstractNode.replace.spec.ts", () => {
+describe("AbstractNode/replace.spec.ts", () => {
 
     describe("node.replace(cb)", () => {
 

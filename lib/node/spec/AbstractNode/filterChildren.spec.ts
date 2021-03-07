@@ -8,7 +8,7 @@ import assert from "assert";
 
 const getAnyChild = () => true;
 
-describe("AbstractNode.filterChildren.spec.ts", () => {
+describe("AbstractNode/filterChildren.spec.ts", () => {
 
     describe("node.filterChildren(cb(node) => boolean)", () => {
 

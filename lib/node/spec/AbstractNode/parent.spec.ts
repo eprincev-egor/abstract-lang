@@ -1,7 +1,7 @@
 import { infinityRecursion, TestNode } from "./fixture";
 import assert from "assert";
 
-describe("AbstractNode.parent.spec.ts", () => {
+describe("AbstractNode/parent.spec.ts", () => {
 
     describe("node.parent", () => {
 

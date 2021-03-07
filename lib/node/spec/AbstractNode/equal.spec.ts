@@ -10,7 +10,7 @@ import {
 } from "./fixture";
 import assert from "assert";
 
-describe("AbstractNode.equal.spec.ts", () => {
+describe("AbstractNode/equal.spec.ts", () => {
 
     describe("node.equal(node)", () => {
 

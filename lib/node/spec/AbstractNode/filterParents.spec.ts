@@ -3,7 +3,7 @@ import assert from "assert";
 
 const getAnyParent = () => true;
 
-describe("AbstractNode.filterParents.spec.ts", () => {
+describe("AbstractNode/filterParents.spec.ts", () => {
 
     describe("node.filterParents(cb(node) => boolean)", () => {
 

@@ -1,7 +1,11 @@
-import { TestNode, SelectNode, ExpressionNode, oneChild, empty } from "./fixture";
+import {
+    TestNode,
+    SelectNode, ExpressionNode,
+    oneChild, empty
+} from "./fixture";
 import assert from "assert";
 
-describe("AbstractNode.findParentInstance.spec.ts", () => {
+describe("AbstractNode/findParentInstance.spec.ts", () => {
 
     describe("node.findParentInstance(SomeNode)", () => {
 

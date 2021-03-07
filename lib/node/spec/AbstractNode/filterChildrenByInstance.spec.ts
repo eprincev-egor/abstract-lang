@@ -1,10 +1,11 @@
 import {
-    TestNode, ExpressionNode, SelectNode,
+    TestNode,
+    ExpressionNode, SelectNode,
     empty, oneChild, infinityRecursion, primitive
 } from "./fixture";
 import assert from "assert";
 
-describe("AbstractNode.filterChildrenByInstance.spec.ts", () => {
+describe("AbstractNode/filterChildrenByInstance.spec.ts", () => {
 
     describe("node.filterChildrenByInstance(SomeNode)", () => {
 

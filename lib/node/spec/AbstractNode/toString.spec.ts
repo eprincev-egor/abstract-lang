@@ -1,8 +1,8 @@
-import { AbstractNode } from "../AbstractNode";
-import { eol, tab, _ } from "../util";
+import { AbstractNode } from "../../AbstractNode";
+import { eol, tab, _ } from "../../util";
 import assert from "assert";
 
-describe("AbstractNode.toString.spec.ts", () => {
+describe("AbstractNode/toString.spec.ts", () => {
 
     describe("toString()", () => {
 

@@ -3,7 +3,7 @@ import {
 } from "./fixture";
 import assert from "assert";
 
-describe("AbstractNode.is.spec.ts", () => {
+describe("AbstractNode/is.spec.ts", () => {
 
     describe("node.is()", () => {
 

@@ -6,7 +6,7 @@ import {
     Token, Tokenizer,
     defaultMap
 } from "../../token";
-import { TestNode } from "../../node/spec/fixture";
+import { TestNode } from "../../node/spec/AbstractNode/fixture";
 
 describe("SyntaxError", () => {
     let tokens!: readonly Token[];

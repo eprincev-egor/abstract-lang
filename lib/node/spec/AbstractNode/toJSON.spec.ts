@@ -2,7 +2,7 @@
 import { TestNode, primitive, testDate, infinityRecursion } from "./fixture";
 import assert from "assert";
 
-describe("AbstractNode.toJSON.spec.ts", () => {
+describe("AbstractNode/toJSON.spec.ts", () => {
 
     describe("node.toJSON()", () => {
 
