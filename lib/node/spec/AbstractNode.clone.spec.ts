@@ -25,6 +25,23 @@ describe("AbstractNode.clone.spec.ts", () => {
             assert.deepStrictEqual(clone.row, primitive.row);
         });
 
+        it("changed clone cannot have position", () => {
+            const original = new TestNode({
+                row: {value: "original"},
+                position: {
+                    start: 0,
+                    end: 8
+                }
+            });
+            const clone = original.clone({
+                value: "clone"
+            });
+
+            assert.strictEqual(
+                clone.position, undefined
+            );
+        });
+
         it("node.row with infinity recursion", () => {
             const clone = infinityRecursion.clone();
 

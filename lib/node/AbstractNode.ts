@@ -74,6 +74,13 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         setParent(this, Object.values(this.row));
     }
 
+    /** returns true if this is instance of Node */
+    is<T extends AbstractNode<AnyRow>>(
+        Node: (new(... args: any[]) => T)
+    ): this is T {
+        return this instanceof Node;
+    }
+
     /** deep equal this.row and node.row */
     equal(node: this): boolean {
         return deepEqual(this.row, node.row);
@@ -94,12 +101,26 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         setParent(clone, Object.values(clone.row));
 
         const position = this.position;
-        if ( position ) {
+        if ( position && Object.values(changes).length === 0 ) {
             (clone as any).position = {
                 start: position.start,
                 end: position.end
             };
         }
+
+        return clone;
+    }
+
+    /** returns a clone of this node with deeply replaced nodes */
+    replace(
+        replace: <T extends AbstractNode<AnyRow>>(node: T) => T | void
+    ): this {
+        const Node = this.constructor;
+        const clone = Object.create(Node.prototype) as this;
+
+        (clone as any).row = deepClone(this.row, replace);
+
+        setParent(clone, Object.values(clone.row));
 
         return clone;
     }

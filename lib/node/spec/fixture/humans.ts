@@ -1,17 +1,28 @@
-import { TestNode } from "./Nodes";
+import { AbstractNode } from "node/AbstractNode";
 
-const bob = new TestNode({row: {
+export interface HumanRow {
+    name: string;
+    child?: HumanNode;
+}
+export class HumanNode extends AbstractNode<HumanRow> {
+    // istanbul ignore next
+    template(): string {
+        return this.row.name;
+    }
+}
+
+const bob = new HumanNode({row: {
     name: "bob"
 }});
-const jack = new TestNode({row: {
+const jack = new HumanNode({row: {
     name: "jack",
     child: bob
 }});
-const jane = new TestNode({row: {
+const jane = new HumanNode({row: {
     name: "jane",
     child: jack
 }});
-const oliver = new TestNode({row: {
+const oliver = new HumanNode({row: {
     name: "oliver",
     child: jane
 }});
