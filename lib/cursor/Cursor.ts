@@ -62,12 +62,18 @@ export class Cursor {
         return Node.entry(this);
     }
 
+    /** returns true if next token.value.toLowerCase() === word */
+    beforeWord(word: string): boolean {
+        return this.nextToken_.value.toLowerCase() === word;
+    }
+
     /** move cursor if next token value is correct, else throw error */
     readValue<T extends string>(expectedTokenValue: T): T {
         if ( this.nextToken_.value !== expectedTokenValue ) {
             if ( this.beforeEnd() ) {
-                this.nextToken;
-                this.throwError(`reached end of code, but expected token: "${expectedTokenValue}"`);
+                this.throwError(
+                    `reached end of code, but expected token: "${expectedTokenValue}"`
+                );
             }
 
             this.throwError([
@@ -78,6 +84,57 @@ export class Cursor {
 
         this.next();
         return expectedTokenValue;
+    }
+
+    /** move cursor if next token.value.toLowerCase() is correct, else throw error */
+    readWord(expectedWord: string): string {
+        const actualWord = this.nextToken_.value;
+
+        if ( actualWord.toLowerCase() !== expectedWord ) {
+            if ( this.beforeEnd() ) {
+                this.throwError(
+                    `reached end of code, but expected word: "${expectedWord}"`
+                );
+            }
+
+            this.throwError([
+                `unexpected token: "${actualWord}",`,
+                `expected word: "${expectedWord}"`
+            ].join(" "));
+        }
+
+        this.next();
+        this.skipAll(SpaceToken, EndOfLineToken);
+
+        return actualWord;
+    }
+
+    /** returns true if cursor before series of words (ignore case) */
+    beforePhrase(...words: string[]): boolean {
+        const startToken = this.nextToken_;
+        for (const word of words) {
+
+            if ( !this.beforeWord(word) ) {
+                this.nextToken_ = startToken;
+                return false;
+            }
+
+            this.next();
+            this.skipAll(SpaceToken, EndOfLineToken);
+        }
+
+        this.nextToken_ = startToken;
+        return true;
+    }
+
+    /** move cursor after this words or throw error */
+    readPhrase(...expectedWords: string[]): string[] {
+        const actualWords: string[] = [];
+        for (const expectedWord of expectedWords) {
+            const actualWord = this.readWord(expectedWord);
+            actualWords.push( actualWord );
+        }
+        return actualWords;
     }
 
     /**
@@ -167,7 +224,7 @@ export class Cursor {
         }
     }
 
-    /** skip all tokens with same class */
+    /** skip all tokens with same classes */
     skipAll(...SkipTokens: TokenClass[]): void {
         while (
             SkipTokens.some((SkipThisTokenClass) =>
