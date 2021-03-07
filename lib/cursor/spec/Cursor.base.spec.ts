@@ -43,86 +43,6 @@ describe("Cursor.base.spec.ts base methods", () => {
         assert.ok( !cursor.beforeValue("world") );
     });
 
-    it("readValue('hello')", () => {
-        const result = cursor.readValue("hello");
-        assert.strictEqual( result, "hello" );
-        assert.ok( cursor.beforeValue(" ") );
-    });
-
-    it("readValue('wrong') throw an error if the next token has a different value", () => {
-        assert.throws(() => {
-            cursor.readValue("world");
-        }, (err: Error) =>
-            err instanceof SyntaxError &&
-            /unexpected token: "hello", expected: "world"/.test(err.message)
-        );
-    });
-
-    it("readValue(...) throw an error if the next token is EOF", () => {
-        cursor.next();
-        cursor.next();
-        cursor.next();
-
-        assert.throws(() => {
-            cursor.readValue("missed");
-        }, (err: Error) =>
-            err instanceof SyntaxError &&
-            /reached end of code, but expected token: "missed"/.test(err.message)
-        );
-    });
-
-    it("next() cannot move position after last token", () => {
-        cursor.next();
-        cursor.next();
-        cursor.next();
-
-        assert.throws(() => {
-            cursor.next();
-        }, (err: Error) =>
-            err instanceof SyntaxError &&
-            /reached end of tokens/.test(err.message)
-        );
-    });
-
-    describe("setPositionBefore(Token)", () => {
-
-        it("set position before world", () => {
-            const hello = tokens[0];
-            const world = tokens[2];
-
-            cursor.setPositionBefore(world);
-            assert.ok(
-                cursor.beforeValue("world"),
-                "set position before world, now before world"
-            );
-
-            cursor.setPositionBefore(hello);
-            assert.ok(
-                cursor.beforeValue("hello"),
-                "set position before hello, now before hello"
-            );
-        });
-
-        it("set position before unknown token", () => {
-            const unknownToken = new Token("test", 999);
-            assert.throws(() => {
-                cursor.setPositionBefore(unknownToken);
-            }, (err: Error) =>
-                /cannot set position before unknown token: "test"/.test(err.message)
-            );
-
-            assert.strictEqual(cursor.nextToken.value, "hello");
-        });
-    });
-
-    it("next() move cursor on one token", () => {
-        cursor.next();
-        assert.ok( cursor.beforeValue(" "), "now before space" );
-
-        cursor.next();
-        assert.ok( cursor.beforeValue("world"), "now before world" );
-    });
-
     it("beforeEnd()", () => {
         cursor.next();
         assert.ok( !cursor.beforeEnd() );
@@ -160,6 +80,93 @@ describe("Cursor.base.spec.ts base methods", () => {
         assert.strictEqual( actualError.coords.line, 1, "valid line" );
         assert.strictEqual( actualError.coords.column, 6, "valid column" );
         assert.strictEqual( actualError.token, cursor.nextToken, "valid token" );
+    });
+
+    describe("readValue(value)", () => {
+
+        it("read and move", () => {
+            const result = cursor.readValue("hello");
+            assert.strictEqual( result, "hello" );
+            assert.ok( cursor.beforeValue(" ") );
+        });
+
+        it("throw an error if the next token has a different value", () => {
+            assert.throws(() => {
+                cursor.readValue("world");
+            }, (err: Error) =>
+                err instanceof SyntaxError &&
+                /unexpected token: "hello", expected: "world"/.test(err.message)
+            );
+        });
+
+        it("throw an error if the next token is EOF", () => {
+            cursor.next();
+            cursor.next();
+            cursor.next();
+
+            assert.throws(() => {
+                cursor.readValue("missed");
+            }, (err: Error) =>
+                err instanceof SyntaxError &&
+                /reached end of code, but expected token: "missed"/.test(err.message)
+            );
+        });
+    });
+
+    describe("next()", () => {
+
+        it("cannot move position after last token", () => {
+            cursor.next();
+            cursor.next();
+            cursor.next();
+
+            assert.throws(() => {
+                cursor.next();
+            }, (err: Error) =>
+                err instanceof SyntaxError &&
+                /reached end of tokens/.test(err.message)
+            );
+        });
+
+        it("move cursor on one token", () => {
+            cursor.next();
+            assert.ok( cursor.beforeValue(" "), "now before space" );
+
+            cursor.next();
+            assert.ok( cursor.beforeValue("world"), "now before world" );
+        });
+
+    });
+
+    describe("setPositionBefore(Token)", () => {
+
+        it("set position before world", () => {
+            const hello = tokens[0];
+            const world = tokens[2];
+
+            cursor.setPositionBefore(world);
+            assert.ok(
+                cursor.beforeValue("world"),
+                "set position before world, now before world"
+            );
+
+            cursor.setPositionBefore(hello);
+            assert.ok(
+                cursor.beforeValue("hello"),
+                "set position before hello, now before hello"
+            );
+        });
+
+        it("set position before unknown token", () => {
+            const unknownToken = new Token("test", 999);
+            assert.throws(() => {
+                cursor.setPositionBefore(unknownToken);
+            }, (err: Error) =>
+                /cannot set position before unknown token: "test"/.test(err.message)
+            );
+
+            assert.strictEqual(cursor.nextToken.value, "hello");
+        });
     });
 
 });
