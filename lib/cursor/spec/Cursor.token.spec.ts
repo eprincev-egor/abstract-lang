@@ -1,5 +1,6 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
+import { SyntaxError } from "../../source";
 import {
     Token, Tokenizer,
     defaultMap,
@@ -43,6 +44,7 @@ describe("Cursor.token.spec.ts token methods", () => {
             assert.throws(() => {
                 cursor.read(SpaceToken);
             }, (err: Error) =>
+                err instanceof SyntaxError &&
                 /unexpected token WordToken\("hello"\), expected: SpaceToken/.test(err.message)
             );
         });
@@ -55,6 +57,7 @@ describe("Cursor.token.spec.ts token methods", () => {
             assert.throws(() => {
                 cursor.read(WordToken);
             }, (err: Error) =>
+                err instanceof SyntaxError &&
                 /reached end of code, but expected token: WordToken/.test(err.message)
             );
         });

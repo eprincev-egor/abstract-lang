@@ -53,6 +53,7 @@ describe("Cursor.base.spec.ts base methods", () => {
         assert.throws(() => {
             cursor.readValue("world");
         }, (err: Error) =>
+            err instanceof SyntaxError &&
             /unexpected token: "hello", expected: "world"/.test(err.message)
         );
     });
@@ -65,6 +66,7 @@ describe("Cursor.base.spec.ts base methods", () => {
         assert.throws(() => {
             cursor.readValue("missed");
         }, (err: Error) =>
+            err instanceof SyntaxError &&
             /reached end of code, but expected token: "missed"/.test(err.message)
         );
     });
@@ -77,6 +79,7 @@ describe("Cursor.base.spec.ts base methods", () => {
         assert.throws(() => {
             cursor.next();
         }, (err: Error) =>
+            err instanceof SyntaxError &&
             /reached end of tokens/.test(err.message)
         );
     });
@@ -160,7 +163,3 @@ describe("Cursor.base.spec.ts base methods", () => {
     });
 
 });
-
-// cursor.beforeWord("xx");
-// cursor.readWord("xx");
-// cursor.readPhrase("a", "b", "c");

@@ -4,3 +4,6 @@
 - create README
 - add simple html example
 - configure docs
+- cursor.beforeWord("xx");
+- cursor.readWord("xx");
+- cursor.readPhrase("a", "b", "c");

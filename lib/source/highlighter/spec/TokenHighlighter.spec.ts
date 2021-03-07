@@ -4,7 +4,8 @@ import { SourceCode } from "../../SourceCode";
 import { TokenHighlighter } from "../TokenHighlighter";
 import {
     Token, Tokenizer,
-    defaultMap
+    defaultMap,
+    EndOfFleToken
 } from "../../../token";
 
 describe("TokenHighlighter", () => {
@@ -76,6 +77,24 @@ describe("TokenHighlighter", () => {
             "\n> 31 |    return lowerWord;" +
             "\n                 ^^^^^^^^^" +
             "\n  32 |}"
+        );
+    });
+
+    it("highlight end of file", () => {
+        const eofToken = tokens.find((token) =>
+            token instanceof EndOfFleToken
+        ) as EndOfFleToken;
+
+        assert.strictEqual(
+            TokenHighlighter.highlight(code, eofToken),
+
+            "\n  ...|" +
+            "\n  28 |    this.lastWordEndIndex = endIndex;" +
+            "\n  29 |    this.lastWord = lowerWord;" +
+            "\n  30 |" +
+            "\n  31 |    return lowerWord;" +
+            "\n> 32 |}" +
+            "\n       "
         );
     });
 

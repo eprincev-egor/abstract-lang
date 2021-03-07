@@ -1,4 +1,7 @@
-import { Token, TokenClass, EndOfFleToken, SpaceToken, EndOfLineToken } from "../token";
+import {
+    Token, TokenClass,
+    EndOfFleToken, SpaceToken, EndOfLineToken
+} from "../token";
 import {
     AbstractNode,
     AnyRow,
@@ -64,10 +67,10 @@ export class Cursor {
         if ( this.nextToken_.value !== expectedTokenValue ) {
             if ( this.beforeEnd() ) {
                 this.nextToken;
-                throw new Error(`reached end of code, but expected token: "${expectedTokenValue}"`);
+                this.throwError(`reached end of code, but expected token: "${expectedTokenValue}"`);
             }
 
-            throw new Error([
+            this.throwError([
                 `unexpected token: "${this.nextToken_.value}",`,
                 `expected: "${expectedTokenValue}"`
             ].join(" "));
@@ -93,13 +96,13 @@ export class Cursor {
         const invalidTokenName = invalidToken.constructor.name;
 
         if ( this.beforeEnd() ) {
-            throw new Error([
+            this.throwError([
                 "reached end of code,",
                 `but expected token: ${ExpectedTokenClass.name}`
             ].join(" "));
         }
 
-        throw new Error([
+        this.throwError([
             `unexpected token ${invalidTokenName}("${invalidToken.value}"),`,
             `expected: ${ExpectedTokenClass.name}`
         ].join(" "));
@@ -186,7 +189,7 @@ export class Cursor {
      */
     next(): void {
         if ( this.beforeEnd() ) {
-            throw new Error("reached end of tokens");
+            this.throwError("cannot move cursor, reached end of tokens");
         }
 
         this.tokenIndex++;

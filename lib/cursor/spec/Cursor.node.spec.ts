@@ -1,6 +1,7 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
 import { AbstractNode } from "../../node";
+import { SyntaxError } from "../../source";
 import {
     Token, Tokenizer,
     defaultMap,
@@ -183,6 +184,7 @@ describe("Cursor.node.spec.ts node methods", () => {
             assert.throws(() => {
                 cursor.parseChainOf(WordNode, ";");
             }, (err: Error) =>
+                err instanceof SyntaxError &&
                 /unexpected token SpaceToken\(" "\), expected: WordToken/.test(err.message)
             );
         });
@@ -197,6 +199,7 @@ describe("Cursor.node.spec.ts node methods", () => {
             assert.throws(() => {
                 cursor.parseChainOf(WordNode, ";");
             }, (err: Error) =>
+                err instanceof SyntaxError &&
                 /unexpected token DigitsToken\("123"\), expected: WordToken/.test(err.message)
             );
         });
