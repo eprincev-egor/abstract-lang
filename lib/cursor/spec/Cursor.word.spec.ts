@@ -151,6 +151,10 @@ describe("Cursor.word.spec.ts word methods", () => {
                 cursor.beforePhrase("hello", "world"),
                 true
             );
+            // don't move position
+            assert.ok(
+                cursor.beforeWord("hello")
+            );
         });
 
         it("before phrase 'unknown' 'phrase'", () => {
@@ -158,12 +162,20 @@ describe("Cursor.word.spec.ts word methods", () => {
                 cursor.beforePhrase("unknown", "phrase"),
                 false
             );
+            // don't move position
+            assert.ok(
+                cursor.beforeWord("hello")
+            );
         });
 
         it("before phrase 'hello' 'wrong'", () => {
             assert.strictEqual(
                 cursor.beforePhrase("hello", "wrong"),
                 false
+            );
+            // don't move position
+            assert.ok(
+                cursor.beforeWord("hello")
             );
         });
 
