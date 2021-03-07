@@ -237,7 +237,10 @@ export class Cursor {
 
     /** throw syntax error at near current position */
     throwError(message: string): never {
-        throw SyntaxError.at(this, message);
+        throw SyntaxError.at({
+            cursor: this,
+            message
+        });
     }
 
     /**

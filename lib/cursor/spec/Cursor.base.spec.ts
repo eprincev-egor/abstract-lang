@@ -79,7 +79,7 @@ describe("Cursor.base.spec.ts base methods", () => {
         assert.ok( actualError instanceof SyntaxError );
         assert.strictEqual( actualError.coords.line, 1, "valid line" );
         assert.strictEqual( actualError.coords.column, 6, "valid column" );
-        assert.strictEqual( actualError.token, cursor.nextToken, "valid token" );
+        assert.strictEqual( actualError.target, cursor.nextToken, "valid token" );
     });
 
     describe("readValue(value)", () => {

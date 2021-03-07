@@ -6,6 +6,7 @@ import {
     Token, Tokenizer,
     defaultMap
 } from "../../token";
+import { TestNode } from "../../node/spec/fixture";
 
 describe("SyntaxError", () => {
     let tokens!: readonly Token[];
@@ -18,7 +19,7 @@ describe("SyntaxError", () => {
         cursor = new Cursor(tokens);
     });
 
-    const testErrorMessage = "unexpected token";
+    const message = "unexpected token";
 
     it("syntax error on line 10", () => {
         const testToken = tokens.find((token) =>
@@ -26,7 +27,7 @@ describe("SyntaxError", () => {
         ) as Token;
         cursor.setPositionBefore(testToken);
 
-        const err = SyntaxError.at(cursor, testErrorMessage);
+        const err = SyntaxError.at({cursor, message});
 
         assert.deepStrictEqual(err.coords, {
             line: 10,
@@ -44,7 +45,7 @@ describe("SyntaxError", () => {
         ) as Token;
         cursor.setPositionBefore(testToken);
 
-        const err = SyntaxError.at(cursor, testErrorMessage);
+        const err = SyntaxError.at({cursor, message});
 
         assert.deepStrictEqual(err.coords, {
             line: 1,
@@ -62,7 +63,7 @@ describe("SyntaxError", () => {
         ) as Token;
         cursor.setPositionBefore(testToken);
 
-        const err = SyntaxError.at(cursor, testErrorMessage);
+        const err = SyntaxError.at({cursor, message});
 
         assert.deepStrictEqual(err.coords, {
             line: 31,
@@ -72,6 +73,39 @@ describe("SyntaxError", () => {
         assert.ok( err.message.includes(
             "\n> 31 |    return lowerWord;"
         ) );
+    });
+
+    it("syntax error at node", () => {
+        const node = new TestNode({
+            row: {},
+            position: {
+                start: 274,
+                end: 307
+            }
+        });
+        const err = SyntaxError.at({cursor, node, message});
+
+        assert.deepStrictEqual(err.coords, {
+            line: 13,
+            column: 9
+        });
+
+        assert.ok( err.message.includes(
+            "\n> 13 |        const symbol = this.str[ this.i ];" +
+            "\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        ));
+    });
+
+    it("syntax error at node without position", () => {
+        const node = new TestNode({
+            row: {}
+        });
+
+        assert.throws(() => {
+            SyntaxError.at({cursor, node, message});
+        }, (err: Error) =>
+            /node should have position/.test(err.message)
+        );
     });
 
 });
