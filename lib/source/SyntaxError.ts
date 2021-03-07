@@ -12,6 +12,7 @@ export interface SyntaxErrorParams {
 
 export class SyntaxError extends Error {
 
+    /** generate error with code fragment at near current token */
     static at(cursor: Cursor, message: string): SyntaxError {
         const token = cursor.nextToken;
         const code = SourceCode.fromTokens(cursor.tokens);

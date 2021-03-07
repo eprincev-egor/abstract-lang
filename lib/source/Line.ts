@@ -15,7 +15,7 @@ export class Line {
         this.text = params.text;
     }
 
-    /** return true if the char position is between token start and end */
+    /** returns true if the char position is between token start and end */
     containsPosition(charPosition: number): boolean {
         return (
             charPosition >= this.firstCharPosition &&

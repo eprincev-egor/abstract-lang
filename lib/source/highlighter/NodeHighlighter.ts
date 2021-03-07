@@ -17,6 +17,7 @@ export interface HighlightNode {
 
 export class NodeHighlighter extends AbstractHighlighter {
 
+    /** highlight lines with a node */
     static highlight(code: SourceCode, node: HighlightNode): string {
         const start = code.getCoords(node.position.start);
         const end = code.getCoords(node.position.end);

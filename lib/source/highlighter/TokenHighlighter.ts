@@ -15,6 +15,7 @@ export interface Underline {
 
 export class TokenHighlighter extends AbstractHighlighter {
 
+    /** highlight single line with a token and underline under the token */
     static highlight(code: SourceCode, token: HighlightToken): string {
         const coords = code.getCoords(token.position);
 
