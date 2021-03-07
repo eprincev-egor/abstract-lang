@@ -68,13 +68,8 @@ export class Token {
         this.position = position;
     }
 
-    /** equal token value with string */
-    is(equal: string): boolean {
-        return this.value === equal;
-    }
-
-    startsWith(value: string): boolean {
-        return this.value.indexOf(value) === 0;
+    get length(): number {
+        return this.value.length;
     }
 
     toJSON(): {value: string; position: number} {

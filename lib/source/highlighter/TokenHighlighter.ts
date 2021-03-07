@@ -5,7 +5,7 @@ import { Line } from "../Line";
 
 export interface HighlightToken {
     position: number;
-    value: string;
+    length: number;
 }
 export interface Underline {
     line: number;
@@ -29,7 +29,7 @@ export class TokenHighlighter extends AbstractHighlighter {
             fragment,
             underline: {
                 ...coords,
-                length: token.value.length
+                length: token.length
             }
         });
         return highlighter.highlight();

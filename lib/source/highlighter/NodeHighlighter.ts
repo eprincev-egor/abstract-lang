@@ -2,6 +2,7 @@ import { AbstractHighlighter, NEAR_LINES_QUANTITY } from "./AbstractHighlighter"
 import { SourceCode } from "../SourceCode";
 import { Fragment } from "../Fragment";
 import { Line } from "../Line";
+import { TokenHighlighter } from "./TokenHighlighter";
 
 export interface BorderLine {
     start: number;
@@ -21,6 +22,14 @@ export class NodeHighlighter extends AbstractHighlighter {
     static highlight(code: SourceCode, node: HighlightNode): string {
         const start = code.getCoords(node.position.start);
         const end = code.getCoords(node.position.end);
+
+        if ( end.line === start.line ) {
+            return TokenHighlighter.highlight(code, {
+                position: node.position.start,
+                length: node.position.end - node.position.start
+            });
+        }
+
         const fragment = code.getFragment(
             start.line - NEAR_LINES_QUANTITY - 1,
             end.line + NEAR_LINES_QUANTITY
