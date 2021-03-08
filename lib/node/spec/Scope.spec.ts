@@ -1,10 +1,31 @@
 /* eslint-disable class-methods-use-this */
 import assert from "assert";
-import { TestNode } from "./AbstractNode/fixture";
 import { Scope } from "../Scope";
 import { AbstractNode } from "../AbstractNode";
 
 describe("Scope", () => {
+
+    class TestDeclaration extends AbstractNode<{
+        declare: string;
+    }> {
+        // istanbul ignore next
+        template() {
+            return [];
+        }
+    }
+    class TestDependency extends AbstractNode<{
+        use: string;
+    }> {
+        isDependentOn(declarationNode: TestDeclaration) {
+            return declarationNode.row.declare === this.row.use;
+        }
+
+        // istanbul ignore next
+        template() {
+            return [];
+        }
+    }
+
 
     it("new scope", () => {
         const scope = new Scope();
@@ -22,17 +43,6 @@ describe("Scope", () => {
 
     describe("findDeclaration(dependencyNode)", () => {
 
-        class TestDependency extends AbstractNode<any> {
-            isDependentOn(declarationNode: TestDependency) {
-                return declarationNode.row.declare === this.row.use;
-            }
-
-            // istanbul ignore next
-            template() {
-                return [];
-            }
-        }
-
         it("declaration not found", () => {
             const scope = new Scope();
             const dependency = new TestDependency({row: {
@@ -46,10 +56,10 @@ describe("Scope", () => {
         });
 
         it("inside current scope with two declarations", () => {
-            const declaration1 = new TestNode({row: {
+            const declaration1 = new TestDeclaration({row: {
                 declare: "1"
             }});
-            const declaration2 = new TestNode({row: {
+            const declaration2 = new TestDeclaration({row: {
                 declare: "2"
             }});
 
@@ -80,7 +90,7 @@ describe("Scope", () => {
             const scopeParent = new Scope();
             const scopeChild = new Scope(scopeParent);
 
-            const declaration = new TestNode({row: {
+            const declaration = new TestDeclaration({row: {
                 declare: "1"
             }});
             scopeParent.declare(declaration);
@@ -94,6 +104,7 @@ describe("Scope", () => {
                 declaration
             );
         });
+
     });
 
 });
