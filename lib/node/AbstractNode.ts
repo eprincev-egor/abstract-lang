@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Cursor } from "../cursor";
+import { Scope } from "./Scope";
 import {
     stringifyNode, Spaces, TemplateElement,
     setParent,
@@ -63,6 +64,8 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     /** reference to parent node */
     parent?: AbstractNode<AnyRow>;
+    /** helper object with dependencies/declarations */
+    scope?: Scope;
     /** object with node attributes */
     readonly row: Readonly<TRow>;
     /** if node has been parsed, then we a have position within source code */
