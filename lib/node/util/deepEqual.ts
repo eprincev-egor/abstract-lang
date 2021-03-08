@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { AbstractNode } from "node/AbstractNode";
+import { AbstractNode } from "../AbstractNode";
 import { isPrimitive } from "./isPrimitive";
 
 export function deepEqual(

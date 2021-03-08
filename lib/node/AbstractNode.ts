@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Cursor } from "../cursor";
-import { Scope } from "./Scope";
 import {
     stringifyNode, Spaces, TemplateElement,
-    setParent,
     toJSON,
     deepClone,
     forEachChildNode,
-    deepEqual
+    deepEqual,
+    setParent
 } from "./util";
 
 
@@ -64,8 +63,6 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     /** reference to parent node */
     parent?: AbstractNode<AnyRow>;
-    /** helper object with dependencies/declarations */
-    scope?: Scope;
     /** object with node attributes */
     readonly row: Readonly<TRow>;
     /** if node has been parsed, then we a have position within source code */
@@ -74,7 +71,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     constructor(params: NodeParams<TRow>) {
         this.row = params.row;
         this.position = params.position;
-        setParent(this, Object.values(this.row));
+        setParent(this);
     }
 
     /** returns true if this is instance of Node */
@@ -104,8 +101,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
             ...this.row,
             ...changes
         }, stack);
-
-        setParent(clone, Object.values(clone.row));
+        setParent(clone);
 
         const position = this.position;
         if ( position && Object.values(changes).length === 0 ) {
@@ -128,8 +124,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         stack.set(this, clone);
 
         (clone as any).row = deepClone(this.row, stack, replace);
-
-        setParent(clone, Object.values(clone.row));
+        setParent(clone);
 
         return clone;
     }

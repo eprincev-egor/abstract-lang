@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { AbstractNode, AnyRow } from "node/AbstractNode";
+import { AbstractNode, AnyRow } from "../AbstractNode";
 import { isPrimitive } from "./isPrimitive";
 
 type Replacer = <T extends AbstractNode<AnyRow>>(node: T) => T | void;

@@ -1,25 +1,10 @@
-import { AbstractNode } from "../AbstractNode";
+import { AbstractNode, AnyRow } from "../AbstractNode";
+import { findChildren } from "./findChildren";
 
-export function setParent(
-    parent: AbstractNode<any>,
-    children: any[],
-    stack: any[] = []
-): void {
-    for (const child of children) {
-        if ( stack.includes(child) ) {
-            continue;
-        }
-        stack.push(child);
+export function setParent(node: AbstractNode<AnyRow>): void {
+    const values = Object.values(node);
 
-        if ( child instanceof AbstractNode ) {
-            child.parent = parent;
-        }
-        else if ( Array.isArray(child) ) {
-            const unknownArray = child;
-            setParent(parent, unknownArray, stack);
-        }
-        else if ( child && typeof child === "object" ) {
-            setParent(parent, Object.values(child), stack);
-        }
+    for (const child of findChildren(values)) {
+        child.parent = node;
     }
 }
