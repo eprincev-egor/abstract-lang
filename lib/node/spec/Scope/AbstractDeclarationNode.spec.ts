@@ -8,7 +8,7 @@ describe("AbstractDeclarationNode", () => {
 
     describe("findDependencies()", () => {
 
-        it("required scope for declaration", () => {
+        xit("required scope for declaration", () => {
             const declaration = new TestDeclarationNode({row: {}});
 
             assert.throws(() => {
