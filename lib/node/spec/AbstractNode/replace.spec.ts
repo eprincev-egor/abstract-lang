@@ -54,14 +54,14 @@ describe("AbstractNode/replace.spec.ts", () => {
         });
 
         it("replace inside array", () => {
-            const child1 = new HumanNode(() => ({row: {name: "child1"}}));
-            const child2 = new HumanNode(() => ({row: {name: "child2"}}));
+            const child1 = new HumanNode({row: {name: "child1"}});
+            const child2 = new HumanNode({row: {name: "child2"}});
 
-            const parent = new TestNode(() => ({
+            const parent = new TestNode({
                 row: {
                     arr: [child1, child2]
                 }
-            }));
+            });
 
             const result = parent.replace((child) => {
                 if ( child.is(HumanNode) && child.row.name === "child1" ) {
@@ -80,17 +80,17 @@ describe("AbstractNode/replace.spec.ts", () => {
         });
 
         it("replace inside dictionary", () => {
-            const child1 = new HumanNode(() => ({row: {name: "item1"}}));
-            const child2 = new HumanNode(() => ({row: {name: "item2"}}));
+            const child1 = new HumanNode({row: {name: "item1"}});
+            const child2 = new HumanNode({row: {name: "item2"}});
 
-            const parent = new TestNode(() => ({
+            const parent = new TestNode({
                 row: {
                     dictionary: {
                         a: child1,
                         b: child2
                     }
                 }
-            }));
+            });
 
             const result = parent.replace((child) => {
                 if ( child.is(HumanNode) && child.row.name === "item2" ) {

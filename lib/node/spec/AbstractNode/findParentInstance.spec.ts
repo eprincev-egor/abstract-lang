@@ -20,13 +20,13 @@ describe("AbstractNode/findParentInstance.spec.ts", () => {
         });
 
         it("find concrete parent", () => {
-            const childExpression = new ExpressionNode(() => ({row: {}}));
-            const parentExpression = new ExpressionNode(() => ({row: {
+            const childExpression = new ExpressionNode({row: {}});
+            const parentExpression = new ExpressionNode({row: {
                 child: childExpression
-            }}));
-            const select = new SelectNode(() => ({row: {
+            }});
+            const select = new SelectNode({row: {
                 child: parentExpression
-            }}));
+            }});
 
             assert.ok(
                 childExpression.findParentInstance(SelectNode) === select,

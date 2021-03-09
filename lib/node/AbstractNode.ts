@@ -13,7 +13,7 @@ import {
 export interface NodeClass<TNode extends AbstractNode<AnyRow>> {
     entry(cursor: Cursor): boolean;
     parse(cursor: Cursor): TNode["row"];
-    new(params: CreateNodeParams<TNode["row"]>): TNode;
+    new(params: NodeParams<TNode["row"]>): TNode;
 }
 
 export interface AnyRow {
@@ -25,7 +25,7 @@ export interface NodePosition {
     end: number;
 }
 
-export type CreateNodeParams<TRow extends AnyRow> = (parent: AbstractNode<TRow>) => {
+export interface NodeParams<TRow extends AnyRow> {
     parent?: AbstractNode<AnyRow>;
     row: TRow;
     position?: {
@@ -68,8 +68,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     /** if node has been parsed, then we a have position within source code */
     readonly position?: NodePosition;
 
-    constructor(createParams: CreateNodeParams<TRow>) {
-        const params = createParams(this);
+    constructor(params: NodeParams<TRow>) {
         this.row = params.row;
         this.position = params.position;
         setParent(this);

@@ -76,13 +76,13 @@ describe("SyntaxError", () => {
     });
 
     it("syntax error at node", () => {
-        const node = new TestNode(() => ({
+        const node = new TestNode({
             row: {},
             position: {
                 start: 274,
                 end: 307
             }
-        }));
+        });
         const err = SyntaxError.at({cursor, node, message});
 
         assert.deepStrictEqual(err.coords, {
@@ -97,9 +97,9 @@ describe("SyntaxError", () => {
     });
 
     it("syntax error at node without position", () => {
-        const node = new TestNode(() => ({
+        const node = new TestNode({
             row: {}
-        }));
+        });
 
         assert.throws(() => {
             SyntaxError.at({cursor, node, message});

@@ -9,7 +9,7 @@ describe("AbstractDependencyNode", () => {
     describe("findDeclaration()", () => {
 
         it("required scope for dependency", () => {
-            const dependency = new TestDependencyNode(() => ({row: {}}));
+            const dependency = new TestDependencyNode({row: {}});
 
             assert.throws(() => {
                 dependency.findDeclaration();
@@ -19,10 +19,10 @@ describe("AbstractDependencyNode", () => {
         });
 
         it("no declaration", () => {
-            const dependency = new TestDependencyNode(() => ({row: {}}));
-            new TestScopeNode(() => ({row: {
+            const dependency = new TestDependencyNode({row: {}});
+            new TestScopeNode({row: {
                 dependency
-            }}));
+            }});
 
             assert.strictEqual(
                 dependency.findDeclaration(),

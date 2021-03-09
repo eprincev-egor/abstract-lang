@@ -119,8 +119,7 @@
             "rules": {
                 "@typescript-eslint/no-magic-numbers": "off",
                 "max-classes-per-file": "off",
-                "sonarjs/cognitive-complexity": "off",
-                "sonarjs/no-identical-functions": "off"
+                "sonarjs/cognitive-complexity": "off"
             }
         },
         {

@@ -23,20 +23,20 @@ describe("AbstractNode/toJSON.spec.ts", () => {
         });
 
         it("child models to json", () => {
-            const child1 = new TestNode(() => ({
+            const child1 = new TestNode({
                 row: {name: "child1"}
-            }));
-            const child2 = new TestNode(() => ({
+            });
+            const child2 = new TestNode({
                 row: {name: "child2"}
-            }));
-            const child3 = new TestNode(() => ({
+            });
+            const child3 = new TestNode({
                 row: {name: "child3"}
-            }));
-            const node = new TestNode(() => ({row: {
+            });
+            const node = new TestNode({row: {
                 a: child1,
                 b: [child2],
                 c: {x: child3}
-            }}));
+            }});
 
             const json = node.toJSON();
             assert.deepStrictEqual(json, {
