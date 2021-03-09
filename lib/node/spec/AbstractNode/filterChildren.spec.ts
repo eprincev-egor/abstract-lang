@@ -39,20 +39,20 @@ describe("AbstractNode/filterChildren.spec.ts", () => {
         });
 
         it("scan array of models", () => {
-            const node = new TestNode({row: {
+            const node = new TestNode(() => ({row: {
                 items: [empty.clone(), primitive.clone()]
-            }});
+            }}));
             const result = node.filterChildren(getAnyChild);
             assert.strictEqual(result.length, 2);
         });
 
         it("scan dictionary of models", () => {
-            const node = new TestNode({row: {
+            const node = new TestNode(() => ({row: {
                 dictionary: {
                     a: empty.clone(),
                     b: primitive.clone()
                 }
-            }});
+            }}));
             const result = node.filterChildren(getAnyChild);
             assert.strictEqual(result.length, 2);
         });

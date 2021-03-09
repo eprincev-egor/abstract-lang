@@ -15,20 +15,20 @@ describe("Scope", () => {
     let scopeChildNode!: TestScopeNode;
     let scopeChild!: Scope;
     beforeEach(() => {
-        scopeNode = new TestScopeNode({
+        scopeNode = new TestScopeNode(() => ({
             row: {}
-        });
+        }));
         scope = new Scope(scopeNode);
 
-        scopeParentNode = new TestScopeNode({
+        scopeParentNode = new TestScopeNode(() => ({
             row: {}
-        });
+        }));
         scopeParent = new Scope(scopeParentNode);
 
-        scopeChildNode = new TestScopeNode({
+        scopeChildNode = new TestScopeNode(() => ({
             row: {},
             parent: scopeParentNode
-        });
+        }));
         scopeChild = new Scope(scopeChildNode, scopeParent);
     });
 
@@ -47,9 +47,9 @@ describe("Scope", () => {
     describe("findDeclaration(dependencyNode)", () => {
 
         it("declaration not found", () => {
-            const dependency = new TestDependencyNode({row: {
+            const dependency = new TestDependencyNode(() => ({row: {
                 use: "unknown"
-            }});
+            }}));
 
             assert.strictEqual(
                 scope.findDeclaration(dependency),
@@ -58,19 +58,19 @@ describe("Scope", () => {
         });
 
         it("inside current scope with two declarations", () => {
-            const declaration1 = new TestDeclarationNode({row: {
+            const declaration1 = new TestDeclarationNode(() => ({row: {
                 declare: "1"
-            }});
-            const declaration2 = new TestDeclarationNode({row: {
+            }}));
+            const declaration2 = new TestDeclarationNode(() => ({row: {
                 declare: "2"
-            }});
+            }}));
 
-            const dependency1 = new TestDependencyNode({row: {
+            const dependency1 = new TestDependencyNode(() => ({row: {
                 use: "1"
-            }});
-            const dependency2 = new TestDependencyNode({row: {
+            }}));
+            const dependency2 = new TestDependencyNode(() => ({row: {
                 use: "2"
-            }});
+            }}));
 
             scope.declare(declaration1);
             scope.declare(declaration2);
@@ -88,14 +88,14 @@ describe("Scope", () => {
         });
 
         it("inside parent scope", () => {
-            const declaration = new TestDeclarationNode({row: {
+            const declaration = new TestDeclarationNode(() => ({row: {
                 declare: "1"
-            }});
+            }}));
             scopeParent.declare(declaration);
 
-            const dependency = new TestDependencyNode({row: {
+            const dependency = new TestDependencyNode(() => ({row: {
                 use: "1"
-            }});
+            }}));
 
             assert.strictEqual(
                 scopeChild.findDeclaration(dependency),
@@ -108,9 +108,9 @@ describe("Scope", () => {
     describe("findDependencies(declarationNode)", () => {
 
         it("no dependencies", () => {
-            const declaration = new TestDeclarationNode({row: {
+            const declaration = new TestDeclarationNode(() => ({row: {
                 declare: "1"
-            }});
+            }}));
             scope.declare(declaration);
 
             const result = scope.findDependencies(declaration);
@@ -118,27 +118,27 @@ describe("Scope", () => {
         });
 
         it("dependencies inside current scope", () => {
-            const declaration1 = new TestDeclarationNode({row: {
+            const declaration1 = new TestDeclarationNode(() => ({row: {
                 declare: "1"
-            }});
-            const declaration2 = new TestDeclarationNode({row: {
+            }}));
+            const declaration2 = new TestDeclarationNode(() => ({row: {
                 declare: "2"
-            }});
-            const dependency1 = new TestDependencyNode({row: {
+            }}));
+            const dependency1 = new TestDependencyNode(() => ({row: {
                 use: "1"
-            }});
-            const dependency2 = new TestDependencyNode({row: {
+            }}));
+            const dependency2 = new TestDependencyNode(() => ({row: {
                 use: "2"
-            }});
+            }}));
 
-            scopeNode = new TestScopeNode({
+            scopeNode = new TestScopeNode(() => ({
                 row: {
                     declaration1,
                     declaration2,
                     dependency1,
                     dependency2
                 }
-            });
+            }));
             scope = new Scope(scopeNode);
             scope.declare(declaration1);
             scope.declare(declaration2);
@@ -153,19 +153,19 @@ describe("Scope", () => {
         });
 
         it("dependencies inside child scope", () => {
-            const declaration = new TestDeclarationNode({row: {
+            const declaration = new TestDeclarationNode(() => ({row: {
                 declare: "1"
-            }});
-            const dependency = new TestDependencyNode({row: {
+            }}));
+            const dependency = new TestDependencyNode(() => ({row: {
                 use: "1"
-            }});
+            }}));
 
-            scopeChildNode = new TestScopeNode({
+            scopeChildNode = new TestScopeNode(() => ({
                 row: {dependency}
-            });
-            scopeParentNode = new TestScopeNode({
+            }));
+            scopeParentNode = new TestScopeNode(() => ({
                 row: {declaration, child: scopeChildNode}
-            });
+            }));
             scopeParent = new Scope(scopeParentNode);
 
             scopeChild = new Scope(scopeChildNode, scopeParent);

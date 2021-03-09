@@ -168,12 +168,14 @@ export class Cursor {
     /** call Node.parse and return node instance */
     parse<TNode extends AbstractNode<AnyRow>>(Node: NodeClass<TNode>): TNode {
         const start = this.nextToken_.position;
-        const row = Node.parse(this);
-        const end = this.nextToken_.position;
 
-        const node = new Node({
-            row,
-            position: { start, end }
+        const node = new Node(() => {
+            const row = Node.parse(this);
+            const end = this.nextToken_.position;
+            return {
+                row,
+                position: { start, end }
+            };
         });
         return node;
     }

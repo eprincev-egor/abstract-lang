@@ -11,21 +11,21 @@ export class HumanNode extends AbstractNode<HumanRow> {
     }
 }
 
-const bob = new HumanNode({row: {
+const bob = new HumanNode(() => ({row: {
     name: "bob"
-}});
-const jack = new HumanNode({row: {
+}}));
+const jack = new HumanNode(() => ({row: {
     name: "jack",
     child: bob
-}});
-const jane = new HumanNode({row: {
+}}));
+const jane = new HumanNode(() => ({row: {
     name: "jane",
     child: jack
-}});
-const oliver = new HumanNode({row: {
+}}));
+const oliver = new HumanNode(() => ({row: {
     name: "oliver",
     child: jane
-}});
+}}));
 
 Object.freeze(bob);
 Object.freeze(jack);

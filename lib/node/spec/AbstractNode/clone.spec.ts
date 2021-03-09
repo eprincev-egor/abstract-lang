@@ -26,13 +26,13 @@ describe("AbstractNode/clone.spec.ts", () => {
         });
 
         it("changed clone cannot have position", () => {
-            const original = new TestNode({
+            const original = new TestNode(() => ({
                 row: {value: "original"},
                 position: {
                     start: 0,
                     end: 8
                 }
-            });
+            }));
             const clone = original.clone({
                 value: "clone"
             });
@@ -61,10 +61,10 @@ describe("AbstractNode/clone.spec.ts", () => {
         });
 
         it("correct clone position", () => {
-            const node = new TestNode({
+            const node = new TestNode(() => ({
                 row: {},
                 position: {start: 100, end: 200}
-            });
+            }));
             const clone = node.clone();
 
             assert.deepStrictEqual(clone.position, {
@@ -76,10 +76,10 @@ describe("AbstractNode/clone.spec.ts", () => {
         });
 
         it("clone with changes", () => {
-            const node = new TestNode({row: {
+            const node = new TestNode(() => ({row: {
                 a: 1,
                 b: 2
-            }});
+            }}));
             const clone = node.clone({
                 a: 10
             });
@@ -91,8 +91,8 @@ describe("AbstractNode/clone.spec.ts", () => {
         });
 
         it("clone with changes, check new child.parent", () => {
-            const child = new TestNode({row: {}});
-            const parent = new TestNode({row: {child}});
+            const child = new TestNode(() => ({row: {}}));
+            const parent = new TestNode(() => ({row: {child}}));
 
             const clone = parent.clone({
                 child

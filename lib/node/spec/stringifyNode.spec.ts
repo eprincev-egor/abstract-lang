@@ -82,24 +82,24 @@ describe("stringifyNode(node, spaces?)", () => {
             }
         }
 
-        const level3 = new IfStatement({
+        const level3 = new IfStatement(() => ({
             row: {
                 condition: "level3",
                 body: "level3;"
             }
-        });
-        const level2 = new IfStatement({
+        }));
+        const level2 = new IfStatement(() => ({
             row: {
                 condition: "level2",
                 body: level3
             }
-        });
-        const level1 = new IfStatement({
+        }));
+        const level1 = new IfStatement(() => ({
             row: {
                 condition: "level1",
                 body: level2
             }
-        });
+        }));
 
         testStringifyNode({
             template: level1.template.bind(level1),

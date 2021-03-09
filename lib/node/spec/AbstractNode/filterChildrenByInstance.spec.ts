@@ -21,14 +21,14 @@ describe("AbstractNode/filterChildrenByInstance.spec.ts", () => {
         });
 
         it("many children", () => {
-            const child1 = new TestNode({row: {}});
-            const child2 = new TestNode({row: {
+            const child1 = new TestNode(() => ({row: {}}));
+            const child2 = new TestNode(() => ({row: {
                 child: child1
-            }});
+            }}));
 
-            const parent = new TestNode({row: {
+            const parent = new TestNode(() => ({row: {
                 child: child2
-            }});
+            }}));
 
             const result = parent.filterChildrenByInstance(TestNode);
             assert.strictEqual(result.length, 2);
@@ -37,22 +37,22 @@ describe("AbstractNode/filterChildrenByInstance.spec.ts", () => {
         });
 
         it("filter correct instances", () => {
-            const expression1 = new ExpressionNode({row: {
+            const expression1 = new ExpressionNode(() => ({row: {
                 child: false
-            }});
-            const expression2 = new ExpressionNode({row: {
+            }}));
+            const expression2 = new ExpressionNode(() => ({row: {
                 child: expression1
-            }});
-            const childSelect1 = new SelectNode({row: {
+            }}));
+            const childSelect1 = new SelectNode(() => ({row: {
                 child: expression2
-            }});
-            const childSelect2 = new SelectNode({row: {
+            }}));
+            const childSelect2 = new SelectNode(() => ({row: {
                 child: childSelect1
-            }});
+            }}));
 
-            const parentSelect = new SelectNode({row: {
+            const parentSelect = new SelectNode(() => ({row: {
                 child: childSelect2
-            }});
+            }}));
 
             const result = parentSelect.filterChildrenByInstance(ExpressionNode);
             assert.strictEqual(result.length, 2);
@@ -66,20 +66,20 @@ describe("AbstractNode/filterChildrenByInstance.spec.ts", () => {
         });
 
         it("scan array of models", () => {
-            const node = new TestNode({row: {
+            const node = new TestNode(() => ({row: {
                 items: [empty.clone(), primitive.clone()]
-            }});
+            }}));
             const result = node.filterChildrenByInstance(TestNode);
             assert.strictEqual(result.length, 2);
         });
 
         it("scan dictionary of models", () => {
-            const node = new TestNode({row: {
+            const node = new TestNode(() => ({row: {
                 dictionary: {
                     a: empty.clone(),
                     b: primitive.clone()
                 }
-            }});
+            }}));
             const result = node.filterChildrenByInstance(TestNode);
             assert.strictEqual(result.length, 2);
         });

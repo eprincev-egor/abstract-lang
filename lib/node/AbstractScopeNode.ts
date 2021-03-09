@@ -1,4 +1,4 @@
-import { AbstractNode, AnyRow, NodeParams } from "./AbstractNode";
+import { AbstractNode, AnyRow, CreateNodeParams } from "./AbstractNode";
 import { Scope } from "./Scope";
 import { findScope } from "./util";
 
@@ -8,7 +8,7 @@ export abstract class AbstractScopeNode<TRow extends AnyRow>
     readonly scope: Scope;
     protected abstract createScope(): Scope;
 
-    constructor(params: NodeParams<TRow>) {
+    constructor(params: CreateNodeParams<TRow>) {
         super(params);
         this.scope = this.createScope();
     }

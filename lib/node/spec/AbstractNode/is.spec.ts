@@ -8,8 +8,8 @@ describe("AbstractNode/is.spec.ts", () => {
     describe("node.is()", () => {
 
         it("check instance", () => {
-            const select = new SelectNode({row: {}});
-            const expression = new ExpressionNode({row: {}});
+            const select = new SelectNode(() => ({row: {}}));
+            const expression = new ExpressionNode(() => ({row: {}}));
 
             assert.ok( select.is(SelectNode), "select is Select" );
             assert.ok( !select.is(ExpressionNode), "select is not Expression" );

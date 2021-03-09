@@ -39,67 +39,67 @@ describe("AbstractNode/equal.spec.ts", () => {
         });
 
         it("compare same arrays of numbers", () => {
-            const a = new TestNode({row: {
+            const a = new TestNode(() => ({row: {
                 arr: [1,2,3,4]
-            }});
-            const b = new TestNode({row: {
+            }}));
+            const b = new TestNode(() => ({row: {
                 arr: [1,2,3,4]
-            }});
+            }}));
 
             assert.strictEqual( a.equal(b), true );
         });
 
         it("compare different arrays of numbers", () => {
-            const a = new TestNode({row: {
+            const a = new TestNode(() => ({row: {
                 arr: [5,1]
-            }});
-            const b = new TestNode({row: {
+            }}));
+            const b = new TestNode(() => ({row: {
                 arr: [1,5]
-            }});
+            }}));
 
             assert.strictEqual( a.equal(b), false );
         });
 
         it("compare arrays with different length", () => {
-            const a = new TestNode({row: {
+            const a = new TestNode(() => ({row: {
                 arr: [1,2,3]
-            }});
-            const b = new TestNode({row: {
-                arr: [1,2,3,4]
-            }});
+            }}));
+            const b = new TestNode(() => ({row: {
+                arr: [1,2,3,5]
+            }}));
 
             assert.strictEqual( a.equal(b), false );
         });
 
         it("compare same objects", () => {
-            const a = new TestNode({row: {
+            const a = new TestNode(() => ({row: {
                 obj: {a: 1, b: 2, c: 3}
-            }});
-            const b = new TestNode({row: {
+            }}));
+            const b = new TestNode(() => ({row: {
                 obj: {a: 1, b: 2, c: 3}
-            }});
+            }}));
 
             assert.strictEqual( a.equal(b), true );
         });
 
         it("compare objects with different keys", () => {
-            const a = new TestNode({row: {
+            const a = new TestNode(() => ({row: {
                 obj: {a: 1, b: 2}
-            }});
-            const b = new TestNode({row: {
-                obj: {a: 1, b: 2, c: 3}
-            }});
+            }}));
+            const b = new TestNode(() => ({row: {
+                obj: {a: 1, b: 2, c: 5}
+            }}));
 
             assert.strictEqual( a.equal(b), false );
         });
 
         it("compare child node and primitive", () => {
-            const a = new TestNode({row: {
-                child: new TestNode({row: {}})
-            }});
-            const b = new TestNode({row: {
+            const a = new TestNode(() => ({row: {
+                child: new TestNode(() => ({row: {}}))
+            }}));
+            const b = new TestNode(() => ({row: {
                 child: 100
-            }});
+            }}));
 
             assert.strictEqual( a.equal(b), false );
         });
@@ -134,12 +134,12 @@ describe("AbstractNode/equal.spec.ts", () => {
                 const bValue = combination[1];
                 const expectedResult = combination[2];
 
-                const aNode = new TestNode({row: {
+                const aNode = new TestNode(() => ({row: {
                     value: aValue
-                }});
-                const bNode = new TestNode({row: {
+                }}));
+                const bNode = new TestNode(() => ({row: {
                     value: bValue
-                }});
+                }}));
 
                 assert.strictEqual(
                     aNode.equal(bNode),

@@ -7,11 +7,11 @@ export const SelectNode = createClass<any>();
 export const ExpressionNode = createClass<any>();
 
 /** node with empty row */
-export const empty = new TestNode({row: {}});
+export const empty = new TestNode(() => ({row: {}}));
 Object.freeze(empty);
 
-export const child = new TestNode({row: {}});
-export const parent = new TestNode({row: {child}});
+export const child = new TestNode(() => ({row: {}}));
+export const parent = new TestNode(() => ({row: {child}}));
 Object.freeze(child);
 Object.freeze(empty);
 /** parent with one child */
@@ -19,7 +19,7 @@ export const oneChild = {parent, child};
 
 export const testDate = new Date();
 /** node containing primitive values inside node.row */
-export const primitive = new TestNode({row: {
+export const primitive = new TestNode(() => ({row: {
     NaN: Number.NaN,
     // eslint-disable-next-line unicorn/no-null
     null: null,
@@ -36,7 +36,7 @@ export const primitive = new TestNode({row: {
     date: testDate,
     arr: [{hello: "world"}],
     obj: {hello: [{str: "world"}]}
-}});
+}}));
 Object.freeze(primitive);
 
 
@@ -49,13 +49,13 @@ const c: any = {a, b, arr: [a, b]};
 a.c = c;
 a.b = b;
 b.c = c;
-const someNode = new TestNode({row: {a, b, c}});
+const someNode = new TestNode(() => ({row: {a, b, c}}));
 c.someNode = someNode;
 b.someNode = someNode;
 a.someNode = someNode;
 
 /** node containing an object with infinite references inside node.row */
-export const infinityRecursion = new TestNode({row: {
+export const infinityRecursion = new TestNode(() => ({row: {
     c
-}});
+}}));
 Object.freeze(infinityRecursion);
