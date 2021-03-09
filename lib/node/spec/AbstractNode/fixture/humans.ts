@@ -1,4 +1,4 @@
-import { AbstractNode } from "node/AbstractNode";
+import { AbstractNode } from "../../../AbstractNode";
 
 export interface HumanRow {
     name: string;

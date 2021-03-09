@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable max-classes-per-file */
-import { AbstractDeclarationNode } from "node/AbstractDeclarationNode";
-import { AbstractDependencyNode } from "node/AbstractDependencyNode";
-import { AbstractScopeNode } from "node/AbstractScopeNode";
+import { AbstractDeclarationNode } from "../../AbstractDeclarationNode";
+import { AbstractDependencyNode } from "../../AbstractDependencyNode";
+import { AbstractScopeNode } from "../../AbstractScopeNode";
 import { Scope } from "../../Scope";
 
 // istanbul ignore next

@@ -3,7 +3,7 @@ import { Token } from "../token";
 import { Cursor } from "../cursor";
 import { Coords, SourceCode } from "./SourceCode";
 import { NodeHighlighter, TokenHighlighter } from "./highlighter";
-import { AbstractNode } from "node";
+import { AbstractNode } from "../node";
 
 export interface SyntaxErrorParams {
     message: string;
