@@ -13,7 +13,7 @@ import {
 export interface NodeClass<TNode extends AbstractNode<AnyRow>> {
     entry(cursor: Cursor): boolean;
     parse(cursor: Cursor): TNode["row"];
-    new(params: NodeParams<TNode["row"]>): TNode;
+    new(arg: NodeConstructorArg<TNode["row"]>): TNode;
 }
 
 export interface AnyRow {
@@ -33,6 +33,10 @@ export interface NodeParams<TRow extends AnyRow> {
         end: number;
     };
 }
+export type NodeConstructorArg<TRow extends AnyRow> = (
+    NodeParams<TRow> |
+    ((parent: AbstractNode<TRow>) => NodeParams<TRow>)
+)
 
 export type NodeJson<TRow extends AnyRow> = {
     [key in keyof TRow]: NodeJsonValue< TRow[key] >;
@@ -68,10 +72,16 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     /** if node has been parsed, then we a have position within source code */
     readonly position?: NodePosition;
 
-    constructor(params: NodeParams<TRow>) {
+    constructor(arg: NodeConstructorArg<TRow>) {
+        const params = typeof arg === "function" ?
+            arg(this) : arg;
+
         this.row = params.row;
         this.position = params.position;
-        setParent(this);
+
+        if ( typeof arg !== "function" ) {
+            setParent(this);
+        }
     }
 
     /** returns true if this is instance of Node */
