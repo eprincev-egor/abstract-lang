@@ -38,7 +38,11 @@ export class Token {
         while ( position < text.length ) {
             const char = text[ position ];
 
-            if ( this.description.entry.test(char) ) {
+            const isTokenChar = (
+                char in this.description.entry ||
+                this.description.entry.test(char)
+            );
+            if ( isTokenChar ) {
                 tokenValue += char;
                 position++;
 
