@@ -8,13 +8,13 @@ describe("AbstractDeclarationNode", () => {
 
     describe("findDependencies()", () => {
 
-        xit("required scope for declaration", () => {
+        it("required scope for declaration", () => {
             const declaration = new TestDeclarationNode({row: {}});
 
             assert.throws(() => {
                 declaration.findDependencies();
             }, (err: Error) =>
-                /required scope for node: TestDependency/.test(err.message)
+                /required scope for node: TestDeclarationNode/.test(err.message)
             );
         });
 
