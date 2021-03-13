@@ -1,4 +1,5 @@
 import { Line } from "./Line";
+import { last } from "../util";
 
 export class Fragment {
 
@@ -21,8 +22,4 @@ export class Fragment {
             last(lines).number < allLinesQuantity
         );
     }
-}
-
-export function last<T>(array: readonly T[]): T {
-    return array.slice(-1)[0];
 }

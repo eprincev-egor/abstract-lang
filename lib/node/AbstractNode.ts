@@ -6,14 +6,14 @@ import {
     deepClone,
     forEachChildNode,
     deepEqual,
-    setParent
+    assignParent
 } from "./util";
 
 
 export interface NodeClass<TNode extends AbstractNode<AnyRow>> {
     entry(cursor: Cursor): boolean;
     parse(cursor: Cursor): TNode["row"];
-    new(arg: NodeConstructorArg<TNode["row"]>): TNode;
+    new(params: NodeParams<TNode["row"]>): TNode;
 }
 
 export interface AnyRow {
@@ -26,17 +26,12 @@ export interface NodePosition {
 }
 
 export interface NodeParams<TRow extends AnyRow> {
-    parent?: AbstractNode<AnyRow>;
     row: TRow;
     position?: {
         start: number;
         end: number;
     };
 }
-export type NodeConstructorArg<TRow extends AnyRow> = (
-    NodeParams<TRow> |
-    ((parent: AbstractNode<TRow>) => NodeParams<TRow>)
-)
 
 export type NodeJson<TRow extends AnyRow> = {
     [key in keyof TRow]: NodeJsonValue< TRow[key] >;
@@ -72,16 +67,10 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     /** if node has been parsed, then we a have position within source code */
     readonly position?: NodePosition;
 
-    constructor(arg: NodeConstructorArg<TRow>) {
-        const params = typeof arg === "function" ?
-            arg(this) : arg;
-
+    constructor(params: NodeParams<TRow>) {
         this.row = params.row;
         this.position = params.position;
-
-        if ( typeof arg !== "function" ) {
-            setParent(this);
-        }
+        assignParent(this);
     }
 
     /** returns true if this is instance of Node */
@@ -111,7 +100,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
             ...this.row,
             ...changes
         }, stack);
-        setParent(clone);
+        assignParent(clone);
 
         const position = this.position;
         if ( position && Object.values(changes).length === 0 ) {
@@ -134,7 +123,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         stack.set(this, clone);
 
         (clone as any).row = deepClone(this.row, stack, replace);
-        setParent(clone);
+        assignParent(clone);
 
         return clone;
     }

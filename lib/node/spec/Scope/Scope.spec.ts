@@ -20,15 +20,16 @@ describe("Scope", () => {
         });
         scope = new Scope(scopeNode);
 
-        scopeParentNode = new TestScopeNode({
+        scopeChildNode = new TestScopeNode({
             row: {}
         });
-        scopeParent = new Scope(scopeParentNode);
-
-        scopeChildNode = new TestScopeNode({
-            row: {},
-            parent: scopeParentNode
+        scopeParentNode = new TestScopeNode({
+            row: {
+                child: scopeChildNode
+            }
         });
+
+        scopeParent = new Scope(scopeParentNode);
         scopeChild = new Scope(scopeChildNode, scopeParent);
     });
 
