@@ -10,8 +10,9 @@ const emptyTemplate = () => [];
 
 export class TestScopeNode extends AbstractScopeNode<any> {
     template = emptyTemplate;
-    createScope() {
-        return new Scope(this);
+    createScope(): Scope {
+        const parentScope = this.parent && this.parent.scope;
+        return new Scope(this, parentScope);
     }
 }
 

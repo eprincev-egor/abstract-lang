@@ -1,15 +1,11 @@
-import { AbstractNode, AnyRow } from "./AbstractNode";
+import { AnyRow } from "./AbstractNode";
+import { AbstractScopeNode } from "./AbstractScopeNode";
+import { AbstractDeclarationNode } from "./AbstractDeclarationNode";
+import { AbstractDependencyNode } from "./AbstractDependencyNode";
 
-export type DeclarationNode = AbstractNode<AnyRow>;
-export interface DependencyNode {
-    isDependentOn(
-        declarationNode: AbstractNode<AnyRow>
-    ): boolean;
-}
-export interface ScopeNode extends AbstractNode<AnyRow> {
-    scope: Scope;
-}
-
+export type ScopeNode = AbstractScopeNode<AnyRow>;
+export type DeclarationNode = AbstractDeclarationNode<AnyRow>;
+export type DependencyNode = AbstractDependencyNode<AnyRow>;
 export class Scope {
 
     readonly node: ScopeNode;
@@ -42,20 +38,27 @@ export class Scope {
 
     findDependencies(declarationNode: DeclarationNode): DependencyNode[] {
         const dependencies = this.node.filterChildren((childNode) =>
-            isDependency(childNode) &&
+            childNode instanceof AbstractDependencyNode &&
+            (
+                childNode.scope === this ||
+                !!childNode.scope &&
+                childNode.scope.hasParent(this)
+            ) &&
             childNode.isDependentOn(declarationNode)
         ) as unknown as DependencyNode[];
 
         return dependencies;
     }
-}
 
-function isDependency(node: unknown): node is DependencyNode {
-    return (
-        typeof node === "object" &&
-        node !== null &&
-        "isDependentOn" in node &&
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        typeof (node as any).isDependentOn === "function"
-    );
+    hasParent(parentScope: Scope): boolean {
+        let parent = this.parent;
+        while ( parent ) {
+            if ( parent === parentScope ) {
+                return true;
+            }
+            parent = parent.parent;
+        }
+
+        return false;
+    }
 }

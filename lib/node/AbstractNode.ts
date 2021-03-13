@@ -97,9 +97,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     // can be redefined
     protected initScope() {
-        if ( this.parent ) {
-            this.scope = this.parent.scope;
-        }
+        this.scope = this.parent && this.parent.scope;
     }
 
     /** deep equal this.row and node.row */

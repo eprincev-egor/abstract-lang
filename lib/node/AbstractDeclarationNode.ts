@@ -9,4 +9,11 @@ export abstract class AbstractDeclarationNode<TRow extends AnyRow>
         shouldHaveScope(this);
         return this.scope.findDependencies(this);
     }
+
+    protected initScope() {
+        super.initScope();
+        if ( this.scope ) {
+            this.scope.declare(this);
+        }
+    }
 }
