@@ -20,11 +20,6 @@
       "html",
       "text-summary"
     ],
-    "require": [
-      "source-map-support/register",
-      "tsconfig-paths/register",
-      "ts-node/register"
-    ],
     "all": true,
     "exclude": [
       "dist",
