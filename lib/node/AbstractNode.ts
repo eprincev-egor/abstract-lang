@@ -6,7 +6,7 @@ import {
     deepClone,
     forEachChildNode,
     deepEqual,
-    assignParent
+    findChildren
 } from "./util";
 
 
@@ -70,7 +70,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     constructor(params: NodeParams<TRow>) {
         this.row = params.row;
         this.position = params.position;
-        assignParent(this);
+        this.assignParent();
     }
 
     /** returns true if this is instance of Node */
@@ -78,6 +78,16 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         Node: (new(... args: any[]) => T)
     ): this is T {
         return this instanceof Node;
+    }
+
+    get children(): AbstractNode<AnyRow>[] {
+        const values = Object.values(this.row);
+        return findChildren(values)
+    }
+
+    /** assign parent node */
+    setParent(parent: AbstractNode<AnyRow>) {
+        this.parent = parent;
     }
 
     /** deep equal this.row and node.row */
@@ -100,7 +110,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
             ...this.row,
             ...changes
         }, stack);
-        assignParent(clone);
+        clone.assignParent();
 
         const position = this.position;
         if ( position && Object.values(changes).length === 0 ) {
@@ -123,7 +133,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         stack.set(this, clone);
 
         (clone as any).row = deepClone(this.row, stack, replace);
-        assignParent(clone);
+        clone.assignParent();
 
         return clone;
     }
@@ -194,5 +204,11 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     /** convert node to plain json structure */
     toJSON(): NodeJson<TRow> {
         return toJSON(this.row) as unknown as NodeJson<TRow>;
+    }
+
+    private assignParent() {
+        for (const childNode of this.children) {
+            childNode.setParent(this);
+        }
     }
 }
