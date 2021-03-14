@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Cursor } from "../cursor";
-import { Scope } from "./Scope";
 import {
     stringifyNode, Spaces, TemplateElement,
     toJSON,
@@ -63,8 +62,6 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     /** reference to parent node */
     parent?: AbstractNode<AnyRow>;
-    /** helper for detecting dependencies or declarations */
-    scope?: Scope;
     /** object with node attributes */
     readonly row: Readonly<TRow>;
     /** if node has been parsed, then we a have position within source code */
@@ -73,8 +70,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     constructor(params: NodeParams<TRow>) {
         this.row = params.row;
         this.position = params.position;
-        this.initScope();
-        this.assignParent();
+        this.assignChildrenParent();
     }
 
     /** returns true if this is instance of Node */
@@ -92,12 +88,6 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     /** assign parent node */
     setParent(parent: AbstractNode<AnyRow>) {
         this.parent = parent;
-        this.initScope();
-    }
-
-    // can be redefined
-    protected initScope() {
-        this.scope = this.parent && this.parent.scope;
     }
 
     /** deep equal this.row and node.row */
@@ -120,7 +110,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
             ...this.row,
             ...changes
         }, stack);
-        clone.assignParent();
+        clone.assignChildrenParent();
 
         const position = this.position;
         if ( position && Object.values(changes).length === 0 ) {
@@ -143,7 +133,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         stack.set(this, clone);
 
         (clone as any).row = deepClone(this.row, stack, replace);
-        clone.assignParent();
+        clone.assignChildrenParent();
 
         return clone;
     }
@@ -216,7 +206,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         return toJSON(this.row) as unknown as NodeJson<TRow>;
     }
 
-    private assignParent() {
+    protected assignChildrenParent() {
         for (const childNode of this.children) {
             childNode.setParent(this);
         }

@@ -4,4 +4,5 @@ export * from "./toJSON";
 export * from "./stringifyNode";
 export * from "./forEachChildNode";
 export * from "./deepEqual";
-export * from "./shouldHaveScope";
+export * from "./requiredFindScope";
+export * from "./tryFindScope";

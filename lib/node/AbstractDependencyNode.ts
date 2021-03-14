@@ -1,15 +1,19 @@
+import { AbstractDeclarationNode } from "./AbstractDeclarationNode";
 import { AbstractNode, AnyRow } from "./AbstractNode";
-import { shouldHaveScope } from "./util";
+import { requiredFindScope } from "./util";
 
 export abstract class AbstractDependencyNode<TRow extends AnyRow>
     extends AbstractNode<TRow> {
 
     abstract isDependentOn(
-        declarationNode: AbstractNode<AnyRow>
+        declarationNode: AbstractDeclarationNode<AnyRow>
     ): boolean;
 
-    findDeclaration(): AbstractNode<AnyRow> | undefined {
-        shouldHaveScope(this);
+    get scope() {
+        return requiredFindScope(this);
+    }
+
+    findDeclaration(): AbstractDeclarationNode<AnyRow> | undefined {
         return this.scope.findDeclaration(this);
     }
 }

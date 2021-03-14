@@ -64,6 +64,22 @@ describe("AbstractDependencyNode", () => {
             const result2 = dependency2.findDeclaration();
             assert.ok(result2 === declaration2, "declaration2");
         });
+
+        it("declaration inside parent scope", () => {
+            new TestScopeNode({
+                row: {
+                    declaration1,
+                    child: new TestScopeNode({
+                        row: {
+                            dependency1
+                        }
+                    })
+                }
+            });
+
+            const result = dependency1.findDeclaration();
+            assert.ok(result === declaration1);
+        });
     });
 
 });

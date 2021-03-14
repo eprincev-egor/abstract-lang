@@ -10,23 +10,19 @@ export class Scope {
 
     readonly node: ScopeNode;
     readonly parent?: Scope;
-    readonly declarations: DeclarationNode[];
 
     constructor(node: ScopeNode, parent?: Scope) {
         this.node = node;
         this.parent = parent;
-        this.declarations = [];
-    }
-
-    declare(declarationNode: DeclarationNode): void {
-        this.declarations.push(declarationNode);
     }
 
     findDeclaration(dependencyNode: DependencyNode): DeclarationNode | undefined {
-        const thisDeclaration = this.declarations.find((declaration) =>
-            dependencyNode.isDependentOn(declaration)
-        );
+        const declarations = this.node.filterChildren(childNode =>
+            childNode instanceof AbstractDeclarationNode &&
+            dependencyNode.isDependentOn(childNode)
+        ) as DeclarationNode[];
 
+        const thisDeclaration = declarations[0];
         if ( thisDeclaration ) {
             return thisDeclaration;
         }
@@ -45,7 +41,7 @@ export class Scope {
                 childNode.scope.hasParent(this)
             ) &&
             childNode.isDependentOn(declarationNode)
-        ) as unknown as DependencyNode[];
+        ) as DependencyNode[];
 
         return dependencies;
     }
