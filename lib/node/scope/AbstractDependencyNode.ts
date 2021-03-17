@@ -1,5 +1,5 @@
+import { AbstractNode, AnyRow } from "../AbstractNode";
 import { AbstractDeclarationNode } from "./AbstractDeclarationNode";
-import { AbstractNode, AnyRow } from "./AbstractNode";
 import { AbstractScopeNode } from "./AbstractScopeNode";
 
 export abstract class AbstractDependencyNode<TRow extends AnyRow>

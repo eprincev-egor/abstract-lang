@@ -1,4 +1,4 @@
-import { AbstractNode, AnyRow } from "./AbstractNode";
+import { AbstractNode, AnyRow } from "../AbstractNode";
 import { AbstractDependencyNode } from "./AbstractDependencyNode";
 import { AbstractScopeNode } from "./AbstractScopeNode";
 
