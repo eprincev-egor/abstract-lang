@@ -5,6 +5,14 @@ export abstract class AbstractDeclarationNode<TRow extends AnyRow>
     extends AbstractScopeElement<TRow> {
 
     findDependencies(): AbstractDependencyNode<any>[] {
-        return this.findScope().findDependencies(this);
+        const scope = this.findScope();
+
+        const dependencies = scope.filterChildren((dependencyNode) =>
+            dependencyNode.is(AbstractDependencyNode) &&
+            dependencyNode.insideScope(scope) &&
+            dependencyNode.isDependentOn(this)
+        ) as AbstractDependencyNode<AnyRow>[];
+
+        return dependencies;
     }
 }
