@@ -4,8 +4,9 @@ import { AbstractDependencyNode } from "./AbstractDependencyNode";
 export abstract class AbstractDeclarationNode<TRow extends AnyRow>
     extends AbstractScopeElement<TRow> {
 
+    /** find all nodes which dependent on this node */
     findDependencies(): AbstractDependencyNode<any>[] {
-        const scope = this.findScope();
+        const scope = this.requiredFindScope();
 
         const dependencies = scope.filterChildren((dependencyNode) =>
             dependencyNode.is(AbstractDependencyNode) &&

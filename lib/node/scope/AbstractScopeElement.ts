@@ -6,8 +6,14 @@ export {AnyRow};
 export abstract class AbstractScopeElement<T extends AnyRow>
     extends AbstractNode<T> {
 
-    findScope(): AbstractScopeNode<AnyRow> {
-        const scopeNode = this.findParentInstance(AbstractScopeNode);
+    /** find parent scope node or returns undefined */
+    findScope(): AbstractScopeNode<AnyRow> | undefined {
+        return this.findParentInstance(AbstractScopeNode);
+    }
+
+    /** find parent scope node or throw error */
+    requiredFindScope(): AbstractScopeNode<AnyRow> {
+        const scopeNode = this.findScope();
         if ( scopeNode ) {
             return scopeNode;
         }
