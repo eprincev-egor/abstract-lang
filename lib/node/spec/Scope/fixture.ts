@@ -3,15 +3,14 @@
 import { AbstractDeclarationNode } from "../../AbstractDeclarationNode";
 import { AbstractDependencyNode } from "../../AbstractDependencyNode";
 import { AbstractScopeNode } from "../../AbstractScopeNode";
-import { Scope } from "../../Scope";
 
 // istanbul ignore next
 const emptyTemplate = () => [];
 
 export class TestScopeNode extends AbstractScopeNode<any> {
     template = emptyTemplate;
-    createScope(): Scope {
-        return new Scope(this, this.parentScope);
+    hasClojure() {
+        return true;
     }
 }
 

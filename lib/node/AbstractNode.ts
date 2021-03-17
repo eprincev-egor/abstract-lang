@@ -16,6 +16,13 @@ export interface NodeClass<TNode extends AbstractNode<AnyRow>> {
     new(params: NodeParams<TNode["row"]>): TNode;
 }
 
+export type NodeAbstractConstructor = typeof AbstractNode;
+export type NodeConcreteConstructor<T> = (new(...args: any[]) => T);
+export type NodeConstructor<T> = (
+    NodeAbstractConstructor |
+    NodeConcreteConstructor<T>
+);
+
 export interface AnyRow {
     [key: string]: any;
 }
@@ -75,7 +82,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     /** returns true if this is instance of Node */
     is<T extends AbstractNode<AnyRow>>(
-        Node: (new(... args: any[]) => T)
+        Node: NodeConstructor<T>
     ): this is T {
         return this instanceof Node;
     }
@@ -139,12 +146,12 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     }
 
     findParentInstance<T extends AbstractNode<AnyRow>>(
-        Node: (new(... args: any[]) => T)
+        Node: NodeConstructor<T>
     ): T | undefined {
         let parent = this.parent;
         while ( parent ) {
             if ( parent instanceof Node ) {
-                return parent;
+                return parent as T;
             }
 
             parent = parent.parent;
@@ -171,16 +178,16 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     }
 
     filterChildrenByInstance<T extends AbstractNode<AnyRow>>(
-        Node: (new(... args: any[]) => T)
+        Node: NodeConstructor<T>
     ): T[] {
         return this.filterChildren((node) =>
             node instanceof Node
-        ) as T[];
+        );
     }
 
-    filterChildren(
+    filterChildren<T>(
         iteration: (node: AbstractNode<AnyRow>) => boolean
-    ): Array<AbstractNode<AnyRow>> {
+    ): Array<AbstractNode<AnyRow> & T> {
 
         const children: Array<AbstractNode<AnyRow>> = [];
 
@@ -192,7 +199,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
             }
         });
 
-        return children;
+        return children as any;
     }
 
     abstract template(): TemplateElement | TemplateElement[];

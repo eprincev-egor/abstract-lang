@@ -4,7 +4,6 @@ import {
     TestDependencyNode,
     TestScopeNode
 } from "./fixture";
-import { Scope } from "../../Scope";
 
 describe("AbstractDeclarationNode", () => {
 
@@ -49,7 +48,7 @@ describe("AbstractDeclarationNode", () => {
         });
 
         it("find dependencies inside current scope", () => {
-            const root = new TestScopeNode({
+            new TestScopeNode({
                 row: {
                     declaration1,
                     dependency1,
@@ -57,8 +56,6 @@ describe("AbstractDeclarationNode", () => {
                     dependency2
                 }
             });
-
-            assert.ok(root.scope === declaration1.scope, "correct scope");
 
             const result1 = declaration1.findDependencies();
             assert.ok(
@@ -76,7 +73,7 @@ describe("AbstractDeclarationNode", () => {
         });
 
         it("dependency inside child scope", () => {
-            const root = new TestScopeNode({
+            new TestScopeNode({
                 row: {
                     declaration1,
                     child: new TestScopeNode({
@@ -87,12 +84,6 @@ describe("AbstractDeclarationNode", () => {
                 }
             });
 
-            const child = root.row.child as TestScopeNode;
-            assert.strictEqual(
-                child.scope.parent, root.scope,
-                "correct child scope"
-            );
-
             const result = declaration1.findDependencies();
             assert.strictEqual(result.length, 1);
             assert.strictEqual(result[0], dependency1);
@@ -100,12 +91,12 @@ describe("AbstractDeclarationNode", () => {
 
         it("no dependencies if childNode scope has no reference to parentNode scope", () => {
             class SomeScopeNode extends TestScopeNode {
-                createScope(): Scope {
-                    return new Scope(this);
+                hasClojure() {
+                    return false;
                 }
             }
 
-            const root = new SomeScopeNode({
+            new SomeScopeNode({
                 row: {
                     declaration1,
                     child: new SomeScopeNode({
@@ -115,9 +106,6 @@ describe("AbstractDeclarationNode", () => {
                     })
                 }
             });
-
-            const child = root.row.child as SomeScopeNode;
-            assert.strictEqual(child.scope.parent, undefined);
 
             const result = declaration1.findDependencies();
             assert.strictEqual(result.length, 0);

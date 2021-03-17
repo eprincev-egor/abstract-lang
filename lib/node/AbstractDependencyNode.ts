@@ -1,6 +1,6 @@
 import { AbstractDeclarationNode } from "./AbstractDeclarationNode";
 import { AbstractNode, AnyRow } from "./AbstractNode";
-import { requiredFindScope } from "./util";
+import { AbstractScopeNode } from "./AbstractScopeNode";
 
 export abstract class AbstractDependencyNode<TRow extends AnyRow>
     extends AbstractNode<TRow> {
@@ -9,11 +9,20 @@ export abstract class AbstractDependencyNode<TRow extends AnyRow>
         declarationNode: AbstractDeclarationNode<AnyRow>
     ): boolean;
 
-    get scope() {
-        return requiredFindScope(this);
+    findScope(): AbstractScopeNode<AnyRow> {
+        const scopeNode = this.findParentInstance(AbstractScopeNode);
+        if ( scopeNode ) {
+            return scopeNode;
+        }
+
+        const NodeClass = this.constructor;
+        const NodeName = NodeClass.name;
+        throw new Error(
+            `required scope for node: ${NodeName}`
+        );
     }
 
     findDeclaration(): AbstractDeclarationNode<AnyRow> | undefined {
-        return this.scope.findDeclaration(this);
+        return this.findScope().findDeclaration(this);
     }
 }
