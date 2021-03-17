@@ -5,12 +5,14 @@ import { AbstractDependencyNode } from "./AbstractDependencyNode";
 export abstract class AbstractScopeNode<TRow extends AnyRow>
     extends AbstractNode<TRow> {
 
-    protected abstract hasClojure(parentScope: AbstractScopeNode<AnyRow>): boolean;
+    protected abstract hasClojure(
+        parentScope: AbstractScopeNode<AnyRow>
+    ): boolean;
 
     findDeclaration(
         dependencyNode: AbstractDependencyNode<AnyRow>
     ): AbstractDeclarationNode<AnyRow> | undefined {
-        const declarations = this.filterChildren(declarationNode =>
+        const declarations = this.filterChildren((declarationNode) =>
             declarationNode.is(AbstractDeclarationNode) &&
             dependencyNode.isDependentOn(declarationNode)
         ) as AbstractDeclarationNode<AnyRow>[];

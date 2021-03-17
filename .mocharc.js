@@ -9,8 +9,8 @@ const config = {
     ],
     require: [
       "source-map-support/register",
-      "tsconfig-paths/register",
-      "ts-node/register"
+      "ts-node/register",
+      "tsconfig-paths/register"
     ]
 };
 

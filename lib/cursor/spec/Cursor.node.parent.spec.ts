@@ -117,13 +117,13 @@ describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
         });
 
         function assertChild(childNumber: number) {
-            const children = root.filterChildren(child => 
+            const children = root.filterChildren((child) =>
                 child.row.item === childNumber
             );
             const child = children[0]!;
             return {
                 hasParent(parentNumber: number) {
-                    const parents = child.filterParents(parent =>
+                    const parents = child.filterParents((parent) =>
                         parent.row.item === parentNumber
                     );
 

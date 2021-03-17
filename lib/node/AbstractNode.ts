@@ -89,11 +89,11 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     get children(): AbstractNode<AnyRow>[] {
         const values = Object.values(this.row);
-        return findChildren(values)
+        return findChildren(values);
     }
 
     /** assign parent node */
-    setParent(parent: AbstractNode<AnyRow>) {
+    setParent(parent: AbstractNode<AnyRow>): void {
         this.parent = parent;
     }
 
@@ -182,12 +182,12 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     ): T[] {
         return this.filterChildren((node) =>
             node instanceof Node
-        );
+        ) as T[];
     }
 
-    filterChildren<T>(
+    filterChildren(
         iteration: (node: AbstractNode<AnyRow>) => boolean
-    ): Array<AbstractNode<AnyRow> & T> {
+    ): Array<AbstractNode<AnyRow>> {
 
         const children: Array<AbstractNode<AnyRow>> = [];
 
@@ -199,7 +199,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
             }
         });
 
-        return children as any;
+        return children;
     }
 
     abstract template(): TemplateElement | TemplateElement[];
@@ -213,7 +213,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         return toJSON(this.row) as unknown as NodeJson<TRow>;
     }
 
-    protected assignChildrenParent() {
+    private assignChildrenParent() {
         for (const childNode of this.children) {
             childNode.setParent(this);
         }
