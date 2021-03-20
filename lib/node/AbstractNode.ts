@@ -49,7 +49,7 @@ export type NodeJsonValue<T extends any> = (
     T extends Array<any> ?
         Array< NodeJsonValue< T[0] > > :
     T extends ReadonlyArray<any> ?
-        ReadonlyArray< NodeJsonValue< T[0] > > :
+        ReadonlyArray< NodeJsonValue< T[number] > > :
     T extends string ?
         string :
     T extends number ?
