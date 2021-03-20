@@ -113,7 +113,7 @@ describe("assertNode", () => {
 
         it("invalid parsing pretty", () => {
             TestNode.parse = function(cursor: Cursor): OperatorRow {
-                if ( cursor.tokens.join("") === test.shouldBe.pretty ) {
+                if ( cursor.file.tokens.join("") === test.shouldBe.pretty ) {
                     return {
                         left: "100",
                         operator: "+",
@@ -139,7 +139,7 @@ describe("assertNode", () => {
 
         it("invalid parsing minify", () => {
             TestNode.parse = function(cursor: Cursor): OperatorRow {
-                if ( cursor.tokens.join("") === test.shouldBe.minify ) {
+                if ( cursor.file.tokens.join("") === test.shouldBe.minify ) {
                     return {
                         left: "1",
                         operator: "+",
@@ -180,7 +180,7 @@ describe("assertNode", () => {
 
         it("invalid entry pretty", () => {
             TestNode.entry = function(cursor: Cursor) {
-                if ( cursor.tokens.join("") === test.shouldBe.pretty ) {
+                if ( cursor.file.tokens.join("") === test.shouldBe.pretty ) {
                     return false;
                 }
                 return true;
@@ -199,7 +199,7 @@ describe("assertNode", () => {
 
         it("invalid entry minify", () => {
             TestNode.entry = function(cursor: Cursor) {
-                if ( cursor.tokens.join("") === test.shouldBe.minify ) {
+                if ( cursor.file.tokens.join("") === test.shouldBe.minify ) {
                     return false;
                 }
                 return true;

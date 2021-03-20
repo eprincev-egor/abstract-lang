@@ -4,7 +4,7 @@ import { SourceCode } from "../SourceCode";
 describe("SourceCode", () => {
 
     it("throw on outside token", () => {
-        const code = SourceCode.fromTokens([]);
+        const code = new SourceCode([]);
         assert.throws(() => {
             code.getCoords(987654321);
         }, (err: Error) =>

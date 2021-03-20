@@ -1,21 +1,17 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SyntaxError } from "../../source";
-import {
-    Token, Tokenizer,
-    defaultMap
-} from "../../token";
+import { SourceFile, SyntaxError } from "../../source";
 
 describe("Cursor.word.spec.ts word methods", () => {
 
-    let tokens!: Token[];
+    let file!: SourceFile;
     let cursor!: Cursor;
     beforeEach(() => {
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            "hello WORLD"
-        );
-        cursor = new Cursor(tokens);
+        file = new SourceFile({
+            path: "test.txt",
+            content: "hello WORLD"
+        });
+        cursor = file.cursor;
     });
 
     describe("beforeWord(word)", () => {

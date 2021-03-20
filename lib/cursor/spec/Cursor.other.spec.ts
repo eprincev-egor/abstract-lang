@@ -1,8 +1,6 @@
 import assert from "assert";
-import { Cursor } from "../Cursor";
+import { SourceFile } from "../../source";
 import {
-    Tokenizer,
-    defaultMap,
     WordToken,
     DigitsToken
 } from "../../token";
@@ -15,11 +13,11 @@ describe("Cursor.other.spec.ts other methods", () => {
         const quote = "'";
 
         function parseQuotes(text: string) {
-            const tokens = Tokenizer.tokenize(
-                defaultMap,
-                text
-            );
-            const cursor = new Cursor(tokens);
+            const file = new SourceFile({
+                path: "test",
+                content: text
+            });
+            const cursor = file.cursor;
 
             // require open quote
             cursor.readValue(quote);
@@ -57,11 +55,11 @@ describe("Cursor.other.spec.ts other methods", () => {
 
         // eslint-disable-next-line unicorn/consistent-function-scoping
         function parseNumber(text: string): number {
-            const tokens = Tokenizer.tokenize(
-                defaultMap,
-                text
-            );
-            const cursor = new Cursor(tokens);
+            const file = new SourceFile({
+                path: "test",
+                content: text
+            });
+            const cursor = file.cursor;
 
             let numb = "";
             if ( cursor.beforeValue("-") ) {

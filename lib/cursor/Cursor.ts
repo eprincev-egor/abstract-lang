@@ -7,26 +7,27 @@ import {
     AnyRow,
     NodeClass
 } from "../node";
-import { SyntaxError } from "../source";
+import { SourceFile, SyntaxError } from "../source";
+import { last } from "../util";
 
 /** Text cursor between some tokens */
 export class Cursor {
 
-    readonly tokens: readonly Token[];
+    readonly file: SourceFile;
     private tokenIndex: number;
     private nextToken_: Token;
-    constructor(tokens: readonly Token[]) {
-        if ( tokens.length === 0 ) {
+    constructor(file: SourceFile) {
+        if ( file.tokens.length === 0 ) {
             throw new Error("required not empty array of tokens");
         }
-        const endToken = tokens[ tokens.length - 1 ];
+        const endToken = last(file.tokens);
         if ( !(endToken instanceof EndOfFleToken) ) {
             throw new TypeError("required special token EOF after last token");
         }
 
-        this.tokens = tokens;
+        this.file = file;
         this.tokenIndex = 0;
-        this.nextToken_ = this.tokens[ this.tokenIndex ];
+        this.nextToken_ = file.tokens[ this.tokenIndex ];
     }
 
     /** text cursor is before this token */
@@ -210,7 +211,7 @@ export class Cursor {
 
     /** move cursor position before token */
     setPositionBefore(token: Token): void {
-        const tokenIndex = this.tokens.indexOf(token);
+        const tokenIndex = this.file.tokens.indexOf(token);
         if ( tokenIndex === -1 ) {
             throw new Error(`cannot set position before unknown token: "${token.value}"`);
         }
@@ -255,6 +256,6 @@ export class Cursor {
         }
 
         this.tokenIndex++;
-        this.nextToken_ = this.tokens[ this.tokenIndex ];
+        this.nextToken_ = this.file.tokens[ this.tokenIndex ];
     }
 }

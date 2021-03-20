@@ -1,22 +1,20 @@
 import assert from "assert";
 import { codeExample } from "./fixture";
+import { SourceFile } from "../../SourceFile";
 import { SourceCode } from "../../SourceCode";
 import { NodeHighlighter } from "../NodeHighlighter";
-import {
-    Token, Tokenizer,
-    defaultMap
-} from "../../../token";
 
 describe("NodeHighlighter", () => {
 
-    let tokens!: readonly Token[];
+    let file!: SourceFile;
     let code!: SourceCode;
     beforeEach(() => {
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            codeExample
-        );
-        code = SourceCode.fromTokens(tokens);
+        file = new SourceFile({
+            path: "./test.txt",
+            content: codeExample
+        });
+        const lines = file.generateLines();
+        code = new SourceCode(lines);
     });
 
     it("show 4 lines before invalid node and 4 lines after", () => {

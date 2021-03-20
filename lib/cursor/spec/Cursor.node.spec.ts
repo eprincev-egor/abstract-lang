@@ -1,10 +1,8 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
 import { AbstractNode } from "../../node";
-import { SyntaxError } from "../../source";
+import { SourceFile, SyntaxError } from "../../source";
 import {
-    Token, Tokenizer,
-    defaultMap,
     WordToken,
     DigitsToken,
     SpaceToken
@@ -12,14 +10,14 @@ import {
 
 describe("Cursor.node.spec.ts node methods", () => {
 
-    let tokens!: Token[];
+    let file!: SourceFile;
     let cursor!: Cursor;
     beforeEach(() => {
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            "hello world"
-        );
-        cursor = new Cursor(tokens);
+        file = new SourceFile({
+            path: "test.txt",
+            content: "hello world"
+        });
+        cursor = file.cursor;
     });
 
     interface WordRow {
@@ -107,11 +105,11 @@ describe("Cursor.node.spec.ts node methods", () => {
                 }
             }
 
-            tokens = Tokenizer.tokenize(
-                defaultMap,
-                "(1 + 2) - (3 + 4)"
-            );
-            cursor = new Cursor(tokens);
+            file = new SourceFile({
+                path: "test",
+                content: "(1 + 2) - (3 + 4)"
+            });
+            cursor = file.cursor;
 
             const node = cursor.parse(Operator);
 
@@ -145,12 +143,11 @@ describe("Cursor.node.spec.ts node methods", () => {
     describe("parseChainOf(Node, delimiter)", () => {
 
         it("parse sequence of nodes over some delimiter", () => {
-
-            const tokens = Tokenizer.tokenize(
-                defaultMap,
-                "first,second , third\n,\rfour,\tfive"
-            );
-            const cursor = new Cursor(tokens);
+            file = new SourceFile({
+                path: "test",
+                content: "first,second , third\n,\rfour,\tfive"
+            });
+            const cursor = file.cursor;
 
             const words = cursor.parseChainOf(WordNode, ",");
             assert.deepStrictEqual(
@@ -160,11 +157,11 @@ describe("Cursor.node.spec.ts node methods", () => {
         });
 
         it("parse sequence of nodes without delimiter", () => {
-            const tokens = Tokenizer.tokenize(
-                defaultMap,
-                "first \t second\nthird!stop"
-            );
-            const cursor = new Cursor(tokens);
+            file = new SourceFile({
+                path: "test",
+                content: "first \t second\nthird!stop"
+            });
+            const cursor = file.cursor;
 
             const words = cursor.parseChainOf(WordNode);
             assert.deepStrictEqual(
@@ -175,11 +172,11 @@ describe("Cursor.node.spec.ts node methods", () => {
         });
 
         it("throw an error if the next token is wrong", () => {
-            const tokens = Tokenizer.tokenize(
-                defaultMap,
-                " "
-            );
-            const cursor = new Cursor(tokens);
+            file = new SourceFile({
+                path: "test",
+                content: " "
+            });
+            const cursor = file.cursor;
 
             assert.throws(() => {
                 cursor.parseChainOf(WordNode, ";");
@@ -190,11 +187,11 @@ describe("Cursor.node.spec.ts node methods", () => {
         });
 
         it("throw an error if the next token after delimiter is wrong", () => {
-            const tokens = Tokenizer.tokenize(
-                defaultMap,
-                "hello;123"
-            );
-            const cursor = new Cursor(tokens);
+            file = new SourceFile({
+                path: "test",
+                content: "hello;123"
+            });
+            const cursor = file.cursor;
 
             assert.throws(() => {
                 cursor.parseChainOf(WordNode, ";");

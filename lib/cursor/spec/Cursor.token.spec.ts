@@ -1,9 +1,7 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SyntaxError } from "../../source";
+import { SourceFile, SyntaxError } from "../../source";
 import {
-    Token, Tokenizer,
-    defaultMap,
     SpaceToken,
     WordToken,
     EndOfFleToken,
@@ -12,14 +10,14 @@ import {
 
 describe("Cursor.token.spec.ts token methods", () => {
 
-    let tokens!: Token[];
+    let file!: SourceFile;
     let cursor!: Cursor;
     beforeEach(() => {
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            "hello world"
-        );
-        cursor = new Cursor(tokens);
+        file = new SourceFile({
+            path: "test.txt",
+            content: "hello world"
+        });
+        cursor = file.cursor;
     });
 
     it("beforeToken(TokenClass)", () => {
@@ -67,13 +65,12 @@ describe("Cursor.token.spec.ts token methods", () => {
     describe("skipOne(TokenClass)", () => {
 
         it("skip only one token with same class", () => {
-            tokens = [
+            cursor = new Cursor({tokens: [
                 new SpaceToken(" ", 0),
                 new SpaceToken(" ", 1),
                 new WordToken("correct", 2),
                 new EndOfFleToken(9)
-            ];
-            cursor = new Cursor(tokens);
+            ]} as any);
 
             cursor.skipOne(SpaceToken);
             assert.ok( cursor.beforeValue(" "), "skipped one token" );
@@ -93,43 +90,40 @@ describe("Cursor.token.spec.ts token methods", () => {
     describe("skipAll(TokenClass, ...)", () => {
 
         it("skip all tokens with same class", () => {
-            tokens = [
+            cursor = new Cursor({tokens: [
                 new SpaceToken(" ", 0),
                 new SpaceToken(" ", 1),
                 new WordToken("correct", 2),
                 new EndOfFleToken(9)
-            ];
-            cursor = new Cursor(tokens);
+            ]} as any);
 
             cursor.skipAll(SpaceToken);
             assert.ok( cursor.beforeValue("correct"), "before correct token" );
         });
 
         it("don't change position if the next token has a different class", () => {
-            tokens = [
+            cursor = new Cursor({tokens: [
                 new SpaceToken(" ", 0),
                 new EndOfLineToken("\r", 1),
                 new SpaceToken(" ", 2),
                 new EndOfLineToken("\n", 3),
                 new WordToken("correct", 4),
                 new EndOfFleToken(11)
-            ];
-            cursor = new Cursor(tokens);
+            ]} as any);
 
             cursor.skipAll(WordToken);
             assert.ok( cursor.beforeValue(" ") );
         });
 
         it("skip all tokens with same classes", () => {
-            tokens = [
+            cursor = new Cursor({tokens: [
                 new SpaceToken(" ", 0),
                 new EndOfLineToken("\r", 1),
                 new SpaceToken(" ", 2),
                 new EndOfLineToken("\n", 3),
                 new WordToken("correct", 4),
                 new EndOfFleToken(11)
-            ];
-            cursor = new Cursor(tokens);
+            ]} as any);
 
             cursor.skipAll(SpaceToken, EndOfLineToken);
             assert.ok( cursor.beforeValue("correct"), "before correct token" );

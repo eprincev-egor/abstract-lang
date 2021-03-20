@@ -19,7 +19,8 @@ export class SyntaxError extends Error {
         node?: AbstractNode<any>;
         message: string;
     }): SyntaxError {
-        const code = SourceCode.fromTokens(params.cursor.tokens);
+        const lines = params.cursor.file.generateLines();
+        const code = new SourceCode(lines);
 
         if ( params.node ) {
             const node = params.node;

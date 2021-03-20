@@ -1,4 +1,3 @@
-import { EndOfFleToken, EndOfLineToken, Token } from "../token";
 import { Fragment } from "./Fragment";
 import { Line } from "./Line";
 
@@ -9,40 +8,8 @@ export interface Coords {
 
 export class SourceCode {
 
-    static fromTokens(tokens: readonly Token[]): SourceCode {
-        const lines: Line[] = [];
-        let lineTokens: Token[] = [];
-        let firstCharPosition = 0;
-
-        for (let i = 0, n = tokens.length; i < n; i++) {
-            const token = tokens[i];
-
-            if ( token instanceof EndOfLineToken || token instanceof EndOfFleToken ) {
-                const line = new Line({
-                    firstCharPosition,
-                    number: lines.length + 1,
-                    text: lineTokens
-                        .map((token) => token.value)
-                        .join("")
-                });
-                lines.push(line);
-
-                firstCharPosition += (
-                    line.text.length +
-                    token.value.length
-                );
-                lineTokens = [];
-            }
-            else {
-                lineTokens.push(token);
-            }
-        }
-
-        return new SourceCode(lines);
-    }
-
     readonly lines: readonly Line[];
-    private constructor(lines: readonly Line[]) {
+    constructor(lines: readonly Line[]) {
         this.lines = lines;
     }
 

@@ -1,28 +1,27 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SyntaxError } from "../../source";
+import { SourceFile, SyntaxError } from "../../source";
 import {
-    Token, Tokenizer,
-    defaultMap,
+    Token,
     SpaceToken,
     WordToken
 } from "../../token";
 
 describe("Cursor.base.spec.ts base methods", () => {
 
-    let tokens!: Token[];
+    let file!: SourceFile;
     let cursor!: Cursor;
     beforeEach(() => {
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            "hello world"
-        );
-        cursor = new Cursor(tokens);
+        file = new SourceFile({
+            path: "test.txt",
+            content: "hello world"
+        });
+        cursor = file.cursor;
     });
 
     it("required not empty array of tokens", () => {
         assert.throws(() => {
-            new Cursor([]);
+            new Cursor({tokens: []} as any);
         }, (err: Error) =>
             /required not empty array of tokens/.test(err.message)
         );
@@ -30,9 +29,9 @@ describe("Cursor.base.spec.ts base methods", () => {
 
     it("required EOF at last token", () => {
         assert.throws(() => {
-            new Cursor([
+            new Cursor({tokens: [
                 new Token("test", 0)
-            ]);
+            ]} as any);
         }, (err: Error) =>
             /required special token EOF after last token/.test(err.message)
         );
@@ -141,8 +140,8 @@ describe("Cursor.base.spec.ts base methods", () => {
     describe("setPositionBefore(Token)", () => {
 
         it("set position before world", () => {
-            const hello = tokens[0];
-            const world = tokens[2];
+            const hello = file.tokens[0];
+            const world = file.tokens[2];
 
             cursor.setPositionBefore(world);
             assert.ok(
@@ -172,7 +171,7 @@ describe("Cursor.base.spec.ts base methods", () => {
             cursor.next();
             cursor.next();
             cursor.next();
-            cursor.setPositionBefore(tokens[0]);
+            cursor.setPositionBefore(file.tokens[0]);
 
             const word = cursor.read(WordToken);
             assert.strictEqual(word.value, "hello");

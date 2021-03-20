@@ -2,12 +2,11 @@ import assert from "assert";
 import { Cursor } from "../Cursor";
 import { AbstractNode } from "../../node";
 import {
-    Tokenizer,
-    defaultMap,
     DigitsToken,
     SpaceToken,
     EndOfLineToken
 } from "../../token";
+import { SourceFile } from "../../source";
 
 describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
 
@@ -63,9 +62,9 @@ describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
             }
         }
 
-        const tokens = Tokenizer.tokenize(
-            defaultMap,
-            `{
+        const file = new SourceFile({
+            path: "test",
+            content: `{
                 item: 1,
                 children: [
                     {
@@ -97,8 +96,8 @@ describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
                     }
                 ]
             }`.trim()
-        );
-        const cursor = new Cursor(tokens);
+        });
+        const {cursor} = file;
 
         const root = cursor.parse(ItemNode);
         assert.deepStrictEqual(root.toJSON(), {

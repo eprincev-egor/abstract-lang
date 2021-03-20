@@ -2,27 +2,25 @@ import assert from "assert";
 import { codeExample } from "../highlighter/spec/fixture";
 import { Cursor } from "../../cursor/Cursor";
 import { SyntaxError } from "../SyntaxError";
-import {
-    Token, Tokenizer,
-    defaultMap
-} from "../../token";
+import { Token } from "../../token";
 import { TestNode } from "../../node/spec/AbstractNode/fixture";
+import { SourceFile } from "../../source/SourceFile";
 
 describe("SyntaxError", () => {
-    let tokens!: readonly Token[];
+    let file!: SourceFile;
     let cursor!: Cursor;
     beforeEach(() => {
-        tokens = Tokenizer.tokenize(
-            defaultMap,
-            codeExample
-        );
-        cursor = new Cursor(tokens);
+        file = new SourceFile({
+            path: "test",
+            content: codeExample
+        });
+        cursor = file.cursor;
     });
 
     const message = "unexpected token";
 
     it("syntax error on line 10", () => {
-        const testToken = tokens.find((token) =>
+        const testToken = file.tokens.find((token) =>
             token.value === "skipSpace"
         ) as Token;
         cursor.setPositionBefore(testToken);
@@ -40,7 +38,7 @@ describe("SyntaxError", () => {
     });
 
     it("syntax error on line 1", () => {
-        const testToken = tokens.find((token) =>
+        const testToken = file.tokens.find((token) =>
             token.value === "readWord"
         ) as Token;
         cursor.setPositionBefore(testToken);
@@ -58,7 +56,7 @@ describe("SyntaxError", () => {
     });
 
     it("syntax error on line 31", () => {
-        const testToken = tokens.slice().reverse().find((token) =>
+        const testToken = file.tokens.slice().reverse().find((token) =>
             token.value === "lowerWord"
         ) as Token;
         cursor.setPositionBefore(testToken);
