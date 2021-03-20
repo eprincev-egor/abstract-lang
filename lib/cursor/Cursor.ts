@@ -215,6 +215,7 @@ export class Cursor {
             throw new Error(`cannot set position before unknown token: "${token.value}"`);
         }
 
+        this.tokenIndex = tokenIndex;
         this.nextToken_ = token;
     }
 

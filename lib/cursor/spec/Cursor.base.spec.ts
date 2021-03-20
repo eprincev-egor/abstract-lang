@@ -167,6 +167,19 @@ describe("Cursor.base.spec.ts base methods", () => {
 
             assert.strictEqual(cursor.nextToken.value, "hello");
         });
+
+        it("next(); setPositionBefore(); read();", () => {
+            cursor.next();
+            cursor.next();
+            cursor.next();
+            cursor.setPositionBefore(tokens[0]);
+
+            const word = cursor.read(WordToken);
+            assert.strictEqual(word.value, "hello");
+
+            const spaces = cursor.read(SpaceToken);
+            assert.strictEqual(spaces.value, " ");
+        });
     });
 
 });
