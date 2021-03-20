@@ -29,6 +29,7 @@ export class Cursor {
         this.nextToken_ = this.tokens[ this.tokenIndex ];
     }
 
+    /** text cursor is before this token */
     get nextToken(): Token {
         return this.nextToken_;
     }
