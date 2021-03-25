@@ -252,7 +252,7 @@ describe("assertNode", () => {
         it("error parsing test", () => {
             TestNode.parse = function(cursor: Cursor): OperatorRow {
                 throw SyntaxError.at({
-                    cursor,
+                    source: cursor.source,
                     message: "expected operator"
                 });
             };

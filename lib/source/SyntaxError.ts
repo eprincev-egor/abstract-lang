@@ -1,7 +1,6 @@
 /* eslint-disable unicorn/error-message */
 import { Token } from "../token";
-import { Cursor } from "../cursor";
-import { Coords } from "./interface";
+import { Source, Coords } from "./interface";
 import { NodeHighlighter, TokenHighlighter } from "./highlighter";
 import { AbstractNode } from "../node";
 
@@ -11,58 +10,34 @@ export interface SyntaxErrorParams {
     target: Token | AbstractNode<any>;
 }
 
+export type SyntaxErrorTarget = Token | AbstractNode<any>;
+
 export class SyntaxError extends Error {
 
     /** generate error with code fragment at near current token */
     static at(params: {
-        cursor: Cursor;
+        source: Source;
         node?: AbstractNode<any>;
         message: string;
     }): SyntaxError {
-        const {
-            source,
-            nextToken: token
-        } = params.cursor;
+        const {source, node, message} = params;
+        const {target, coords, highlight} = prepareTarget(source, node);
 
-        if ( params.node ) {
-            const node = params.node;
-            const position = node.position;
-            if ( !position ) {
-                throw new Error("node should have position");
-            }
-
-            const coords = source.getCoords(position.start);
-
-            return new SyntaxError({
-                message: [
-                    `SyntaxError: ${params.message}`,
-                    `line ${coords.line}, column ${coords.column}`,
-                    "",
-                    NodeHighlighter.highlight(source, {position})
-                ].join("\n"),
-                target: node,
-                coords
-            });
-        }
-        else {
-            const coords = source.getCoords(token.position);
-
-            return new SyntaxError({
-                message: [
-                    `SyntaxError: ${params.message}`,
-                    `line ${coords.line}, column ${coords.column}`,
-                    "",
-                    TokenHighlighter.highlight(source, token)
-                ].join("\n"),
-                target: token,
-                coords
-            });
-        }
+        return new SyntaxError({
+            message: [
+                `SyntaxError: ${message}`,
+                preparePath(source, coords),
+                "",
+                highlight
+            ].join("\n"),
+            target,
+            coords
+        });
     }
 
     readonly message: string;
     /** invalid token or node */
-    readonly target: Token | AbstractNode<any>;
+    readonly target: SyntaxErrorTarget;
     /** position with error */
     readonly coords: Coords;
 
@@ -73,4 +48,36 @@ export class SyntaxError extends Error {
         this.target = params.target;
         this.coords = params.coords;
     }
+}
+
+function prepareTarget(
+    source: Source,
+    node?: AbstractNode<any>
+) {
+    if ( node ) {
+        const position = node.position;
+        if ( !position ) {
+            throw new Error("node should have position");
+        }
+
+        return {
+            target: node,
+            coords: source.getCoords(position.start),
+            highlight: NodeHighlighter.highlight(source, {position})
+        };
+    }
+    else {
+        const token = source.cursor.nextToken;
+        return {
+            target: token,
+            coords: source.getCoords(token.position),
+            highlight: TokenHighlighter.highlight(source, token)
+        };
+    }
+}
+
+function preparePath(source: Source, coords: Coords) {
+    return source.path ?
+        `${source.path}:${coords.line}:${coords.column}` :
+        `line ${coords.line}, column ${coords.column}`;
 }

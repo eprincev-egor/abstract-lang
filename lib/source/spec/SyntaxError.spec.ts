@@ -1,31 +1,29 @@
 import assert from "assert";
 import { codeExample } from "../highlighter/spec/fixture";
-import { Cursor } from "../../cursor/Cursor";
 import { SyntaxError } from "../SyntaxError";
 import { Token } from "../../token";
 import { TestNode } from "../../node/spec/AbstractNode/fixture";
 import { SourceCode } from "../../source/SourceCode";
+import { SourceFile } from "../../source/SourceFile";
 
 describe("SyntaxError", () => {
 
-    let code!: SourceCode;
-    let cursor!: Cursor;
+    let source!: SourceCode;
     beforeEach(() => {
-        code = new SourceCode({
+        source = new SourceCode({
             text: codeExample
         });
-        cursor = code.cursor;
     });
 
     const message = "unexpected token";
 
     it("syntax error on line 10", () => {
-        const testToken = code.tokens.find((token) =>
+        const testToken = source.tokens.find((token) =>
             token.value === "skipSpace"
         ) as Token;
-        cursor.setPositionBefore(testToken);
+        source.cursor.setPositionBefore(testToken);
 
-        const err = SyntaxError.at({cursor, message});
+        const err = SyntaxError.at({source, message});
 
         assert.deepStrictEqual(err.coords, {
             line: 10,
@@ -38,12 +36,12 @@ describe("SyntaxError", () => {
     });
 
     it("syntax error on line 1", () => {
-        const testToken = code.tokens.find((token) =>
+        const testToken = source.tokens.find((token) =>
             token.value === "readWord"
         ) as Token;
-        cursor.setPositionBefore(testToken);
+        source.cursor.setPositionBefore(testToken);
 
-        const err = SyntaxError.at({cursor, message});
+        const err = SyntaxError.at({source, message});
 
         assert.deepStrictEqual(err.coords, {
             line: 1,
@@ -56,12 +54,12 @@ describe("SyntaxError", () => {
     });
 
     it("syntax error on line 31", () => {
-        const testToken = code.tokens.slice().reverse().find((token) =>
+        const testToken = source.tokens.slice().reverse().find((token) =>
             token.value === "lowerWord"
         ) as Token;
-        cursor.setPositionBefore(testToken);
+        source.cursor.setPositionBefore(testToken);
 
-        const err = SyntaxError.at({cursor, message});
+        const err = SyntaxError.at({source, message});
 
         assert.deepStrictEqual(err.coords, {
             line: 31,
@@ -81,7 +79,7 @@ describe("SyntaxError", () => {
                 end: 307
             }
         });
-        const err = SyntaxError.at({cursor, node, message});
+        const err = SyntaxError.at({source, node, message});
 
         assert.deepStrictEqual(err.coords, {
             line: 13,
@@ -100,10 +98,30 @@ describe("SyntaxError", () => {
         });
 
         assert.throws(() => {
-            SyntaxError.at({cursor, node, message});
+            SyntaxError.at({source, node, message});
         }, (err: Error) =>
             /node should have position/.test(err.message)
         );
+    });
+
+    it("show filePath:column:line", () => {
+        const file = new SourceFile({
+            path: "./test.txt",
+            text: codeExample
+        });
+        const testToken = file.tokens.slice().reverse().find((token) =>
+            token.value === "lowerWord"
+        ) as Token;
+        file.cursor.setPositionBefore(testToken);
+
+        const err = SyntaxError.at({
+            source: file.cursor.source,
+            message
+        });
+
+        assert.ok( err.message.includes(
+            "./test.txt:31:12"
+        ) );
     });
 
 });
