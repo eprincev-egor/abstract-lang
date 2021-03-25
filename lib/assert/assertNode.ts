@@ -23,6 +23,7 @@ export interface ErrorTest {
     throws: RegExp;
 }
 
+/** parse input and strict deep equal output json */
 export function assertNode<TNode extends AbstractNode<any>>(
     Node: NodeClass<TNode>,
     test: SuccessTest<TNode> | ErrorTest
