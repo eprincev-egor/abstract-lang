@@ -4,3 +4,4 @@ coverage
 .vscode
 dist
 lib/sandbox.ts
+example/sandbox
