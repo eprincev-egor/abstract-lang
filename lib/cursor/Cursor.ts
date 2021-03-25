@@ -66,7 +66,16 @@ export class Cursor {
 
     /** returns true if next token.value.toLowerCase() === word */
     beforeWord(word: string): boolean {
-        return this.nextToken_.value.toLowerCase() === word;
+        const tokenIndex = this.tokenIndex;
+        const token = this.nextToken_;
+
+        this.skipAll(SpaceToken, EndOfLineToken);
+        const beforeWord = this.nextToken_.value.toLowerCase() === word;
+
+        this.tokenIndex = tokenIndex;
+        this.nextToken_ = token;
+
+        return beforeWord;
     }
 
     /** move cursor if next token value is correct, else throw error */
@@ -90,6 +99,8 @@ export class Cursor {
 
     /** move cursor if next token.value.toLowerCase() is correct, else throw error */
     readWord(expectedWord: string): string {
+        this.skipAll(SpaceToken, EndOfLineToken);
+
         const actualWord = this.nextToken_.value;
 
         if ( actualWord.toLowerCase() !== expectedWord ) {

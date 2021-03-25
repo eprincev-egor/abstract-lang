@@ -48,15 +48,34 @@ describe("Cursor.word.spec.ts word methods", () => {
             );
         });
 
+        it("before 'world', skip spaces", () => {
+            cursor.next();
+            assert.strictEqual(
+                cursor.beforeWord("world"),
+                true
+            );
+            assert.strictEqual(
+                cursor.beforeWord("wrong"),
+                false
+            );
+        });
+
     });
 
     describe("readWord(word)", () => {
 
-        it("read and move", () => {
+        it("skip spaces before word", () => {
+            cursor.skipOne();
+
             assert.strictEqual(
-                cursor.readWord("hello"),
-                "hello"
+                cursor.readWord("world"),
+                "WORLD"
             );
+        });
+
+        it("skip spaces after word", () => {
+            cursor.readWord("hello");
+
             assert.ok(
                 cursor.beforeValue("WORLD")
             );
