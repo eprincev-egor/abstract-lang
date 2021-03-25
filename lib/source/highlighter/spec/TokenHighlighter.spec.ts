@@ -1,25 +1,20 @@
 import assert from "assert";
 import { codeExample } from "./fixture";
-import { SourceFile } from "../../SourceFile";
 import { SourceCode } from "../../SourceCode";
 import { TokenHighlighter } from "../TokenHighlighter";
 import { Token, EndOfFleToken } from "../../../token";
 
 describe("TokenHighlighter", () => {
 
-    let file!: SourceFile;
     let code!: SourceCode;
     beforeEach(() => {
-        file = new SourceFile({
-            path: "./test.txt",
-            content: codeExample
+        code = new SourceCode({
+            text: codeExample
         });
-        const lines = file.generateLines();
-        code = new SourceCode(lines);
     });
 
     it("show 4 lines before invalid token and 4 lines after", () => {
-        const testToken = file.tokens.find((token) =>
+        const testToken = code.tokens.find((token) =>
             token.value === "skipSpace"
         ) as Token;
 
@@ -42,7 +37,7 @@ describe("TokenHighlighter", () => {
     });
 
     it("show code fragment with target on first line", () => {
-        const testToken = file.tokens.find((token) =>
+        const testToken = code.tokens.find((token) =>
             token.value === "readWord"
         ) as Token;
 
@@ -60,7 +55,7 @@ describe("TokenHighlighter", () => {
     });
 
     it("show code fragment with target before last line", () => {
-        const testToken = file.tokens.slice().reverse().find((token) =>
+        const testToken = code.tokens.slice().reverse().find((token) =>
             token.value === "lowerWord"
         ) as Token;
 
@@ -79,7 +74,7 @@ describe("TokenHighlighter", () => {
     });
 
     it("highlight end of file", () => {
-        const eofToken = file.tokens.find((token) =>
+        const eofToken = code.tokens.find((token) =>
             token instanceof EndOfFleToken
         ) as EndOfFleToken;
 

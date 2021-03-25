@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/error-message */
 import { Token } from "../token";
 import { Cursor } from "../cursor";
-import { Coords, SourceCode } from "./SourceCode";
+import { Coords } from "./interface";
 import { NodeHighlighter, TokenHighlighter } from "./highlighter";
 import { AbstractNode } from "../node";
 
@@ -19,8 +19,10 @@ export class SyntaxError extends Error {
         node?: AbstractNode<any>;
         message: string;
     }): SyntaxError {
-        const lines = params.cursor.file.generateLines();
-        const code = new SourceCode(lines);
+        const {
+            source,
+            nextToken: token
+        } = params.cursor;
 
         if ( params.node ) {
             const node = params.node;
@@ -29,29 +31,28 @@ export class SyntaxError extends Error {
                 throw new Error("node should have position");
             }
 
-            const coords = code.getCoords(position.start);
+            const coords = source.getCoords(position.start);
 
             return new SyntaxError({
                 message: [
                     `SyntaxError: ${params.message}`,
                     `line ${coords.line}, column ${coords.column}`,
                     "",
-                    NodeHighlighter.highlight(code, {position})
+                    NodeHighlighter.highlight(source, {position})
                 ].join("\n"),
                 target: node,
                 coords
             });
         }
         else {
-            const token = params.cursor.nextToken;
-            const coords = code.getCoords(token.position);
+            const coords = source.getCoords(token.position);
 
             return new SyntaxError({
                 message: [
                     `SyntaxError: ${params.message}`,
                     `line ${coords.line}, column ${coords.column}`,
                     "",
-                    TokenHighlighter.highlight(code, token)
+                    TokenHighlighter.highlight(source, token)
                 ].join("\n"),
                 target: token,
                 coords

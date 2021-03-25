@@ -1,7 +1,7 @@
 import { AbstractHighlighter, NEAR_LINES_QUANTITY } from "./AbstractHighlighter";
-import { SourceCode } from "../SourceCode";
 import { Fragment } from "../Fragment";
 import { Line } from "../Line";
+import { Source } from "../interface";
 
 export interface HighlightToken {
     position: number;
@@ -16,7 +16,7 @@ export interface Underline {
 export class TokenHighlighter extends AbstractHighlighter {
 
     /** highlight single line with a token and underline under the token */
-    static highlight(code: SourceCode, token: HighlightToken): string {
+    static highlight(code: Source, token: HighlightToken): string {
         const coords = code.getCoords(token.position);
 
         const startLine = Math.max(

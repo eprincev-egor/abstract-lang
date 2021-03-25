@@ -6,7 +6,7 @@ import {
     SpaceToken,
     EndOfLineToken
 } from "../../token";
-import { SourceFile } from "../../source";
+import { SourceCode } from "../../source";
 
 describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
 
@@ -62,9 +62,8 @@ describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
             }
         }
 
-        const file = new SourceFile({
-            path: "test",
-            content: `{
+        const code = new SourceCode({
+            text: `{
                 item: 1,
                 children: [
                     {
@@ -97,7 +96,7 @@ describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
                 ]
             }`.trim()
         });
-        const {cursor} = file;
+        const {cursor} = code;
 
         const root = cursor.parse(ItemNode);
         assert.deepStrictEqual(root.toJSON(), {

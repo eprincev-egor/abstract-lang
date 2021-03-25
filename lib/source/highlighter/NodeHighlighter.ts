@@ -1,5 +1,5 @@
 import { AbstractHighlighter, NEAR_LINES_QUANTITY } from "./AbstractHighlighter";
-import { SourceCode } from "../SourceCode";
+import { Source } from "../interface";
 import { Fragment } from "../Fragment";
 import { Line } from "../Line";
 import { TokenHighlighter } from "./TokenHighlighter";
@@ -19,7 +19,7 @@ export interface HighlightNode {
 export class NodeHighlighter extends AbstractHighlighter {
 
     /** highlight lines with a node */
-    static highlight(code: SourceCode, node: HighlightNode): string {
+    static highlight(code: Source, node: HighlightNode): string {
         const start = code.getCoords(node.position.start);
         const end = code.getCoords(node.position.end);
 

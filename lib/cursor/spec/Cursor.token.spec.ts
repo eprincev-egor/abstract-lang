@@ -1,6 +1,6 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SourceFile, SyntaxError } from "../../source";
+import { SourceCode, SyntaxError } from "../../source";
 import {
     SpaceToken,
     WordToken,
@@ -10,14 +10,13 @@ import {
 
 describe("Cursor.token.spec.ts token methods", () => {
 
-    let file!: SourceFile;
+    let code!: SourceCode;
     let cursor!: Cursor;
     beforeEach(() => {
-        file = new SourceFile({
-            path: "test.txt",
-            content: "hello world"
+        code = new SourceCode({
+            text: "hello world"
         });
-        cursor = file.cursor;
+        cursor = code.cursor;
     });
 
     it("beforeToken(TokenClass)", () => {

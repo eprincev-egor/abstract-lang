@@ -1,17 +1,16 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SourceFile, SyntaxError } from "../../source";
+import { SourceCode, SyntaxError } from "../../source";
 
 describe("Cursor.word.spec.ts word methods", () => {
 
-    let file!: SourceFile;
+    let code!: SourceCode;
     let cursor!: Cursor;
     beforeEach(() => {
-        file = new SourceFile({
-            path: "test.txt",
-            content: "hello WORLD"
+        code = new SourceCode({
+            text: "hello WORLD"
         });
-        cursor = file.cursor;
+        cursor = code.cursor;
     });
 
     describe("beforeWord(word)", () => {

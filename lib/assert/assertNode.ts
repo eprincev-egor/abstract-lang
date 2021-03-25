@@ -1,7 +1,5 @@
-import { Cursor } from "../cursor";
 import { AbstractNode, MinifySpaces, NodeClass, PrettySpaces } from "../node";
-import { defaultMap, Tokenizer } from "../token";
-import { SourceFile } from "../source";
+import { SourceCode } from "../source";
 import assert from "assert";
 
 export interface SuccessTest<TNode extends AbstractNode<any>> {
@@ -98,21 +96,19 @@ export function assertNode<TNode extends AbstractNode<any>>(
         );
     }
 
-    function parse(code: string) {
-        const file = new SourceFile({
-            path: "<assertNode>",
-            content: code
+    function parse(text: string) {
+        const code = new SourceCode({
+            text
         });
-        const node = file.cursor.parse(Node);
+        const node = code.cursor.parse(Node);
         return node;
     }
 
-    function entry(code: string) {
-        const file = new SourceFile({
-            path: "<assertNode>",
-            content: code
+    function entry(text: string) {
+        const code = new SourceCode({
+            text
         });
-        const entry = file.cursor.before(Node);
+        const entry = code.cursor.before(Node);
         return entry;
     }
 }

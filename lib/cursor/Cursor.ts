@@ -7,16 +7,16 @@ import {
     AnyRow,
     NodeClass
 } from "../node";
-import { SourceFile, SyntaxError } from "../source";
+import { Source, SyntaxError } from "../source";
 import { last } from "../util";
 
 /** Text cursor between some tokens */
 export class Cursor {
 
-    readonly file: SourceFile;
+    readonly source: Source;
     private tokenIndex: number;
     private nextToken_: Token;
-    constructor(file: SourceFile) {
+    constructor(file: Source) {
         if ( file.tokens.length === 0 ) {
             throw new Error("required not empty array of tokens");
         }
@@ -25,7 +25,7 @@ export class Cursor {
             throw new TypeError("required special token EOF after last token");
         }
 
-        this.file = file;
+        this.source = file;
         this.tokenIndex = 0;
         this.nextToken_ = file.tokens[ this.tokenIndex ];
     }
@@ -211,7 +211,7 @@ export class Cursor {
 
     /** move cursor position before token */
     setPositionBefore(token: Token): void {
-        const tokenIndex = this.file.tokens.indexOf(token);
+        const tokenIndex = this.source.tokens.indexOf(token);
         if ( tokenIndex === -1 ) {
             throw new Error(`cannot set position before unknown token: "${token.value}"`);
         }
@@ -256,6 +256,6 @@ export class Cursor {
         }
 
         this.tokenIndex++;
-        this.nextToken_ = this.file.tokens[ this.tokenIndex ];
+        this.nextToken_ = this.source.tokens[ this.tokenIndex ];
     }
 }

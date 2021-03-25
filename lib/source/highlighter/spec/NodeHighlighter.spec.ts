@@ -1,20 +1,15 @@
 import assert from "assert";
 import { codeExample } from "./fixture";
-import { SourceFile } from "../../SourceFile";
 import { SourceCode } from "../../SourceCode";
 import { NodeHighlighter } from "../NodeHighlighter";
 
 describe("NodeHighlighter", () => {
 
-    let file!: SourceFile;
     let code!: SourceCode;
     beforeEach(() => {
-        file = new SourceFile({
-            path: "./test.txt",
-            content: codeExample
+        code = new SourceCode({
+            text: codeExample
         });
-        const lines = file.generateLines();
-        code = new SourceCode(lines);
     });
 
     it("show 4 lines before invalid node and 4 lines after", () => {
