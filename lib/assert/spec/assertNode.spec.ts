@@ -221,6 +221,7 @@ describe("assertNode", () => {
                 string: string;
             }
             class StringNode extends AbstractNode<StringNodeRow> {
+                // istanbul ignore next
                 static entry() {
                     return true;
                 }
