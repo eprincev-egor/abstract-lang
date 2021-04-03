@@ -100,18 +100,8 @@
             {"allowSingleExtends": false}
         ],
         "@typescript-eslint/no-extra-parens": ["off"],
-        "@typescript-eslint/no-magic-numbers": [
-            "error",
-            {
-                "ignore": [0, -1, 1, 2, -2],
-                "ignoreArrayIndexes": true,
-                "ignoreDefaultValues": true,
-                "ignoreReadonlyClassProperties": true,
-                "ignoreEnums": true,
-                "ignoreNumericLiteralTypes": true
-            }
-        ],
-        "@typescript-eslint/no-explicit-any": "off"
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-magic-numbers": "off"
     },
     "overrides": [
         {
