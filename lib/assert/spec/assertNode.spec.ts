@@ -1,5 +1,5 @@
 import assert from "assert";
-import { DigitsToken, SpaceToken } from "../../token";
+import { DigitsToken, SpaceToken, WordToken } from "../../token";
 import { Cursor } from "../../cursor";
 import { SyntaxError } from "../../source";
 import { AbstractNode, Spaces, _ } from "../../node";
@@ -214,6 +214,51 @@ describe("assertNode", () => {
                 err.message.includes("invalid entry on minify:\n1+2\n\n")
             );
         });
+
+
+        it("parsed callback", () => {
+            interface StringNodeRow {
+                string: string;
+            }
+            class StringNode extends AbstractNode<StringNodeRow> {
+                static entry() {
+                    return true;
+                }
+
+                static parse(cursor: Cursor): StringNodeRow {
+                    const string = cursor.read(WordToken).value;
+                    return {string};
+                }
+
+                template() {
+                    return this.row.string;
+                }
+
+                toValue(): string {
+                    return "wrong";
+                }
+            }
+
+            assert.throws(() => {
+                assertNode(StringNode, {
+                    input: "hello",
+                    shouldBe: {
+                        json: {
+                            string: "hello"
+                        },
+
+                        parsed: (node) => {
+                            assert.strictEqual(node.toValue(), "hello");
+                        }
+                    }
+                });
+            }, (err: Error) =>
+                err instanceof assert.AssertionError &&
+                err.expected === "hello" &&
+                err.actual === "wrong"
+            );
+        });
+
     });
 
     describe("valid parsing", () => {

@@ -13,6 +13,8 @@ export interface SuccessTest<TNode extends AbstractNode<any>> {
         pretty?: string;
         /** expected result of node.toString(MinifySpaces), by default is input */
         minify?: string;
+        /** callback for additional tests of the parsed node */
+        parsed?: (node: TNode) => void;
     };
 }
 
@@ -77,6 +79,10 @@ export function assertNode<TNode extends AbstractNode<any>>(
             test.shouldBe.json,
             "invalid json on minify:\n" + minify + "\n\n"
         );
+
+        if ( test.shouldBe.parsed ) {
+            test.shouldBe.parsed(node);
+        }
     }
 
     function testEntry(test: SuccessTest<TNode>): void {
