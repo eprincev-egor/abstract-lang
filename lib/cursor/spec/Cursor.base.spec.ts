@@ -180,38 +180,57 @@ describe("Cursor.base.spec.ts base methods", () => {
         });
     });
 
-    describe("beforeSequenceOfValues(values)", () => {
+    describe("beforeSequence(...(value | Token)[])", () => {
 
-        it("valid sequence", () => {
-            const result = cursor.beforeSequenceOfValues(["hello", " ", "world"]);
+        it("valid sequence of values", () => {
+            const result = cursor.beforeSequence("hello", " ", "world");
             assert.ok(result);
         });
 
         it("invalid sequence at first value", () => {
-            const result = cursor.beforeSequenceOfValues(["world", " ", "hello"]);
+            const result = cursor.beforeSequence("world", " ", "hello");
             assert.ok(!result);
         });
 
         it("invalid sequence at second value", () => {
-            const result = cursor.beforeSequenceOfValues(["hello", "world"]);
+            const result = cursor.beforeSequence("hello", "world");
             assert.ok(!result);
         });
 
         it("invalid sequence at third value", () => {
-            const result = cursor.beforeSequenceOfValues(["hello", " ", "wrong"]);
+            const result = cursor.beforeSequence("hello", " ", "wrong");
             assert.ok(!result);
         });
 
         it("invalid sequence if reached end of code", () => {
-            const result = cursor.beforeSequenceOfValues(["hello", " ", "world", "end"]);
+            const result = cursor.beforeSequence("hello", " ", "world", "end");
             assert.ok(!result);
         });
 
         it("don't change cursor position", () => {
-            cursor.beforeSequenceOfValues(["hello", " ", "world"]);
+            cursor.beforeSequence("hello", " ", "world");
             assert.ok( cursor.beforeValue("hello") );
         });
 
+        it("valid sequence of tokens", () => {
+            const result = cursor.beforeSequence(WordToken, SpaceToken);
+            assert.ok(result);
+        });
+
+        it("invalid sequence of tokens", () => {
+            const result = cursor.beforeSequence(SpaceToken, WordToken);
+            assert.ok(!result);
+        });
+
+        it("valid sequence of token and value", () => {
+            const result = cursor.beforeSequence(WordToken, " ");
+            assert.ok(result);
+        });
+
+        it("valid sequence of value and token", () => {
+            const result = cursor.beforeSequence("hello", SpaceToken);
+            assert.ok(result);
+        });
     });
 
 });

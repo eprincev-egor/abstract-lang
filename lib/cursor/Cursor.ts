@@ -78,29 +78,39 @@ export class Cursor {
         return beforeWord;
     }
 
-    /** check next tokens values */
-    beforeSequenceOfValues(shouldBeValues: string[]): boolean {
+    /** check next tokens values or classes */
+    beforeSequence(...shouldBeTokensOrValues: (string | TokenClass)[]): boolean {
         let tokenIndex = this.tokenIndex;
         let nextToken = this.nextToken_;
 
-        if ( nextToken.value !== shouldBeValues[0] ) {
+        // little speedup
+        if (
+            typeof shouldBeTokensOrValues[0] === "string" &&
+            nextToken.value !== shouldBeTokensOrValues[0]
+        ) {
             return false;
         }
 
         let result = true;
-        for (const shouldBeValue of shouldBeValues.slice(1)) {
-            tokenIndex++;
-            nextToken = this.source.tokens[ tokenIndex ];
-
+        for (const shouldBe of shouldBeTokensOrValues) {
             if ( nextToken instanceof EndOfFleToken ) {
                 result = false;
                 break;
             }
 
-            if ( nextToken.value !== shouldBeValue ) {
+            if ( typeof shouldBe === "string" ) {
+                if ( nextToken.value !== shouldBe ) {
+                    result = false;
+                    break;
+                }
+            }
+            else if ( !(nextToken instanceof shouldBe) ) {
                 result = false;
                 break;
             }
+
+            tokenIndex++;
+            nextToken = this.source.tokens[ tokenIndex ];
         }
 
         return result;
