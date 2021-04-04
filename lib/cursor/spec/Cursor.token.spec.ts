@@ -5,7 +5,8 @@ import {
     SpaceToken,
     WordToken,
     EndOfFleToken,
-    EndOfLineToken
+    EndOfLineToken,
+    OperatorsToken
 } from "../../token";
 
 describe("Cursor.token.spec.ts token methods", () => {
@@ -176,6 +177,73 @@ describe("Cursor.token.spec.ts token methods", () => {
             }, (err: Error) =>
                 err instanceof SyntaxError &&
                 /reached end of code, but expected any token/.test(err.message)
+            );
+        });
+
+    });
+
+    describe("readAll(TokenClass, ...)", () => {
+
+        it("returns one token", () => {
+            const result = cursor.readAll(WordToken);
+            assert.strictEqual( result.length, 1 );
+            assert.strictEqual( result[0].value, "hello" );
+            assert.ok( cursor.beforeValue(" "), "correct position after readAll()" );
+        });
+
+        it("returns sequence of tokens", () => {
+            cursor = new Cursor({tokens: [
+                new OperatorsToken("+", 0),
+                new OperatorsToken("-", 1),
+                new OperatorsToken("+", 2),
+                new SpaceToken(" ", 3),
+                new EndOfFleToken(4)
+            ]} as any);
+
+            const result = cursor.readAll(OperatorsToken);
+            assert.strictEqual( result.length, 3 );
+            assert.strictEqual( result.map((token) => token.value).join(""), "+-+" );
+            assert.ok( cursor.beforeValue(" "), "correct position after readAll()" );
+        });
+
+        it("returns all of all expected classes", () => {
+            cursor = new Cursor({tokens: [
+                new OperatorsToken("+", 0),
+                new OperatorsToken("x", 1),
+                new OperatorsToken("-", 2),
+                new OperatorsToken("y", 1),
+                new SpaceToken(" ", 3),
+                new EndOfFleToken(4)
+            ]} as any);
+
+            const result = cursor.readAll(OperatorsToken, WordToken);
+            assert.strictEqual( result.length, 4 );
+            assert.strictEqual( result.map((token) => token.value).join(""), "+x-y" );
+            assert.ok(
+                cursor.beforeValue(" "),
+                "correct position after readAll(OperatorsToken, WordToken)"
+            );
+        });
+
+        it("throw an error if the next token is not correct instance", () => {
+            assert.throws(() => {
+                cursor.readAll(OperatorsToken, SpaceToken);
+            }, (err: Error) =>
+                err instanceof SyntaxError &&
+                /unexpected token WordToken\("hello"\), expected one of: OperatorsToken, SpaceToken/.test(err.message)
+            );
+        });
+
+        it("throw an error if the next token is EOF, expected one of ...", () => {
+            cursor.next();
+            cursor.next();
+            cursor.next();
+
+            assert.throws(() => {
+                cursor.readAll(WordToken, SpaceToken);
+            }, (err: Error) =>
+                err instanceof SyntaxError &&
+                /reached end of code, but expected one of: WordToken, SpaceToken/.test(err.message)
             );
         });
 

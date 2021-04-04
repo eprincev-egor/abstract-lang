@@ -206,6 +206,45 @@ export class Cursor {
         ].join(" "));
     }
 
+    /** read all next tokens with same classes and first next token should be correct instance */
+    readAll(...Tokens: TokenClass[]): Token[] {
+        if ( this.beforeEnd() ) {
+            const expectedTokenClasses = Tokens
+                .map((TokenClass) => TokenClass.name)
+                .join(", ");
+
+            this.throwError([
+                "reached end of code,",
+                `but expected one of: ${expectedTokenClasses}`
+            ].join(" "));
+        }
+
+        const result: Token[] = [];
+        while (
+            Tokens.some((SomeToken) =>
+                this.nextToken_ instanceof SomeToken
+            )
+        ) {
+            const token = this.readAnyOne();
+            result.push(token);
+        }
+
+        if ( result.length === 0 ) {
+            const invalidToken = this.nextToken_;
+            const invalidTokenName = invalidToken.constructor.name;
+            const expectedTokenClasses = Tokens
+                .map((TokenClass) => TokenClass.name)
+                .join(", ");
+
+            this.throwError([
+                `unexpected token ${invalidTokenName}("${invalidToken.value}"),`,
+                `expected one of: ${expectedTokenClasses}`
+            ].join(" "));
+        }
+
+        return result;
+    }
+
     /** returns any one token and move position */
     readAnyOne(): Token {
         if ( this.beforeEnd() ) {
@@ -277,7 +316,7 @@ export class Cursor {
         }
     }
 
-    /** skip all tokens with same classes */
+    /** skip all next tokens with same classes */
     skipAll(...SkipTokens: TokenClass[]): void {
         while (
             SkipTokens.some((SkipThisTokenClass) =>
