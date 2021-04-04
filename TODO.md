@@ -1,10 +1,8 @@
 - assertNode check position for every child node
-- cursor.readAnyOne();
-- cursor.readOperator([]);
 - cursor.readAll([]);
 - cursor.skipSpaces();
+- cursor.readOperator([]);
 - cursor.beforeOperator([]);
-- cursor.beforeValues([]);
 - RootNode (file or source code) need for linters
 - colorize console message
 - create README

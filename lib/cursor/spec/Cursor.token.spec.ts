@@ -130,4 +130,32 @@ describe("Cursor.token.spec.ts token methods", () => {
 
     });
 
+    describe("readAnyOne()", () => {
+
+        it("return any one and move position", () => {
+            const hello = cursor.readAnyOne().value;
+            assert.strictEqual( hello, "hello" );
+
+            const space = cursor.readAnyOne().value;
+            assert.strictEqual( space, " " );
+
+            const world = cursor.readAnyOne().value;
+            assert.strictEqual( world, "world" );
+        });
+
+        it("throw an error if the next token is EOF", () => {
+            cursor.next();
+            cursor.next();
+            cursor.next();
+
+            assert.throws(() => {
+                cursor.readAnyOne();
+            }, (err: Error) =>
+                err instanceof SyntaxError &&
+                /reached end of code, but expected any token/.test(err.message)
+            );
+        });
+
+    });
+
 });

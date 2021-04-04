@@ -206,6 +206,17 @@ export class Cursor {
         ].join(" "));
     }
 
+    /** returns any one token and move position */
+    readAnyOne(): Token {
+        if ( this.beforeEnd() ) {
+            this.throwError("reached end of code, but expected any token");
+        }
+
+        const anyOneToken = this.nextToken_;
+        this.next();
+        return anyOneToken;
+    }
+
     /** call Node.parse and return node instance */
     parse<TNode extends AbstractNode<AnyRow>>(Node: NodeClass<TNode>): TNode {
         const start = this.nextToken_.position;
