@@ -180,4 +180,38 @@ describe("Cursor.base.spec.ts base methods", () => {
         });
     });
 
+    describe("beforeSequenceOfValues(values)", () => {
+
+        it("valid sequence", () => {
+            const result = cursor.beforeSequenceOfValues(["hello", " ", "world"]);
+            assert.ok(result);
+        });
+
+        it("invalid sequence at first value", () => {
+            const result = cursor.beforeSequenceOfValues(["world", " ", "hello"]);
+            assert.ok(!result);
+        });
+
+        it("invalid sequence at second value", () => {
+            const result = cursor.beforeSequenceOfValues(["hello", "world"]);
+            assert.ok(!result);
+        });
+
+        it("invalid sequence at third value", () => {
+            const result = cursor.beforeSequenceOfValues(["hello", " ", "wrong"]);
+            assert.ok(!result);
+        });
+
+        it("invalid sequence if reached end of code", () => {
+            const result = cursor.beforeSequenceOfValues(["hello", " ", "world", "end"]);
+            assert.ok(!result);
+        });
+
+        it("don't change cursor position", () => {
+            cursor.beforeSequenceOfValues(["hello", " ", "world"]);
+            assert.ok( cursor.beforeValue("hello") );
+        });
+
+    });
+
 });

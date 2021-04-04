@@ -78,6 +78,34 @@ export class Cursor {
         return beforeWord;
     }
 
+    /** check next tokens values */
+    beforeSequenceOfValues(shouldBeValues: string[]): boolean {
+        let tokenIndex = this.tokenIndex;
+        let nextToken = this.nextToken_;
+
+        if ( nextToken.value !== shouldBeValues[0] ) {
+            return false;
+        }
+
+        let result = true;
+        for (const shouldBeValue of shouldBeValues.slice(1)) {
+            tokenIndex++;
+            nextToken = this.source.tokens[ tokenIndex ];
+
+            if ( nextToken instanceof EndOfFleToken ) {
+                result = false;
+                break;
+            }
+
+            if ( nextToken.value !== shouldBeValue ) {
+                result = false;
+                break;
+            }
+        }
+
+        return result;
+    }
+
     /** move cursor if next token value is correct, else throw error */
     readValue<T extends string>(expectedTokenValue: T): T {
         if ( this.nextToken_.value !== expectedTokenValue ) {
