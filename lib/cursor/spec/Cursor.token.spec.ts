@@ -225,26 +225,18 @@ describe("Cursor.token.spec.ts token methods", () => {
             );
         });
 
-        it("throw an error if the next token is not correct instance", () => {
-            assert.throws(() => {
-                cursor.readAll(OperatorsToken, SpaceToken);
-            }, (err: Error) =>
-                err instanceof SyntaxError &&
-                /unexpected token WordToken\("hello"\), expected one of: OperatorsToken, SpaceToken/.test(err.message)
-            );
+        it("returns empty array if the next token is not correct instance", () => {
+            const result = cursor.readAll(OperatorsToken, SpaceToken);
+            assert.deepStrictEqual(result, []);
         });
 
-        it("throw an error if the next token is EOF, expected one of ...", () => {
+        it("returns empty array if the next token is EOF, expected one of ...", () => {
             cursor.next();
             cursor.next();
             cursor.next();
 
-            assert.throws(() => {
-                cursor.readAll(WordToken, SpaceToken);
-            }, (err: Error) =>
-                err instanceof SyntaxError &&
-                /reached end of code, but expected one of: WordToken, SpaceToken/.test(err.message)
-            );
+            const result = cursor.readAll(WordToken, SpaceToken);
+            assert.deepStrictEqual(result, []);
         });
 
     });
