@@ -1,4 +1,4 @@
-import { AbstractNode, Cursor, SpaceToken, TemplateElement } from "abstract-lang";
+import { AbstractNode, Cursor, TemplateElement } from "abstract-lang";
 import { Expression } from "./Expression";
 import { Operand } from "./Operand";
 
@@ -15,11 +15,11 @@ export class CircleBracketsExpression
 
     static parse(cursor: Cursor): CircleBracketsExpressionRow {
         cursor.readValue("(");
-        cursor.skipAll(SpaceToken);
+        cursor.skipSpaces();
 
         const operandInBrackets = cursor.parse(Expression).row.operand;
 
-        cursor.skipAll(SpaceToken);
+        cursor.skipSpaces();
         cursor.readValue(")");
 
         return {operandInBrackets};

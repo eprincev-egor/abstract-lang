@@ -1,4 +1,4 @@
-import { AbstractNode, Cursor, SpaceToken } from "abstract-lang";
+import { AbstractNode, Cursor } from "abstract-lang";
 import { Operand } from "./Operand";
 import { NumberLiteral } from "./NumberLiteral";
 import { Identifier } from "./Identifier";
@@ -44,7 +44,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
                 cursor.parse(PreUnaryOperator) :
                 Expression.parseSimpleOperand(cursor)
         );
-        cursor.skipAll(SpaceToken);
+        cursor.skipSpaces();
 
         operand = Expression.parseDotOperators(cursor, operand);
 
@@ -58,7 +58,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
             });
             operand = postUnary;
 
-            cursor.skipAll(SpaceToken);
+            cursor.skipSpaces();
         }
 
         return operand;
@@ -73,7 +73,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
         }
 
         cursor.readValue(".");
-        cursor.skipAll(SpaceToken);
+        cursor.skipSpaces();
         const property = cursor.parse(Identifier);
 
         const dotOperator = new DotOperator({
@@ -113,14 +113,14 @@ export class Expression extends AbstractNode<ExpressionRow> {
         cursor: Cursor,
         left: Operand
     ): BinaryOperator | undefined {
-        cursor.skipAll(SpaceToken);
+        cursor.skipSpaces();
 
         if ( !BinaryOperator.entryOperator(cursor) ) {
             return;
         }
 
         const operator = BinaryOperator.parseOperator(cursor);
-        cursor.skipAll(SpaceToken);
+        cursor.skipSpaces();
 
         const binary = Expression.createBinaryOperator(
             left,

@@ -130,6 +130,29 @@ describe("Cursor.token.spec.ts token methods", () => {
 
     });
 
+    describe("skipSpaces()", () => {
+
+        it("don't move position, if no spaces ahead", () => {
+            cursor.skipSpaces();
+            assert.ok( cursor.beforeValue("hello") );
+        });
+
+        it("skip all SpaceToken or EndOfLineTokens", () => {
+            cursor = new Cursor({tokens: [
+                new SpaceToken(" ", 0),
+                new EndOfLineToken("\r", 1),
+                new SpaceToken(" ", 2),
+                new EndOfLineToken("\n", 3),
+                new WordToken("correct", 4),
+                new EndOfFleToken(11)
+            ]} as any);
+
+            cursor.skipSpaces();
+            assert.ok( cursor.beforeValue("correct"), "position is moved" );
+        });
+
+    });
+
     describe("readAnyOne()", () => {
 
         it("return any one and move position", () => {

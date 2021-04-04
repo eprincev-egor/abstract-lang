@@ -1,11 +1,7 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
 import { AbstractNode } from "../../node";
-import {
-    DigitsToken,
-    SpaceToken,
-    EndOfLineToken
-} from "../../token";
+import { DigitsToken } from "../../token";
 import { SourceCode } from "../../source";
 
 describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
@@ -23,34 +19,34 @@ describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
 
             static parse(cursor: Cursor): ItemRow {
                 cursor.readValue("{");
-                cursor.skipAll(SpaceToken, EndOfLineToken);
+                cursor.skipSpaces();
 
                 cursor.readValue("item");
                 cursor.readValue(":");
-                cursor.skipAll(SpaceToken, EndOfLineToken);
+                cursor.skipSpaces();
 
                 const item = +cursor.read(DigitsToken).value;
 
-                cursor.skipAll(SpaceToken, EndOfLineToken);
+                cursor.skipSpaces();
                 cursor.readValue(",");
-                cursor.skipAll(SpaceToken, EndOfLineToken);
+                cursor.skipSpaces();
 
                 cursor.readValue("children");
                 cursor.readValue(":");
-                cursor.skipAll(SpaceToken, EndOfLineToken);
+                cursor.skipSpaces();
 
                 cursor.readValue("[");
-                cursor.skipAll(SpaceToken, EndOfLineToken);
+                cursor.skipSpaces();
 
                 let children: ItemNode[] = [];
                 if ( cursor.before(ItemNode) ) {
                     children = cursor.parseChainOf(ItemNode, ",");
                 }
 
-                cursor.skipAll(SpaceToken, EndOfLineToken);
+                cursor.skipSpaces();
                 cursor.readValue("]");
 
-                cursor.skipAll(SpaceToken, EndOfLineToken);
+                cursor.skipSpaces();
                 cursor.readValue("}");
 
                 return {item, children};

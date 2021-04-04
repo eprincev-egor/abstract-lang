@@ -1,6 +1,5 @@
 import {
-    AbstractNode,
-    Cursor, EndOfLineToken, SpaceToken,
+    AbstractNode, Cursor,
     TemplateElement, eol, tab
 } from "abstract-lang";
 import { ObjectItem } from "./ObjectItem";
@@ -19,13 +18,13 @@ export class ObjectLiteral extends AbstractNode<ObjectRow> {
     static parse(cursor: Cursor): ObjectRow {
         let object: ObjectItem[] = [];
         cursor.readValue("{");
-        cursor.skipAll(SpaceToken, EndOfLineToken);
+        cursor.skipSpaces();
 
         if ( cursor.before(ObjectItem) ) {
             object = cursor.parseChainOf(ObjectItem, ",");
         }
 
-        cursor.skipAll(SpaceToken, EndOfLineToken);
+        cursor.skipSpaces();
         cursor.readValue("}");
 
         return {object};

@@ -288,6 +288,11 @@ export class Cursor {
         }
     }
 
+    /** skip all spaces tokens */
+    skipSpaces(): void {
+        this.skipAll(EndOfLineToken, SpaceToken);
+    }
+
     /** throw syntax error at near current position */
     throwError(message: string): never {
         throw SyntaxError.at({

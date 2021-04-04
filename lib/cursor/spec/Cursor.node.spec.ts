@@ -4,8 +4,7 @@ import { AbstractNode } from "../../node";
 import { SourceCode, SyntaxError } from "../../source";
 import {
     WordToken,
-    DigitsToken,
-    SpaceToken
+    DigitsToken
 } from "../../token";
 
 describe("Cursor.node.spec.ts node methods", () => {
@@ -69,12 +68,12 @@ describe("Cursor.node.spec.ts node methods", () => {
 
                 static parse(cursor: Cursor): OperatorRow {
                     const left = Operator.parseOperand(cursor);
-                    cursor.skipAll(SpaceToken);
+                    cursor.skipSpaces();
 
                     const operator = cursor.nextToken.value;
                     cursor.skipOne();
 
-                    cursor.skipAll(SpaceToken);
+                    cursor.skipSpaces();
                     const right = Operator.parseOperand(cursor);
 
                     return {left, operator, right};
@@ -83,11 +82,11 @@ describe("Cursor.node.spec.ts node methods", () => {
                 static parseOperand(cursor: Cursor): string | Operator {
                     if ( cursor.beforeValue("(") ) {
                         cursor.skipOne();
-                        cursor.skipAll(SpaceToken);
+                        cursor.skipSpaces();
 
                         const operator = cursor.parse(Operator);
 
-                        cursor.skipAll(SpaceToken);
+                        cursor.skipSpaces();
                         cursor.readValue(")");
 
                         return operator;

@@ -1,6 +1,5 @@
 - assertNode check position for every child node
 - cursor.readAll([]);
-- cursor.skipSpaces();
 - cursor.readOperator([]);
 - cursor.beforeOperator([]);
 - RootNode (file or source code) need for linters
