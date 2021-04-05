@@ -127,6 +127,8 @@ describe("Cursor.node.spec.ts node methods", () => {
                 operator: "+",
                 right: "4"
             });
+
+            assert.strictEqual( node.source, code );
         });
     });
 

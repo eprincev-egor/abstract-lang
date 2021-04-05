@@ -16,18 +16,18 @@ export class Cursor {
     readonly source: Source;
     private tokenIndex: number;
     private nextToken_: Token;
-    constructor(file: Source) {
-        if ( file.tokens.length === 0 ) {
+    constructor(source: Source) {
+        if ( source.tokens.length === 0 ) {
             throw new Error("required not empty array of tokens");
         }
-        const endToken = last(file.tokens);
+        const endToken = last(source.tokens);
         if ( !(endToken instanceof EndOfFleToken) ) {
             throw new TypeError("required special token EOF after last token");
         }
 
-        this.source = file;
+        this.source = source;
         this.tokenIndex = 0;
-        this.nextToken_ = file.tokens[ this.tokenIndex ];
+        this.nextToken_ = source.tokens[ this.tokenIndex ];
     }
 
     /** text cursor is before this token */
@@ -250,6 +250,7 @@ export class Cursor {
 
         const node = new Node({
             row,
+            source: this.source,
             position: { start, end }
         });
         return node;

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { Source } from "../source";
 import { Cursor } from "../cursor";
 import {
     stringifyNode, Spaces, TemplateElement,
@@ -34,6 +35,7 @@ export interface NodePosition {
 
 export interface NodeParams<TRow extends AnyRow> {
     row: TRow;
+    source?: Source;
     position?: {
         start: number;
         end: number;
@@ -69,6 +71,8 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     /** reference to parent node */
     parent?: AbstractNode<AnyRow>;
+    /** reference to SourceFile or SourceCode */
+    source?: Source;
     /** object with node attributes */
     readonly row: Readonly<TRow>;
     /** if node has been parsed, then we a have position within source code */
@@ -77,6 +81,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     constructor(params: NodeParams<TRow>) {
         this.row = params.row;
         this.position = params.position;
+        this.source = params.source;
         this.assignChildrenParent();
     }
 
