@@ -1,6 +1,7 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
 import { SourceCode, SyntaxError } from "../../source";
+import { SpaceToken, WordToken } from "../../token";
 
 describe("Cursor.word.spec.ts word methods", () => {
 
@@ -165,20 +166,12 @@ describe("Cursor.word.spec.ts word methods", () => {
                 cursor.beforePhrase("hello", "world"),
                 true
             );
-            // don't move position
-            assert.ok(
-                cursor.beforeWord("hello")
-            );
         });
 
         it("before phrase 'unknown' 'phrase'", () => {
             assert.strictEqual(
                 cursor.beforePhrase("unknown", "phrase"),
                 false
-            );
-            // don't move position
-            assert.ok(
-                cursor.beforeWord("hello")
             );
         });
 
@@ -187,10 +180,15 @@ describe("Cursor.word.spec.ts word methods", () => {
                 cursor.beforePhrase("hello", "wrong"),
                 false
             );
-            // don't move position
-            assert.ok(
-                cursor.beforeWord("hello")
-            );
+        });
+
+        it("don't move position after call beforePhrase", () => {
+            cursor.beforePhrase("hello", "world");
+
+            assert.ok( cursor.beforeValue("hello"), "before hello" );
+            cursor.read(WordToken);
+            cursor.read(SpaceToken);
+            assert.ok( cursor.beforeValue("WORLD"), "before WORLD" );
         });
 
     });

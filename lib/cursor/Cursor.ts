@@ -163,10 +163,13 @@ export class Cursor {
     /** returns true if cursor before series of words (ignore case) */
     beforePhrase(...words: string[]): boolean {
         const startToken = this.nextToken_;
+        const tokenIndex = this.tokenIndex;
+
         for (const word of words) {
 
             if ( !this.beforeWord(word) ) {
                 this.nextToken_ = startToken;
+                this.tokenIndex = tokenIndex;
                 return false;
             }
 
@@ -175,6 +178,7 @@ export class Cursor {
         }
 
         this.nextToken_ = startToken;
+        this.tokenIndex = tokenIndex;
         return true;
     }
 
