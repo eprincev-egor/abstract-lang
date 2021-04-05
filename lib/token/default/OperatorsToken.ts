@@ -3,7 +3,7 @@ import { Token, TokenDescription } from "../Token";
 export class OperatorsToken extends Token {
 
     static description: TokenDescription = {
-        entry: /[!%&*+./<=>?^|~-]/,
+        entry: /[!%&*+./<=>?@^|~-]/,
         popularEntry: [
             // math
             "%", "*", "+", "/", "-",
@@ -12,7 +12,7 @@ export class OperatorsToken extends Token {
             // logic
             "&", "|", "!", "?",
             // other
-            ".", "^", "~"
+            ".", "^", "~", "@"
         ],
         maxLength: 1
     };
