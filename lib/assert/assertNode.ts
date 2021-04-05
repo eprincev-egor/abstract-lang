@@ -1,4 +1,4 @@
-import { AbstractNode, MinifySpaces, NodeClass, PrettySpaces } from "../node";
+import { AbstractNode, AnyRow, MinifySpaces, NodeClass, PrettySpaces } from "../node";
 import { SourceCode } from "../source";
 import assert from "assert";
 
@@ -82,6 +82,21 @@ export function assertNode<TNode extends AbstractNode<any>>(
 
         if ( test.shouldBe.parsed ) {
             test.shouldBe.parsed(node);
+        }
+
+        testEveryNodeHavePosition(test.input, node);
+    }
+
+    function testEveryNodeHavePosition(input: string, node: AbstractNode<AnyRow>) {
+        assert.ok(
+            !!node.position,
+            "required node position for every child\n" +
+            "on input:\n" + input + "\n\n" +
+            "invalid node: " + JSON.stringify(node, undefined, 4)
+        );
+
+        for (const child of node.children) {
+            testEveryNodeHavePosition(input, child);
         }
     }
 

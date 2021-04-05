@@ -1,4 +1,3 @@
-- assertNode check position for every child node
 - RootNode (file or source code) need for linters
 - colorize console message
 - create README

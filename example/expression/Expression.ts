@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AbstractNode, Cursor } from "abstract-lang";
 import { Operand } from "./Operand";
 import { NumberLiteral } from "./NumberLiteral";
@@ -51,6 +52,10 @@ export class Expression extends AbstractNode<ExpressionRow> {
         if ( PostUnaryOperator.entryOperator(cursor) ) {
             const postOperator = PostUnaryOperator.parseOperator(cursor);
             const postUnary = new PostUnaryOperator({
+                position: {
+                    start: operand.position!.start,
+                    end: cursor.nextToken.position
+                },
                 row: {
                     postOperator,
                     operand
@@ -77,6 +82,10 @@ export class Expression extends AbstractNode<ExpressionRow> {
         const property = cursor.parse(Identifier);
 
         const dotOperator = new DotOperator({
+            position: {
+                start: operand.position!.start,
+                end: property.position!.end
+            },
             row: {
                 operand,
                 property
@@ -146,10 +155,18 @@ export class Expression extends AbstractNode<ExpressionRow> {
             left.lessPrecedence(operator)
         ) {
             return new BinaryOperator({
+                position: {
+                    start: left.row.left.position!.start,
+                    end: right.position!.end
+                },
                 row: {
                     left: left.row.left,
                     operator: left.row.operator,
                     right: new BinaryOperator({
+                        position: {
+                            start: left.row.right.position!.start,
+                            end: right.position!.end
+                        },
                         row: {
                             left: left.row.right,
                             operator,
@@ -161,6 +178,10 @@ export class Expression extends AbstractNode<ExpressionRow> {
         }
 
         return new BinaryOperator({
+            position: {
+                start: left.position!.start,
+                end: right.position!.end
+            },
             row: {
                 left,
                 operator,
