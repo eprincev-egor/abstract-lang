@@ -69,7 +69,7 @@ export class Cursor {
         const tokenIndex = this.tokenIndex;
         const token = this.nextToken_;
 
-        this.skipAll(SpaceToken, EndOfLineToken);
+        this.skipSpaces();
         const beforeWord = this.nextToken_.value.toLowerCase() === word;
 
         this.tokenIndex = tokenIndex;
@@ -137,7 +137,7 @@ export class Cursor {
 
     /** move cursor if next token.value.toLowerCase() is correct, else throw error */
     readWord(expectedWord: string): string {
-        this.skipAll(SpaceToken, EndOfLineToken);
+        this.skipSpaces();
 
         const actualWord = this.nextToken_.value;
 
@@ -155,7 +155,7 @@ export class Cursor {
         }
 
         this.next();
-        this.skipAll(SpaceToken, EndOfLineToken);
+        this.skipSpaces();
 
         return actualWord;
     }
@@ -174,7 +174,7 @@ export class Cursor {
             }
 
             this.next();
-            this.skipAll(SpaceToken, EndOfLineToken);
+            this.skipSpaces();
         }
 
         this.nextToken_ = startToken;
@@ -271,14 +271,14 @@ export class Cursor {
             const node = this.parse(Node);
             nodes.push(node);
 
-            this.skipAll(SpaceToken, EndOfLineToken);
+            this.skipSpaces();
 
             if ( delimiter ) {
                 if ( !this.beforeValue(delimiter) ) {
                     break;
                 }
                 this.readValue(delimiter);
-                this.skipAll(SpaceToken, EndOfLineToken);
+                this.skipSpaces();
             }
             else if ( !this.before(Node) ) {
                 break;
