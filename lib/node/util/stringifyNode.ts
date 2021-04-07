@@ -1,4 +1,5 @@
 import { AbstractNode, AnyRow } from "../AbstractNode";
+import { split } from "../../util";
 
 export interface Spaces {
     _: string;
@@ -15,11 +16,11 @@ export const MinifySpaces: Spaces = {
     tab: "",
     eol: ""
 };
-/** end of line, default "\n" */
+/** end of line, pretty: "\n"  minify: "" */
 export const eol = {eol: true};
-/** horizontal indent, default "    " */
+/** horizontal indent, pretty: "    " minify: "" */
 export const tab = {tab: true};
-/** not required space, default " " */
+/** not required space, pretty: " "  minify: "" */
 export const _ = {_: true};
 
 export type PrimitiveTemplateElement = (
@@ -67,7 +68,6 @@ function templateLines(node: AbstractNode<AnyRow>) {
     return lines;
 }
 
-// node.templateLines() is private method
 function extrudeSubLines(parentLine: TemplateElement[]) {
     const outputLines: PrimitiveTemplateElement[][] = [];
     let lastLine: PrimitiveTemplateElement[] = [];
@@ -132,25 +132,4 @@ function stringifyElement(
     else {
         return element as string;
     }
-}
-
-function split<T>(array: readonly T[], delimiter: T): T[][] {
-    const matrix: T[][] = [];
-
-    let line: T[] = [];
-    for (const item of array) {
-        if ( item === delimiter ) {
-            matrix.push(line);
-            line = [];
-        }
-        else {
-            line.push(item);
-        }
-    }
-
-    if ( array.length > 0 ) {
-        matrix.push(line);
-    }
-
-    return matrix;
 }
