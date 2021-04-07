@@ -68,7 +68,6 @@ function templateLines(node: AbstractNode<AnyRow>) {
 }
 
 // node.templateLines() is private method
-// eslint-disable-next-line class-methods-use-this
 function extrudeSubLines(parentLine: TemplateElement[]) {
     const outputLines: PrimitiveTemplateElement[][] = [];
     let lastLine: PrimitiveTemplateElement[] = [];

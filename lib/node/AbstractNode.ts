@@ -213,29 +213,6 @@ export abstract class AbstractNode<TRow extends AnyRow> {
         return stringifyNode(this, spaces);
     }
 
-    /** returns array of children nodes with delimiter between nodes */
-    // eslint-disable-next-line class-methods-use-this
-    protected printChain(
-        elements: TemplateElement[],
-        ...delimiter: TemplateElement[]
-    ): TemplateElement[] {
-        const chain: TemplateElement[] = [];
-
-        if ( delimiter.length === 0 ) {
-            delimiter = [" "];
-        }
-
-        for (const element of elements) {
-            if ( chain.length > 0 ) {
-                chain.push(...delimiter);
-            }
-
-            chain.push(element);
-        }
-
-        return chain;
-    }
-
     /** convert node to plain json structure */
     toJSON(): NodeJson<TRow> {
         return toJSON(this.row) as unknown as NodeJson<TRow>;
