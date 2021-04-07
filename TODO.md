@@ -1,6 +1,5 @@
 - beforePattern()
 - readPattern()
-- templateChain
 - colorize console message
 - create README
 - add simple html example
