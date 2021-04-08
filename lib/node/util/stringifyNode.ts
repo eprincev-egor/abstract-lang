@@ -1,5 +1,5 @@
 import { AbstractNode, AnyRow } from "../AbstractNode";
-import { split } from "../../util";
+import { split, last } from "../../util";
 
 export interface Spaces {
     _: string;
@@ -110,15 +110,15 @@ function extrudeSubLines(parentLine: TemplateElement[]) {
                 const subLine = subLines[0];
                 lastLine.push( ...subLine );
             }
-            else if ( subLines.length > 1 ) {
-                const upIndentLines = subLines.map((subLine) =>
-                    [tab, ...subLine]
-                );
+            else if ( subLines.length > 1) {
+                outputLines.push([...lastLine, ...subLines[0]]);
 
-                outputLines.push(
-                    ...upIndentLines.slice(0, -1)
-                );
-                lastLine = upIndentLines.slice(-1)[0];
+                for (let i = 1, n = subLines.length; i < n - 1; i++) {
+                    const subLine = subLines[i];
+                    outputLines.push([tab, ...subLine]);
+                }
+
+                lastLine = [tab, ...last(subLines)];
             }
         }
         else {

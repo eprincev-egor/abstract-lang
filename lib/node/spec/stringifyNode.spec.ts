@@ -232,12 +232,11 @@ describe("stringifyNode(node, spaces?)", () => {
                     template: () => [
                         keyword("case"),
                         ...printChain([caseNode], eol), eol,
-                        keyword("else"), _, "'(unknown)'", eol,
+                        tab, keyword("else"), _, "'(unknown)'", eol,
                         keyword("end")
                     ],
                     expectedString: [
-                        "case",
-                        "    when true",
+                        "case when true",
                         "    then 1",
                         "    else '(unknown)'",
                         "end"
