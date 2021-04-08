@@ -1,6 +1,6 @@
 import {
     AbstractNode, Cursor,
-    TemplateElement, eol, tab
+    TemplateElement, eol, tab, printChain
 } from "abstract-lang";
 import { ObjectItem } from "./ObjectItem";
 import { cycleDeps } from "./cycleDeps";
@@ -35,19 +35,14 @@ export class ObjectLiteral extends AbstractNode<ObjectRow> {
             return "{}";
         }
 
-        const output: TemplateElement[] = [
-            "{", eol
+        return [
+            "{", eol,
+            tab, ...printChain(
+                this.row.object,
+                ",", eol, tab
+            ),
+            eol, "}"
         ];
-        for (const item of this.row.object) {
-            if ( output.length > 2 ) {
-                output.push(",", eol);
-            }
-
-            output.push(tab, item);
-        }
-
-        output.push(eol, "}");
-        return output;
     }
 }
 

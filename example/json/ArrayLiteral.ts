@@ -1,5 +1,6 @@
 import {
     AbstractNode, Cursor,
+    printChain,
     TemplateElement, _
 } from "abstract-lang";
 import { JsonElement } from "./JsonNode";
@@ -35,18 +36,14 @@ export class ArrayLiteral extends AbstractNode<ArrayRow> {
     }
 
     template(): TemplateElement[] {
-        const output: TemplateElement[] = ["["];
-
-        for (const item of this.row.array) {
-            if ( output.length > 1 ) {
-                output.push(",", _);
-            }
-
-            output.push(item);
-        }
-
-        output.push("]");
-        return output;
+        return [
+            "[",
+            ...printChain(
+                this.row.array,
+                ",", _
+            ),
+            "]"
+        ];
     }
 }
 

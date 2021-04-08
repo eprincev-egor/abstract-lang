@@ -2,7 +2,7 @@ import { TemplateElement } from "./stringifyNode";
 
 /** returns array of children nodes with delimiter between nodes */
 export function printChain(
-    elements: TemplateElement[],
+    elements: readonly TemplateElement[],
     ...delimiter: TemplateElement[]
 ): TemplateElement[] {
     const chain: TemplateElement[] = [];
