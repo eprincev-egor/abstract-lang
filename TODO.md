@@ -5,4 +5,3 @@
 - add simple html example
 - configure docs
 - need ignore comments within space group
-- tryParseOneOf(...Nodes[])

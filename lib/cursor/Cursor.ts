@@ -64,6 +64,18 @@ export class Cursor {
         return Node.entry(this);
     }
 
+    /** returns true if cursor before one of this Nodes */
+    beforeOneOf<TClass extends NodeClass<any>>(
+        Nodes: readonly TClass[]
+    ): boolean {
+        for (const Node of Nodes) {
+            if ( this.before(Node) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** returns true if next token.value.toLowerCase() === word */
     beforeWord(word: string): boolean {
         const tokenIndex = this.tokenIndex;
@@ -287,6 +299,35 @@ export class Cursor {
         } while ( !this.beforeEnd() );
 
         return nodes;
+    }
+
+    /** returns one of the Nodes if there is a cursor before of it */
+    tryParseOneOf<TClass extends NodeClass<any>>(
+        Nodes: readonly TClass[]
+    ): InstanceType<TClass> | undefined {
+        for (const Node of Nodes) {
+            if ( this.before(Node) ) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                return this.parse(Node);
+            }
+        }
+    }
+
+    /**
+     * returns one of the Nodes if there is a cursor before of it,
+     * else throw error
+     */
+    parseOneOf<TClass extends NodeClass<any>>(
+        Nodes: readonly TClass[],
+        errorMessage: string
+    ): InstanceType<TClass> {
+        const node = this.tryParseOneOf(Nodes);
+        if ( !node ) {
+            this.throwError(errorMessage);
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return node;
     }
 
     /** move cursor position before token */

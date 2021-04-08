@@ -23,39 +23,19 @@ export interface JsonRow {
 export class JsonNode extends AbstractNode<JsonRow> {
 
     static entry(cursor: Cursor): boolean {
-        return (
-            cursor.before(NullLiteral) ||
-            cursor.before(BooleanLiteral) ||
-            cursor.before(NumberLiteral) ||
-            cursor.before(StringLiteral) ||
-            cursor.before(ArrayLiteral) ||
-            cursor.before(ObjectLiteral)
-        );
+        return cursor.beforeOneOf([
+            NullLiteral, BooleanLiteral,
+            NumberLiteral, StringLiteral,
+            ArrayLiteral, ObjectLiteral
+        ]);
     }
 
     static parse(cursor: Cursor): JsonRow {
-
-        const {ArrayLiteral, ObjectLiteral} = cycleDeps;
-
-        let item!: JsonElement;
-        if ( cursor.before(NullLiteral) ) {
-            item = cursor.parse(NullLiteral);
-        }
-        else if ( cursor.before(BooleanLiteral) ) {
-            item = cursor.parse(BooleanLiteral);
-        }
-        else if ( cursor.before(NumberLiteral) ) {
-            item = cursor.parse(NumberLiteral);
-        }
-        else if ( cursor.before(StringLiteral) ) {
-            item = cursor.parse(StringLiteral);
-        }
-        else if ( cursor.before(ArrayLiteral) ) {
-            item = cursor.parse(ArrayLiteral);
-        }
-        else {
-            item = cursor.parse(ObjectLiteral);
-        }
+        const item = cursor.parseOneOf([
+            NullLiteral, BooleanLiteral,
+            NumberLiteral, StringLiteral,
+            ArrayLiteral, ObjectLiteral
+        ], "expected json element");
 
         return {json: item};
     }

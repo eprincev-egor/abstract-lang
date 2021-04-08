@@ -19,13 +19,11 @@ interface ExpressionRow {
 export class Expression extends AbstractNode<ExpressionRow> {
 
     static entry(cursor: Cursor): boolean {
-        return (
-            cursor.before(Identifier) ||
-            cursor.before(NumberLiteral) ||
-            cursor.before(StringLiteral) ||
-            cursor.before(PreUnaryOperator) ||
-            cursor.before(CircleBracketsExpression)
-        );
+        return cursor.beforeOneOf([
+            Identifier, NumberLiteral,
+            StringLiteral, PreUnaryOperator,
+            CircleBracketsExpression
+        ]);
     }
 
     static parse(cursor: Cursor): ExpressionRow {
@@ -98,24 +96,12 @@ export class Expression extends AbstractNode<ExpressionRow> {
     }
 
     private static parseSimpleOperand(cursor: Cursor): Operand {
-        if ( cursor.before(CircleBracketsExpression) ) {
-            return cursor.parse(CircleBracketsExpression);
-        }
-        else if ( cursor.before(BooleanLiteral) ) {
-            return cursor.parse(BooleanLiteral);
-        }
-        else if ( cursor.before(NullLiteral) ) {
-            return cursor.parse(NullLiteral);
-        }
-        else if ( cursor.before(Identifier) ) {
-            return cursor.parse(Identifier);
-        }
-        else if ( cursor.before(StringLiteral) ) {
-            return cursor.parse(StringLiteral);
-        }
-        else {
-            return cursor.parse(NumberLiteral);
-        }
+        return cursor.parseOneOf([
+            CircleBracketsExpression,
+            BooleanLiteral, NullLiteral,
+            Identifier, NumberLiteral,
+            StringLiteral
+        ], "expected expression operand");
     }
 
     private static parseBinary(
