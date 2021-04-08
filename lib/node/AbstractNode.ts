@@ -209,7 +209,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
 
     abstract template(): TemplateElement | TemplateElement[];
 
-    toString(spaces?: Spaces): string {
+    toString(spaces?: Partial<Spaces>): string {
         return stringifyNode(this, spaces);
     }
 
