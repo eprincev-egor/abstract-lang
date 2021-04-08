@@ -252,7 +252,7 @@ function isDangerBeforeKeyWord(
 ): boolean {
     return (
         typeof element === "string" &&
-        /[\w']/.test(element[0])
+        /[\w"$'`]/.test(element[0])
     );
 }
 

@@ -55,39 +55,6 @@ describe("stringifyNode(node, spaces?) keyword.spec.ts", () => {
         });
     });
 
-    it("string with alphabet after keyword", () => {
-        testStringifyKeywordNode({
-            template: [
-                keyword("when"),
-                "company.name is not null"
-            ],
-            expectedPretty: "when company.name is not null",
-            expectedMinify: "when company.name is not null"
-        });
-    });
-
-    it("string with alphabet before keyword", () => {
-        testStringifyKeywordNode({
-            template: [
-                "company.name",
-                keyword("else")
-            ],
-            expectedPretty: "company.name else",
-            expectedMinify: "company.name else"
-        });
-    });
-
-    it("string with digits after keyword", () => {
-        testStringifyKeywordNode({
-            template: [
-                keyword("then"),
-                "1"
-            ],
-            expectedPretty: "then 1",
-            expectedMinify: "then 1"
-        });
-    });
-
     it("empty string between two keywords", () => {
         testStringifyKeywordNode({
             template: [
@@ -148,4 +115,48 @@ describe("stringifyNode(node, spaces?) keyword.spec.ts", () => {
         });
     });
 
+    it("danger symbols", () => {
+        const dangerChars = (
+            "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM" +
+            "0123456789" +
+            "$_\"'`"
+        ).split("");
+
+        for (const dangerChar of dangerChars) {
+            const shouldBe = `${dangerChar} case ${dangerChar} when ${dangerChar}`;
+            testStringifyKeywordNode({
+                template: [
+                    dangerChar,
+                    keyword("case"),
+                    dangerChar,
+                    keyword("when"),
+                    dangerChar
+                ],
+                expectedPretty: shouldBe,
+                expectedMinify: shouldBe
+            });
+        }
+    });
+
+    it("safety symbols", () => {
+        const safetyChars = (
+            "()[]{}" +
+            "*/-+%&|=?:;"
+        ).split("");
+
+        for (const safetyChar of safetyChars) {
+            const shouldBe = `${safetyChar}case${safetyChar}when${safetyChar}`;
+            testStringifyKeywordNode({
+                template: [
+                    safetyChar,
+                    keyword("case"),
+                    safetyChar,
+                    keyword("when"),
+                    safetyChar
+                ],
+                expectedPretty: shouldBe,
+                expectedMinify: shouldBe
+            });
+        }
+    });
 });
