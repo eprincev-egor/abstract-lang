@@ -58,27 +58,39 @@ export function stringifyNode(
     const spaces: Spaces = {...PrettySpaces, ...inputSpaces};
     let output = "";
 
-    const lines = templateLines(node);
-    for (let i = 0, n = lines.length; i < n; i++) {
-        if ( i > 0 ) {
-            output += spaces.eol;
-        }
-
-        const line = lines[i];
-        const string = line.map((element, j) =>
-            stringifyElement(
-                spaces,
-                lines, i,
-                element, j
-            )
-        ).join("");
-
-        if ( string.trim() !== "" ) {
-            output += string;
-        }
+    const elements = template(node);
+    for (let i = 0, n = elements.length; i < n; i++) {
+        const element = elements[i];
+        output += stringifyElement(spaces, elements, element, i);
     }
 
     return output;
+}
+
+function template(node: AbstractNode<AnyRow>): PrimitiveTemplateElement[] {
+    const plainElements: PrimitiveTemplateElement[] = [];
+
+    for (const line of templateLines(node)) {
+        if ( plainElements.length > 0 ) {
+            plainElements.push(eol);
+        }
+
+        if ( isEmptyLine(line) ) {
+            plainElements.push("");
+        }
+        else {
+            plainElements.push(...line);
+        }
+    }
+
+    return plainElements;
+}
+
+function isEmptyLine(line: PrimitiveTemplateElement[]): boolean {
+    return line.every((element) =>
+        element === _ ||
+        element === tab
+    );
 }
 
 function templateLines(node: AbstractNode<AnyRow>) {
@@ -140,8 +152,7 @@ function templateAsArray(node: AbstractNode<AnyRow>) {
 
 function stringifyElement(
     spaces: Spaces,
-    lines: PrimitiveTemplateElement[][],
-    lineIndex: number,
+    elements: PrimitiveTemplateElement[],
     element: PrimitiveTemplateElement,
     elementIndex: number
 ): string {
@@ -151,10 +162,13 @@ function stringifyElement(
     else if ( element === _ ) {
         return spaces._;
     }
+    else if ( element === eol ) {
+        return spaces.eol;
+    }
     else if ( isKeyWord(element) ) {
         const keyword = spaces.keyword(element.keyword);
 
-        if ( needSpaceAfterKeyword(spaces, lines, lineIndex, elementIndex) ) {
+        if ( needSpaceAfterKeyword(spaces, elements, elementIndex) ) {
             return keyword + " ";
         }
         return keyword;
@@ -166,33 +180,28 @@ function stringifyElement(
 
 function needSpaceAfterKeyword(
     spaces: Spaces,
-    lines: PrimitiveTemplateElement[][],
-    lineIndex: number,
+    elements: PrimitiveTemplateElement[],
     elementIndex: number
 ): boolean {
     if ( spaces.eol !== "" ) {
-        const nextElement = lines[ lineIndex ][ elementIndex + 1];
+        const nextElement = elements[ elementIndex + 1];
         return isDangerForKeyWord(nextElement);
     }
 
-    for (let i = lineIndex, n = lines.length; i < n; i++) {
-        const line = lines[i];
+    for (let i = elementIndex + 1, n = elements.length; i < n; i++) {
+        const nextElement = elements[ i ];
 
-        let j = i === lineIndex ? elementIndex + 1 : 0;
-        for (let m = line.length; j < m; j++) {
-            const nextElement = line[ j ];
-
-            if ( isEmptyString(spaces, nextElement) ) {
-                continue;
-            }
-
-            if ( isDangerForKeyWord(nextElement) ) {
-                return true;
-            }
-
-            return false;
+        if ( isEmptyString(spaces, nextElement) ) {
+            continue;
         }
+
+        if ( isDangerForKeyWord(nextElement) ) {
+            return true;
+        }
+
+        break;
     }
+
     return false;
 }
 
