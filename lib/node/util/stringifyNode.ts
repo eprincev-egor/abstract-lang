@@ -166,12 +166,16 @@ function stringifyElement(
         return spaces.eol;
     }
     else if ( isKeyWord(element) ) {
-        const keyword = spaces.keyword(element.keyword);
+        let output = spaces.keyword(element.keyword);
 
-        if ( needSpaceAfterKeyword(spaces, elements, elementIndex) ) {
-            return keyword + " ";
+        if ( needSpaceBeforeKeyword(spaces, elements, elementIndex) ) {
+            output = " " + output;
         }
-        return keyword;
+        if ( needSpaceAfterKeyword(spaces, elements, elementIndex) ) {
+            output += " ";
+        }
+
+        return output;
     }
     else {
         return element as string;
@@ -185,7 +189,7 @@ function needSpaceAfterKeyword(
 ): boolean {
     if ( spaces.eol !== "" ) {
         const nextElement = elements[ elementIndex + 1];
-        return isDangerForKeyWord(nextElement);
+        return isDangerAfterKeyWord(nextElement);
     }
 
     for (let i = elementIndex + 1, n = elements.length; i < n; i++) {
@@ -195,7 +199,34 @@ function needSpaceAfterKeyword(
             continue;
         }
 
-        if ( isDangerForKeyWord(nextElement) ) {
+        if ( isDangerAfterKeyWord(nextElement) ) {
+            return true;
+        }
+
+        break;
+    }
+
+    return false;
+}
+
+function needSpaceBeforeKeyword(
+    spaces: Spaces,
+    elements: PrimitiveTemplateElement[],
+    elementIndex: number
+): boolean {
+    if ( spaces.eol !== "" ) {
+        const nextElement = elements[ elementIndex - 1];
+        return isDangerBeforeKeyWord(nextElement);
+    }
+
+    for (let i = elementIndex - 1; i >= 0; i--) {
+        const nextElement = elements[ i ];
+
+        if ( isEmptyString(spaces, nextElement) ) {
+            continue;
+        }
+
+        if ( isDangerBeforeKeyWord(nextElement) ) {
             return true;
         }
 
@@ -217,12 +248,19 @@ function isEmptyString(
     );
 }
 
-function isDangerForKeyWord(
+function isDangerAfterKeyWord(
     element: PrimitiveTemplateElement
 ): boolean {
     return (
         isKeyWord(element) ||
+        isDangerBeforeKeyWord(element)
+    );
+}
 
+function isDangerBeforeKeyWord(
+    element: PrimitiveTemplateElement
+): boolean {
+    return (
         typeof element === "string" &&
         /\w/.test(element[0])
     );

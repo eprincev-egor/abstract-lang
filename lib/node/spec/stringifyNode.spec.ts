@@ -184,6 +184,20 @@ describe("stringifyNode(node, spaces?)", () => {
             ],
             expectedString: "when company.name is not null"
         };
+        const alphabetElse = {
+            template: () => [
+                "company.name",
+                keyword("else")
+            ],
+            expectedString: "company.name else"
+        };
+        const thenDigits = {
+            template: () => [
+                keyword("then"),
+                "1"
+            ],
+            expectedString: "then 1"
+        };
 
         describe("pretty", () => {
 
@@ -219,6 +233,14 @@ describe("stringifyNode(node, spaces?)", () => {
 
             it("string with alphabet after keyword", () => {
                 testStringifyNode(whenAlphabet, PrettySpaces);
+            });
+
+            it("string with digits after keyword", () => {
+                testStringifyNode(thenDigits, PrettySpaces);
+            });
+
+            it("string with alphabet before keyword", () => {
+                testStringifyNode(alphabetElse, PrettySpaces);
             });
 
             it("full case when example", () => {
@@ -302,6 +324,14 @@ describe("stringifyNode(node, spaces?)", () => {
 
             it("string with alphabet after keyword", () => {
                 testStringifyNode(whenAlphabet, MinifySpaces);
+            });
+
+            it("string with digits after keyword", () => {
+                testStringifyNode(thenDigits, PrettySpaces);
+            });
+
+            it("string with alphabet before keyword", () => {
+                testStringifyNode(alphabetElse, PrettySpaces);
             });
 
         });
