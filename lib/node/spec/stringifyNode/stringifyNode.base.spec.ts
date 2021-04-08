@@ -1,11 +1,11 @@
 /* eslint-disable unicorn/consistent-function-scoping */
-import { AbstractNode } from "../AbstractNode";
+import { AbstractNode } from "../../AbstractNode";
 import {
     stringifyNode,
     eol, _, tab, keyword,
     Spaces, PrettySpaces, MinifySpaces,
     printChain
-} from "../util";
+} from "../../util";
 import assert from "assert";
 
 interface TestToString {
