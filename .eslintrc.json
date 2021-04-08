@@ -118,7 +118,8 @@
                 "sonarjs/no-identical-functions": "off",
                 "@typescript-eslint/no-unsafe-member-access": "off",
                 "class-methods-use-this": "off",
-                "sonarjs/no-duplicate-string": "off"
+                "sonarjs/no-duplicate-string": "off",
+                "unicorn/consistent-function-scoping": "off"
             }
         },
         {
