@@ -1,30 +1,6 @@
 import { AbstractNode } from "../../AbstractNode";
-import {
-    stringifyNode,
-    eol, _, tab,
-    Spaces, PrettySpaces
-} from "../../util";
-import assert from "assert";
-
-interface TestToString {
-    template: () =>
-        ReturnType<AbstractNode<any>["template"]>;
-    expectedString: string;
-}
-
-function testStringifyNode(
-    test: TestToString,
-    spaces: Spaces = PrettySpaces
-) {
-    const node = Object.create(AbstractNode.prototype) as AbstractNode<any>;
-    node.template = test.template;
-
-    const actualString = stringifyNode(node, spaces);
-    assert.strictEqual(
-        actualString,
-        test.expectedString
-    );
-}
+import { eol, _, tab } from "../../util";
+import { testStringifyNode } from "./util";
 
 describe("stringifyNode(node, spaces?) base.spec.ts", () => {
 

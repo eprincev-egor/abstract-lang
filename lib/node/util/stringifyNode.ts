@@ -187,11 +187,6 @@ function needSpaceAfterKeyword(
     elements: PrimitiveTemplateElement[],
     elementIndex: number
 ): boolean {
-    if ( spaces.eol !== "" ) {
-        const nextElement = elements[ elementIndex + 1];
-        return isDangerAfterKeyWord(nextElement);
-    }
-
     for (let i = elementIndex + 1, n = elements.length; i < n; i++) {
         const nextElement = elements[ i ];
 
@@ -214,11 +209,6 @@ function needSpaceBeforeKeyword(
     elements: PrimitiveTemplateElement[],
     elementIndex: number
 ): boolean {
-    if ( spaces.eol !== "" ) {
-        const nextElement = elements[ elementIndex - 1];
-        return isDangerBeforeKeyWord(nextElement);
-    }
-
     for (let i = elementIndex - 1; i >= 0; i--) {
         const nextElement = elements[ i ];
 
@@ -262,7 +252,7 @@ function isDangerBeforeKeyWord(
 ): boolean {
     return (
         typeof element === "string" &&
-        /\w/.test(element[0])
+        /[\w']/.test(element[0])
     );
 }
 
