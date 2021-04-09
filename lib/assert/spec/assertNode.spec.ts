@@ -1,7 +1,6 @@
 import assert from "assert";
 import { DigitsToken, SpaceToken, WordToken } from "../../token";
 import { Cursor } from "../../cursor";
-import { SyntaxError } from "../../source";
 import { AbstractNode, Spaces, _ } from "../../node";
 import { assertNode, SuccessTest } from "../assertNode";
 
@@ -346,10 +345,7 @@ describe("assertNode", () => {
 
         it("error parsing test", () => {
             TestNode.parse = function(cursor: Cursor): OperatorRow {
-                throw SyntaxError.at({
-                    source: cursor.source,
-                    message: "expected operator"
-                });
+                cursor.throwError("expected operator");
             };
 
             assertNode(TestNode, {

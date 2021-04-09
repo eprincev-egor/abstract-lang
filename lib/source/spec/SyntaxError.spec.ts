@@ -18,12 +18,12 @@ describe("SyntaxError", () => {
     const message = "unexpected token";
 
     it("syntax error on line 10", () => {
-        const testToken = source.tokens.find((token) =>
-            token.value === "skipSpace"
-        ) as Token;
-        source.cursor.setPositionBefore(testToken);
-
-        const err = SyntaxError.at({source, message});
+        const err = SyntaxError.at({
+            source, message,
+            target: source.tokens.find((token) =>
+                token.value === "skipSpace"
+            ) as Token
+        });
 
         assert.deepStrictEqual(err.coords, {
             line: 10,
@@ -36,12 +36,12 @@ describe("SyntaxError", () => {
     });
 
     it("syntax error on line 1", () => {
-        const testToken = source.tokens.find((token) =>
-            token.value === "readWord"
-        ) as Token;
-        source.cursor.setPositionBefore(testToken);
-
-        const err = SyntaxError.at({source, message});
+        const err = SyntaxError.at({
+            source, message,
+            target: source.tokens.find((token) =>
+                token.value === "readWord"
+            ) as Token
+        });
 
         assert.deepStrictEqual(err.coords, {
             line: 1,
@@ -54,12 +54,12 @@ describe("SyntaxError", () => {
     });
 
     it("syntax error on line 31", () => {
-        const testToken = source.tokens.slice().reverse().find((token) =>
-            token.value === "lowerWord"
-        ) as Token;
-        source.cursor.setPositionBefore(testToken);
-
-        const err = SyntaxError.at({source, message});
+        const err = SyntaxError.at({
+            source, message,
+            target: source.tokens.slice().reverse().find((token) =>
+                token.value === "lowerWord"
+            ) as Token
+        });
 
         assert.deepStrictEqual(err.coords, {
             line: 31,
@@ -79,7 +79,7 @@ describe("SyntaxError", () => {
                 end: 307
             }
         });
-        const err = SyntaxError.at({source, node, message});
+        const err = SyntaxError.at({source, target: node, message});
 
         assert.deepStrictEqual(err.coords, {
             line: 13,
@@ -98,7 +98,7 @@ describe("SyntaxError", () => {
         });
 
         assert.throws(() => {
-            SyntaxError.at({source, node, message});
+            SyntaxError.at({source, target: node, message});
         }, (err: Error) =>
             /node should have position/.test(err.message)
         );
@@ -109,14 +109,13 @@ describe("SyntaxError", () => {
             path: "./test.txt",
             text: codeExample
         });
-        const testToken = file.tokens.slice().reverse().find((token) =>
-            token.value === "lowerWord"
-        ) as Token;
-        file.cursor.setPositionBefore(testToken);
 
         const err = SyntaxError.at({
             source: file.cursor.source,
-            message
+            message,
+            target: file.tokens.slice().reverse().find((token) =>
+                token.value === "lowerWord"
+            ) as Token
         });
 
         assert.ok( err.message.includes(

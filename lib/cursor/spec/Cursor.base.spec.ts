@@ -63,23 +63,6 @@ describe("Cursor.base.spec.ts base methods", () => {
         assert.strictEqual( cursor.nextToken.value, "world" );
     });
 
-    it("throwError(message) => SyntaxError", () => {
-        cursor.read(WordToken);
-
-        let actualError: unknown = new Error("expected error");
-        try {
-            cursor.throwError("test");
-        }
-        catch (error) {
-            actualError = error;
-        }
-
-        assert.ok( actualError instanceof SyntaxError );
-        assert.strictEqual( actualError.coords.line, 1, "valid line" );
-        assert.strictEqual( actualError.coords.column, 6, "valid column" );
-        assert.strictEqual( actualError.target, cursor.nextToken, "valid token" );
-    });
-
     describe("readValue(value)", () => {
 
         it("read and move", () => {

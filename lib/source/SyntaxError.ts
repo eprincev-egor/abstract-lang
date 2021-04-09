@@ -7,7 +7,7 @@ import { AbstractNode } from "../node";
 export interface SyntaxErrorParams {
     message: string;
     coords: Coords;
-    target: Token | AbstractNode<any>;
+    target: SyntaxErrorTarget;
 }
 
 export type SyntaxErrorTarget = Token | AbstractNode<any>;
@@ -17,11 +17,11 @@ export class SyntaxError extends Error {
     /** generate error with code fragment at near current token */
     static at(params: {
         source: Source;
-        node?: AbstractNode<any>;
+        target: SyntaxErrorTarget;
         message: string;
     }): SyntaxError {
-        const {source, node, message} = params;
-        const {target, coords, highlight} = prepareTarget(source, node);
+        const {source, target, message} = params;
+        const {coords, highlight} = generateHighlight(source, target);
 
         return new SyntaxError({
             message: [
@@ -50,28 +50,27 @@ export class SyntaxError extends Error {
     }
 }
 
-function prepareTarget(
+function generateHighlight(
     source: Source,
-    node?: AbstractNode<any>
+    target: SyntaxErrorTarget
 ) {
-    if ( node ) {
-        const position = node.position;
+    if ( target instanceof AbstractNode ) {
+        const position = target.position;
         if ( !position ) {
             throw new Error("node should have position");
         }
 
         return {
-            target: node,
+            target,
             coords: source.getCoords(position.start),
             highlight: NodeHighlighter.highlight(source, {position})
         };
     }
     else {
-        const token = source.cursor.nextToken;
         return {
-            target: token,
-            coords: source.getCoords(token.position),
-            highlight: TokenHighlighter.highlight(source, token)
+            target,
+            coords: source.getCoords(target.position),
+            highlight: TokenHighlighter.highlight(source, target)
         };
     }
 }

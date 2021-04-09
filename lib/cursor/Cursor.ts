@@ -365,10 +365,11 @@ export class Cursor {
     }
 
     /** throw syntax error at near current position */
-    throwError(message: string): never {
+    throwError(message: string, target?: Token | AbstractNode<AnyRow>): never {
         throw SyntaxError.at({
             source: this.source,
-            message
+            message,
+            target: target || this.nextToken_
         });
     }
 
