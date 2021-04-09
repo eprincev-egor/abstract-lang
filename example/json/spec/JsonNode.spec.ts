@@ -71,7 +71,8 @@ describe("JsonNode", () => {
     it("invalid inputs", () => {
         assertNode(JsonNode, {
             input: "!",
-            throws: /expected json element/
+            throws: /expected json element/,
+            target: "!"
         });
     });
 

@@ -353,6 +353,62 @@ describe("assertNode", () => {
                 throws: /expected operator/
             });
         });
+
+        it("valid error.target token.value: strictEqual", () => {
+            TestNode.parse = function(cursor: Cursor): OperatorRow {
+                cursor.throwError(
+                    "message",
+                    cursor.source.tokens[2]
+                );
+            };
+
+            assertNode(TestNode, {
+                input: "50+60",
+                throws: /message/,
+                target: "60"
+            });
+        });
+
+        it("valid error.target node.toString(): strictEqual", () => {
+            TestNode.parse = function(cursor: Cursor): OperatorRow {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const testNode = Object.create(AbstractNode.prototype);
+                testNode.position = {
+                    start: 3,
+                    end: 5
+                };
+                testNode.toString = () => {
+                    return "60";
+                };
+
+                cursor.throwError(
+                    "message",
+                    testNode
+                );
+            };
+
+            assertNode(TestNode, {
+                input: "50+60",
+                throws: /message/,
+                target: "60"
+            });
+        });
+
+        it("valid error.target token.value: regexp pattern", () => {
+            TestNode.parse = function(cursor: Cursor): OperatorRow {
+                cursor.throwError(
+                    "message",
+                    cursor.source.tokens[2]
+                );
+            };
+
+            assertNode(TestNode, {
+                input: "50+60",
+                throws: /message/,
+                target: /6/
+            });
+        });
+
     });
 
     describe("invalid errors", () => {
@@ -365,6 +421,59 @@ describe("assertNode", () => {
                 });
             }, (err: Error) =>
                 err.message.includes("Missing expected exception")
+            );
+        });
+
+        it("invalid error instance", () => {
+            TestNode.parse = function(): OperatorRow {
+                throw new Error("some error");
+            };
+
+            assert.throws(() => {
+                assertNode(TestNode, {
+                    input: "101",
+                    throws: /some error/
+                });
+            }, (err: Error) =>
+                err instanceof assert.AssertionError &&
+                err.message.includes("error should be SyntaxError instance")
+            );
+        });
+
+        it("invalid target token.value", () => {
+            TestNode.parse = function(cursor: Cursor): OperatorRow {
+                cursor.throwError("some error");
+            };
+
+            assert.throws(() => {
+                assertNode(TestNode, {
+                    input: "400 - 100",
+                    throws: /some error/,
+                    target: "100"
+                });
+            }, (err: Error) =>
+                err instanceof assert.AssertionError &&
+                err.message.includes("invalid error target") &&
+                err.expected === "100" &&
+                err.actual === "400"
+            );
+        });
+
+        it("invalid target token.value, regexp pattern", () => {
+            TestNode.parse = function(cursor: Cursor): OperatorRow {
+                cursor.throwError("some error");
+            };
+
+            assert.throws(() => {
+                assertNode(TestNode, {
+                    input: "400 - 100",
+                    throws: /some error/,
+                    target: /100/
+                });
+            }, (err: Error) =>
+                err instanceof assert.AssertionError &&
+                err.message.includes("invalid error target") &&
+                err.message.includes("400 - 100")
             );
         });
 

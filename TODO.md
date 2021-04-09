@@ -5,6 +5,3 @@
 - add simple html example
 - configure docs
 - need ignore comments within space group
-- cursor.throwError(message, target)
-- assertNode({throws, target})
-- fix all error messages inside examples
