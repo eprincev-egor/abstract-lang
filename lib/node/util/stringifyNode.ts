@@ -114,23 +114,22 @@ function extrudeSubLines(parentLine: TemplateElement[]) {
             const node = element;
             const subLines = templateLines(node);
 
-            if ( parentLine.length === 1 ) {
-                return subLines;
-            }
-
             if ( subLines.length === 1 ) {
                 const subLine = subLines[0];
                 lastLine.push( ...subLine );
             }
-            else if ( subLines.length > 1) {
+            else if ( subLines.length > 1 ) {
+                const prefix = lastLine.filter((item) =>
+                    item === tab
+                );
                 outputLines.push([...lastLine, ...subLines[0]]);
 
                 for (let i = 1, n = subLines.length; i < n - 1; i++) {
                     const subLine = subLines[i];
-                    outputLines.push([tab, ...subLine]);
+                    outputLines.push([...prefix, ...subLine]);
                 }
 
-                lastLine = [tab, ...last(subLines)];
+                lastLine = [...prefix, ...last(subLines)];
             }
         }
         else {

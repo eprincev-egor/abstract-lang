@@ -134,4 +134,53 @@ describe("stringifyNode(node, spaces?) base.spec.ts", () => {
         });
     });
 
+    it("up indent by two tabs", () => {
+
+        class SomeNode extends AbstractNode<{child: SomeNode | string}> {
+            template() {
+                return [
+                    "if true then", eol,
+                    tab, tab, this.row.child, eol,
+                    "end if;"
+                ];
+            }
+        }
+
+        const level2 = new SomeNode({
+            row: {
+                child: "level 2"
+            }
+        });
+        const level1 = new SomeNode({
+            row: {
+                child: level2
+            }
+        });
+
+        testStringifyNode({
+            template: level1.template.bind(level1),
+            expectedString: [
+                "if true then",
+                "        if true then",
+                "                level 2",
+                "        end if;",
+                "end if;"
+            ].join("\n")
+        });
+    });
+
+    it("don't up child if not tab before", () => {
+        const child = Object.create(AbstractNode.prototype) as AbstractNode<any>;
+        child.template = () => ["hello", eol, "world"];
+
+        testStringifyNode({
+            template: () => [
+                "(", eol,
+                child, eol,
+                ")"
+            ],
+            expectedString: "(\nhello\nworld\n)"
+        });
+    });
+
 });

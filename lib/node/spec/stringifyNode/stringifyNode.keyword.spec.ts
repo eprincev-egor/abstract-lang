@@ -1,7 +1,7 @@
 import { AbstractNode } from "../../AbstractNode";
 import {
     eol, _, tab, keyword,
-    printChain
+    printTabChain
 } from "../../util";
 import { testStringifyKeywordNode } from "./util";
 
@@ -88,13 +88,14 @@ describe("stringifyNode(node, spaces?) keyword.spec.ts", () => {
 
         testStringifyKeywordNode({
             template: [
-                keyword("case"),
-                ...printChain([caseNode], eol), eol,
+                keyword("case"), eol,
+                ...printTabChain([caseNode], eol), eol,
                 tab, keyword("else"), _, "'(unknown)'", eol,
                 keyword("end")
             ],
             expectedPretty: [
-                "case when true",
+                "case",
+                "    when true",
                 "    then 1",
                 "    else '(unknown)'",
                 "end"

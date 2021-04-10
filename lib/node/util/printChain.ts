@@ -1,4 +1,4 @@
-import { TemplateElement } from "./stringifyNode";
+import { TemplateElement, tab } from "./stringifyNode";
 
 /** returns array of children nodes with delimiter between nodes */
 export function printChain(
@@ -20,4 +20,20 @@ export function printChain(
     }
 
     return chain;
+}
+
+/**
+ * returns array of children nodes with delimiter between nodes
+ * and tab before each element
+ */
+export function printTabChain(
+    elements: readonly TemplateElement[],
+    ...delimiter: TemplateElement[]
+): TemplateElement[] {
+    return [
+        tab, ...printChain(
+            elements,
+            ...delimiter, tab
+        )
+    ];
 }
