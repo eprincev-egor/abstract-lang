@@ -101,7 +101,8 @@
         ],
         "@typescript-eslint/no-extra-parens": ["off"],
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-magic-numbers": "off"
+        "@typescript-eslint/no-magic-numbers": "off",
+        "unicorn/prefer-ternary": "off"
     },
     "overrides": [
         {
