@@ -34,6 +34,10 @@ export function printTabChain(
     elements: readonly TemplateElement[] | undefined,
     ...delimiter: TemplateElement[]
 ): TemplateElement[] {
+    if ( !elements ) {
+        return [];
+    }
+
     return [
         tab, ...printChain(
             elements,
