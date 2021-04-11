@@ -70,7 +70,7 @@ describe("printTabChain(nodes, ...delimiter[])", () => {
         assert.strictEqual(actual, expected);
     });
 
-    it("printChain(undefined)", () => {
+    it("printTabChain(undefined)", () => {
         const result = printTabChain(undefined, ".");
         assert.deepStrictEqual(result, []);
     });
