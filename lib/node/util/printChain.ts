@@ -2,9 +2,13 @@ import { TemplateElement, tab } from "./stringifyNode";
 
 /** returns array of children nodes with delimiter between nodes */
 export function printChain(
-    elements: readonly TemplateElement[],
+    elements: readonly TemplateElement[] | undefined,
     ...delimiter: TemplateElement[]
 ): TemplateElement[] {
+    if ( !elements ) {
+        return [];
+    }
+
     const chain: TemplateElement[] = [];
 
     if ( delimiter.length === 0 ) {
@@ -27,7 +31,7 @@ export function printChain(
  * and tab before each element
  */
 export function printTabChain(
-    elements: readonly TemplateElement[],
+    elements: readonly TemplateElement[] | undefined,
     ...delimiter: TemplateElement[]
 ): TemplateElement[] {
     return [

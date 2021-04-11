@@ -60,4 +60,9 @@ describe("printChain(nodes, ...delimiter[])", () => {
         assert.strictEqual(actual, expected);
     });
 
+    it("printChain(undefined)", () => {
+        const result = printChain(undefined, ".");
+        assert.deepStrictEqual(result, []);
+    });
+
 });
