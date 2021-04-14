@@ -159,7 +159,7 @@ export abstract class AbstractNode<TRow extends AnyRow> {
                 return parent as T;
             }
 
-            parent = parent.parent;
+            parent = (parent as {parent: AbstractNode<AnyRow>}).parent;
         }
     }
 
