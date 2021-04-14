@@ -93,8 +93,28 @@ export abstract class AbstractNode<TRow extends AnyRow> {
     }
 
     get children(): AbstractNode<AnyRow>[] {
-        const values = Object.values(this.row);
-        return findChildren(values);
+        const children: AbstractNode<AnyRow>[] = [];
+        for (const key in this.row) {
+            const value = this.row[ key ] as unknown;
+
+            if ( value instanceof AbstractNode ) {
+                children.push(value);
+            }
+            else if ( Array.isArray(value) ) {
+                children.push(
+                    ...findChildren(value)
+                );
+            }
+            else if ( value && typeof value === "object" ) {
+                children.push(
+                    ...findChildren(
+                        Object.values(value)
+                    )
+                );
+            }
+        }
+
+        return children;
     }
 
     /** assign parent node */
