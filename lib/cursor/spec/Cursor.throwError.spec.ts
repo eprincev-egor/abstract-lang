@@ -2,7 +2,7 @@ import assert from "assert";
 import { Cursor } from "../Cursor";
 import { SourceCode, SyntaxError } from "../../source";
 import { WordToken } from "../../token";
-import { AbstractNode } from "node";
+import { AbstractNode } from "../../node";
 
 describe("Cursor.throwError.spec.ts", () => {
 
