@@ -78,16 +78,7 @@ export class Cursor {
 
     /** returns true if next token.value.toLowerCase() === word */
     beforeWord(word: string): boolean {
-        const tokenIndex = this.tokenIndex;
-        const token = this.nextToken_;
-
-        this.skipSpaces();
-        const beforeWord = this.nextToken_.value.toLowerCase() === word;
-
-        this.tokenIndex = tokenIndex;
-        this.nextToken_ = token;
-
-        return beforeWord;
+        return this.nextToken_.value.toLowerCase() === word;
     }
 
     /** check next tokens values or classes */
@@ -149,8 +140,6 @@ export class Cursor {
 
     /** move cursor if next token.value.toLowerCase() is correct, else throw error */
     readWord(expectedWord: string): string {
-        this.skipSpaces();
-
         const actualWord = this.nextToken_.value;
 
         if ( actualWord.toLowerCase() !== expectedWord ) {
@@ -179,7 +168,7 @@ export class Cursor {
 
         for (const word of words) {
 
-            if ( !this.beforeWord(word) ) {
+            if ( this.nextToken_.value.toLowerCase() !== word ) {
                 this.nextToken_ = startToken;
                 this.tokenIndex = tokenIndex;
                 return false;
@@ -361,7 +350,12 @@ export class Cursor {
 
     /** skip all spaces tokens */
     skipSpaces(): void {
-        this.skipAll(EndOfLineToken, SpaceToken);
+        while (
+            this.nextToken_ instanceof SpaceToken ||
+            this.nextToken_ instanceof EndOfLineToken
+        ) {
+            this.next();
+        }
     }
 
     /** throw syntax error at near current position */

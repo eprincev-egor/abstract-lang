@@ -49,14 +49,10 @@ describe("Cursor.word.spec.ts word methods", () => {
             );
         });
 
-        it("before 'world', skip spaces", () => {
+        it("before 'world', don't skip spaces", () => {
             cursor.next();
             assert.strictEqual(
                 cursor.beforeWord("world"),
-                true
-            );
-            assert.strictEqual(
-                cursor.beforeWord("wrong"),
                 false
             );
         });
@@ -65,12 +61,13 @@ describe("Cursor.word.spec.ts word methods", () => {
 
     describe("readWord(word)", () => {
 
-        it("skip spaces before word", () => {
+        it("don't skip spaces before word", () => {
             cursor.skipOne();
 
-            assert.strictEqual(
-                cursor.readWord("world"),
-                "WORLD"
+            assert.throws(() => {
+                cursor.readWord("world");
+            }, (err: Error) =>
+                /unexpected token/.test(err.message)
             );
         });
 
