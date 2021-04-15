@@ -1,12 +1,13 @@
 import { Token, TokenClass } from "./Token";
 import { TokenMap } from "./TokenMap";
+import { TokenMapBuilder } from "./TokenMapBuilder";
 
 export class TokenFactory {
 
     private readonly map: TokenMap;
 
     constructor(tokenClasses: TokenClass[]) {
-        this.map = TokenMap.build(tokenClasses);
+        this.map = TokenMapBuilder.build(tokenClasses);
     }
 
     createToken(text: string, position: number): Token {
