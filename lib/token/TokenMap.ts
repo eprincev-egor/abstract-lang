@@ -1,15 +1,24 @@
+import { TokenReader } from "./reader/interface";
 import { TokenClass } from "./Token";
 
-export interface TokenByPopularChar {
-    [char: string]: TokenClass;
+export interface TokenClassAndReader {
+    TokenClass: TokenClass;
+    reader: TokenReader;
 }
-export type TokenClassWithRegExp =TokenClass & {
+
+export interface TokenByPopularChar {
+    [char: string]: TokenClassAndReader;
+}
+export type TokenClassWithRegExp = TokenClass & {
     description: {
         entry: RegExp;
         popularEntry?: string[];
     };
 };
-export type TokenByRegExp = TokenClassWithRegExp[];
+export interface TokenClassWithRegExpAndReader extends TokenClassAndReader {
+    TokenClass: TokenClassWithRegExp;
+}
+export type TokenByRegExp = TokenClassWithRegExpAndReader[];
 
 
 export class TokenMap {
@@ -24,15 +33,15 @@ export class TokenMap {
         this.byRegExp = byRegExp;
     }
 
-    get(char: string): TokenClass | undefined {
-        const TokenByChar = this.byChar[ char ];
-        if ( TokenByChar ) {
-            return TokenByChar;
+    get(char: string): TokenClassAndReader | undefined {
+        const byChar = this.byChar[ char ];
+        if ( byChar ) {
+            return byChar;
         }
 
-        for (const TokenClass of this.byRegExp) {
-            if ( TokenClass.description.entry.test(char) ) {
-                return TokenClass;
+        for (const byRegExp of this.byRegExp) {
+            if ( byRegExp.TokenClass.description.entry.test(char) ) {
+                return byRegExp;
             }
         }
     }

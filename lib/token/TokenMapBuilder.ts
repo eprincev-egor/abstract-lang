@@ -9,6 +9,7 @@ import {
     duplicatedPopularCharError,
     invalidPopularCharError
 } from "./errors";
+import { TokenReaderFactory } from "./reader/TokenReaderFactory";
 
 export class TokenMapBuilder {
 
@@ -21,8 +22,10 @@ export class TokenMapBuilder {
     }
 
     private readonly tokenClasses: TokenClass[];
+    private readonly readerFactory: TokenReaderFactory;
     private constructor(tokenClasses: TokenClass[]) {
         this.tokenClasses = tokenClasses;
+        this.readerFactory = new TokenReaderFactory();
     }
 
     build(): TokenMap {
@@ -39,15 +42,16 @@ export class TokenMapBuilder {
             const popularChars = getPopularChars(TokenClass.description);
 
             for (const popularChar of popularChars) {
-                const existentTokenClass = byChar[ popularChar ];
-                if ( existentTokenClass ) {
+                const existent = byChar[ popularChar ];
+                if ( existent ) {
                     throw duplicatedPopularCharError(
-                        TokenClass, existentTokenClass,
+                        TokenClass, existent.TokenClass,
                         popularChar
                     );
                 }
 
-                byChar[ popularChar ] = TokenClass;
+                const reader = this.readerFactory.create(TokenClass);
+                byChar[ popularChar ] = {TokenClass, reader};
             }
         }
 
@@ -61,7 +65,10 @@ export class TokenMapBuilder {
             if ( isTokenClassWithRegExp(TokenClass) ) {
                 popularCharsShouldEntry(TokenClass);
 
-                byRegExp.push(TokenClass );
+                const reader = this.readerFactory.create(TokenClass);
+                byRegExp.push({
+                    TokenClass, reader
+                });
             }
         }
 
@@ -90,8 +97,11 @@ function getPopularChars(description: TokenDescription): string[] {
         return description.entry;
     }
 
-    if ( "popularEntry" in description) {
-        return description.popularEntry || [];
+    if (
+        "popularEntry" in description &&
+        Array.isArray(description.popularEntry)
+    ) {
+        return description.popularEntry;
     }
 
     return [];

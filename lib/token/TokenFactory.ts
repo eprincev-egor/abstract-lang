@@ -12,12 +12,12 @@ export class TokenFactory {
 
     createToken(text: string, position: number): Token {
         const char = text[ position ];
-        const TokenClass = this.map.get(char);
+        const result = this.map.get(char);
 
-        if ( TokenClass ) {
+        if ( result ) {
             const start = position;
-            const tokenValue = TokenClass.read(text, position);
-            const token = new TokenClass(tokenValue, start);
+            const tokenValue = result.reader.read(text, position);
+            const token = new result.TokenClass(tokenValue, start);
             return token;
         }
         else {

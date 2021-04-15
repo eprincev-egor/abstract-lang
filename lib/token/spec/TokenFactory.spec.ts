@@ -144,6 +144,64 @@ describe("TokenFactory", () => {
             );
         });
 
+        it("create token with maxLength and popularEntry and entry as RegExp", () => {
+            class SomeToken extends Token {
+                static description: TokenDescription = {
+                    entry: /\d/,
+                    popularEntry: ["2"],
+                    maxLength: 10
+                };
+            }
+
+            const factory = new TokenFactory([
+                SomeToken
+            ]);
+            const token = factory.createToken("1234abcdef", 0);
+            assert.ok(
+                token instanceof SomeToken &&
+                token.length === 4 &&
+                token.value === "1234"
+            );
+        });
+
+        it("create token with maxLength and entry as RegExp", () => {
+            class SomeToken extends Token {
+                static description: TokenDescription = {
+                    entry: /./,
+                    maxLength: 4
+                };
+            }
+
+            const factory = new TokenFactory([
+                SomeToken
+            ]);
+            const token = factory.createToken("123456789", 0);
+            assert.ok(
+                token instanceof SomeToken &&
+                token.length === 4 &&
+                token.value === "1234"
+            );
+        });
+
+        it("create token with maxLength and entry as string[]", () => {
+            class SomeToken extends Token {
+                static description: TokenDescription = {
+                    entry: ["a", "b", "c", "d"],
+                    maxLength: 10
+                };
+            }
+
+            const factory = new TokenFactory([
+                SomeToken
+            ]);
+            const token = factory.createToken("abcdef", 0);
+            assert.ok(
+                token instanceof SomeToken &&
+                token.length === 4 &&
+                token.value === "abcd"
+            );
+        });
+
     });
 
 });

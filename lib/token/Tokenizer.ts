@@ -27,9 +27,11 @@ export class Tokenizer {
         const tokens: Token[] = [];
 
         while ( this.position < this.text.length ) {
-            const token = this.factory.createToken(this.text, this.position);
+            const token = this.factory.createToken(
+                this.text, this.position
+            );
 
-            this.position += token.length;
+            this.position += token.value.length;
             tokens.push(token);
 
         }

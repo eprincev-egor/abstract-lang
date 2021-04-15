@@ -2,7 +2,7 @@ export interface TokenClass {
     description: TokenDescription;
     name: string;
     new (...args: any[]): Token;
-    read(text: string, position: number): string;
+    read?: (text: string, position: number) => string;
 }
 
 /** instructions for parsing text into tokens */
@@ -37,36 +37,9 @@ export class Token {
      * special method for Tokenizer.
      * This method can be redefined
      */
-    static read(text: string, position: number): string {
-        let tokenValue = "";
-
-        while ( position < text.length ) {
-            const char = text[ position ];
-
-            const isTokenChar = (
-                this.description.entry instanceof RegExp ?
-                    this.description.entry.test(char) :
-                    this.description.entry.includes(char)
-            );
-            if ( isTokenChar ) {
-                tokenValue += char;
-                position++;
-
-                const maxLengthReached = (
-                    "maxLength" in this.description &&
-                    tokenValue.length === this.description.maxLength
-                );
-                if ( maxLengthReached ) {
-                    break;
-                }
-            }
-            else {
-                break;
-            }
-        }
-
-        return tokenValue;
-    }
+    static read: (
+        (text: string, position: number) => string
+    ) | undefined;
 
     /** result of calling TokeClass.read */
     readonly value: string;
