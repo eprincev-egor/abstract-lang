@@ -1,7 +1,7 @@
 import { Cursor } from "../cursor";
 import {
-    Token, Tokenizer, TokenMap,
-    defaultMap, EndOfFleToken, EndOfLineToken
+    Token, Tokenizer, TokenFactory,
+    defaultTokenFactory, EndOfFleToken, EndOfLineToken
 } from "../token";
 import { Fragment } from "./Fragment";
 import { Source, Coords } from "./interface";
@@ -9,7 +9,7 @@ import { Line } from "./Line";
 
 export interface CodeParams {
     text: string;
-    tokenMap?: TokenMap;
+    tokenFactory?: TokenFactory;
 }
 
 export class SourceCode
@@ -22,8 +22,8 @@ implements Source {
     constructor(params: CodeParams) {
         this.text = params.text;
 
-        const tokenMap = params.tokenMap || defaultMap;
-        this.tokens = Tokenizer.tokenize(tokenMap, params.text);
+        const tokenFactory = params.tokenFactory || defaultTokenFactory;
+        this.tokens = Tokenizer.tokenize(tokenFactory, params.text);
 
         this.cursor = new Cursor(this);
     }

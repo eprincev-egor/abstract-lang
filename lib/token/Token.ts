@@ -6,14 +6,19 @@ export interface TokenClass {
 }
 
 /** instructions for parsing text into tokens */
-export interface TokenDescription {
+export type TokenDescription = {
     /** regex that tests if a character is a given token */
     entry: RegExp;
     /** a set of the most popular token symbols to improve performance */
     popularEntry?: string[];
     /** maximum token value length, default length is Infinity */
     maxLength?: number;
-}
+} | {
+    /** a full set of token symbols */
+    entry: string[];
+    /** maximum token value length, default length is Infinity */
+    maxLength?: number;
+};
 
 /**
  * Default token instance,
@@ -39,8 +44,9 @@ export class Token {
             const char = text[ position ];
 
             const isTokenChar = (
-                char in this.description.entry ||
-                this.description.entry.test(char)
+                this.description.entry instanceof RegExp ?
+                    this.description.entry.test(char) :
+                    this.description.entry.includes(char)
             );
             if ( isTokenChar ) {
                 tokenValue += char;

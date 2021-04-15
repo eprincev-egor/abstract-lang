@@ -5,4 +5,4 @@ export * from "./OperatorsToken";
 export * from "./QuotesToken";
 export * from "./SpaceToken";
 export * from "./WordToken";
-export * from "./defaultMap";
+export * from "./defaultTokenFactory";

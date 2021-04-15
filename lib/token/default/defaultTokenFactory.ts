@@ -1,4 +1,4 @@
-import { TokenMap } from "../TokenMap";
+import { TokenFactory } from "../TokenFactory";
 import { SpaceToken } from "./SpaceToken";
 import { EndOfLineToken } from "./EndOfLineToken";
 import { WordToken } from "./WordToken";
@@ -7,7 +7,7 @@ import { OperatorsToken } from "./OperatorsToken";
 import { DigitsToken } from "./DigitsToken";
 import { QuotesToken } from "./QuotesToken";
 
-export const defaultMap = new TokenMap([
+export const defaultTokenFactory = new TokenFactory([
     SpaceToken,
     EndOfLineToken,
     WordToken,

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import assert from "assert";
 import { Token, TokenDescription } from "../Token";
-import { TokenMap } from "../TokenMap";
+import { TokenFactory } from "../TokenFactory";
 
-describe("TokenMap", () => {
+describe("TokenFactory", () => {
 
     class AnyCharToken extends Token {
         static description: TokenDescription = {
@@ -18,34 +18,37 @@ describe("TokenMap", () => {
     }
 
     it("getTokenClass() get AnyCharToken", () => {
-        const map = new TokenMap([
+        const map = new TokenFactory([
             AnyCharToken
         ]);
-        const actualClass = map.getTokenClass("a");
+        const result = map.getTokenClass("a");
         assert.ok(
-            actualClass === AnyCharToken
+            result &&
+            result.TokenClass === AnyCharToken
         );
     });
 
     it("getTokenClass() get NumberToken from number char", () => {
-        const map = new TokenMap([
+        const map = new TokenFactory([
             NumberToken,
             AnyCharToken
         ]);
-        const actualClass = map.getTokenClass("1");
+        const result = map.getTokenClass("1");
         assert.ok(
-            actualClass === NumberToken
+            result &&
+            result.TokenClass === NumberToken
         );
     });
 
     it("getTokenClass() get NumberToken from some symbol", () => {
-        const map = new TokenMap([
+        const map = new TokenFactory([
             NumberToken,
             AnyCharToken
         ]);
-        const actualClass = map.getTokenClass("x");
+        const result = map.getTokenClass("x");
         assert.ok(
-            actualClass === AnyCharToken
+            result &&
+            result.TokenClass === AnyCharToken
         );
     });
 
@@ -61,13 +64,14 @@ describe("TokenMap", () => {
             };
         }
 
-        const map = new TokenMap([
+        const map = new TokenFactory([
             PopularNumberToken,
             AnyCharToken
         ]);
-        const actualClass = map.getTokenClass("9");
+        const result = map.getTokenClass("9");
         assert.ok(
-            actualClass === PopularNumberToken
+            result &&
+            result.TokenClass === PopularNumberToken
         );
     });
 
@@ -87,7 +91,7 @@ describe("TokenMap", () => {
         }
 
         assert.throws(() => {
-            new TokenMap([
+            new TokenFactory([
                 FooToken,
                 BarToken
             ]);
@@ -99,7 +103,7 @@ describe("TokenMap", () => {
     it("required one more description", () => {
 
         assert.throws(() => {
-            new TokenMap([]);
+            new TokenFactory([]);
         }, (err: Error) =>
             /one or more token descriptions required/.test(err.message)
         );
@@ -112,7 +116,7 @@ describe("TokenMap", () => {
             };
         }
 
-        const map = new TokenMap([
+        const map = new TokenFactory([
             BarToken
         ]);
 
@@ -129,7 +133,7 @@ describe("TokenMap", () => {
         }
 
         assert.throws(() => {
-            new TokenMap([
+            new TokenFactory([
                 BarToken
             ]);
         }, (err: Error) =>

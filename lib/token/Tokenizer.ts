@@ -1,24 +1,24 @@
 import { EndOfFleToken } from "./EndOfFileToken";
 import { Token } from "./Token";
-import { TokenMap } from "./TokenMap";
+import { TokenFactory } from "./TokenFactory";
 
 export class Tokenizer {
 
     /** split text into tokens */
-    static tokenize(map: TokenMap, text: string): Token[] {
+    static tokenize(map: TokenFactory, text: string): Token[] {
         const tokenizer = new Tokenizer(map, text);
         return tokenizer.tokenize();
     }
 
     private readonly text: string;
     private position: number;
-    private map: TokenMap;
+    private factory: TokenFactory;
 
     private constructor(
-        map: TokenMap,
+        map: TokenFactory,
         code: string
     ) {
-        this.map = map;
+        this.factory = map;
         this.text = code;
         this.position = 0;
     }
@@ -29,16 +29,16 @@ export class Tokenizer {
         while ( this.position < this.text.length ) {
             const start = this.position;
             const char = this.text[ this.position ];
-            const TokenClass = this.map.getTokenClass(char);
+            const result = this.factory.getTokenClass(char);
 
-            if ( TokenClass ) {
-                const tokenValue = TokenClass.read(
+            if ( result ) {
+                const tokenValue = result.TokenClass.read(
                     this.text,
                     this.position
                 );
                 this.position += tokenValue.length;
 
-                const token = new TokenClass(tokenValue, start);
+                const token = new result.TokenClass(tokenValue, start);
                 tokens.push(token);
             }
             else {

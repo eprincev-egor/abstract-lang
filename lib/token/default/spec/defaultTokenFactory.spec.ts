@@ -1,7 +1,7 @@
 import assert from "assert";
 import { Tokenizer } from "../../Tokenizer";
 import { BracketsToken } from "../BracketsToken";
-import { defaultMap } from "../defaultMap";
+import { defaultTokenFactory } from "../defaultTokenFactory";
 import { DigitsToken } from "../DigitsToken";
 import { EndOfLineToken } from "../EndOfLineToken";
 import { OperatorsToken } from "../OperatorsToken";
@@ -9,11 +9,11 @@ import { QuotesToken } from "../QuotesToken";
 import { SpaceToken } from "../SpaceToken";
 import { WordToken } from "../WordToken";
 
-describe("defaultMap", () => {
+describe("defaultTokenFactory", () => {
 
     it("all variants of tokens", () => {
         const tokens = Tokenizer.tokenize(
-            defaultMap,
+            defaultTokenFactory,
             [
                 "hello world\r\n__\tHELLO_WORLD",
                 "(test){brackets}[variants]",

@@ -2,14 +2,14 @@ import assert from "assert";
 import { DigitsToken } from "../default/DigitsToken";
 import { SpaceToken } from "../default/SpaceToken";
 import { Tokenizer } from "../Tokenizer";
-import { TokenMap } from "../TokenMap";
+import { TokenFactory } from "../TokenFactory";
 import { Token, TokenDescription } from "../Token";
 import { EndOfFleToken } from "../EndOfFileToken";
 import { EndOfLineToken } from "../default/EndOfLineToken";
 
 describe("Tokenizer", () => {
 
-    const map = new TokenMap([
+    const factory = new TokenFactory([
         EndOfLineToken,
         SpaceToken,
         DigitsToken
@@ -18,7 +18,7 @@ describe("Tokenizer", () => {
     it("tokenize digits",() => {
 
         const tokens = Tokenizer.tokenize(
-            map,
+            factory,
             "0123456789"
         );
 
@@ -43,7 +43,7 @@ describe("Tokenizer", () => {
     it("tokenize digits and spaces",() => {
 
         const tokens = Tokenizer.tokenize(
-            map,
+            factory,
             "012 23\n44\r66    \t\r\n"
         );
 
@@ -101,7 +101,7 @@ describe("Tokenizer", () => {
     });
 
     it("tokenize unknown symbols by one-symbol per token",() => {
-        const map = new TokenMap([
+        const map = new TokenFactory([
             DigitsToken
         ]);
 
@@ -148,7 +148,7 @@ describe("Tokenizer", () => {
             }
         }
 
-        const map = new TokenMap([
+        const map = new TokenFactory([
             OperatorToken
         ]);
         const tokens = Tokenizer.tokenize(
@@ -167,7 +167,7 @@ describe("Tokenizer", () => {
     it("last token should be EndOfFleToken",() => {
 
         const tokens = Tokenizer.tokenize(
-            map,
+            factory,
             "1"
         );
         assert.strictEqual(tokens.length, 2);
