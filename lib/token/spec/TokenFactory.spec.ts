@@ -17,127 +17,133 @@ describe("TokenFactory", () => {
         };
     }
 
-    it("getTokenClass() get AnyCharToken", () => {
-        const map = new TokenFactory([
-            AnyCharToken
-        ]);
-        const result = map.getTokenClass("a");
-        assert.ok(
-            result &&
-            result.TokenClass === AnyCharToken
-        );
+    describe("validate token classes", () => {
+
+        it("error on duplicated popular char", () => {
+
+            class FooToken extends Token {
+                static description: TokenDescription = {
+                    entry: /./,
+                    popularEntry: ["1"]
+                };
+            }
+            class BarToken extends Token {
+                static description: TokenDescription = {
+                    entry: /./,
+                    popularEntry: ["0", "1"]
+                };
+            }
+
+            assert.throws(() => {
+                new TokenFactory([
+                    FooToken,
+                    BarToken
+                ]);
+            }, (err: Error) =>
+                /duplicated popular entry char: "1" between FooToken and BarToken/.test(err.message)
+            );
+        });
+
+        it("required one more description", () => {
+
+            assert.throws(() => {
+                new TokenFactory([]);
+            }, (err: Error) =>
+                /one or more token descriptions required/.test(err.message)
+            );
+        });
+
+        it("popular entry chars must match entry regExp", () => {
+            class BarToken extends Token {
+                static description: TokenDescription = {
+                    entry: /[0-2]/,
+                    popularEntry: ["2", "3"]
+                };
+            }
+
+            assert.throws(() => {
+                new TokenFactory([
+                    BarToken
+                ]);
+            }, (err: Error) =>
+                /BarToken: popular entry char "3" does not match entry: \/\[0-2]\//.test(err.message)
+            );
+        });
     });
 
-    it("getTokenClass() get NumberToken from number char", () => {
-        const map = new TokenFactory([
-            NumberToken,
-            AnyCharToken
-        ]);
-        const result = map.getTokenClass("1");
-        assert.ok(
-            result &&
-            result.TokenClass === NumberToken
-        );
-    });
+    describe("createToken(text, position)", () => {
 
-    it("getTokenClass() get NumberToken from some symbol", () => {
-        const map = new TokenFactory([
-            NumberToken,
-            AnyCharToken
-        ]);
-        const result = map.getTokenClass("x");
-        assert.ok(
-            result &&
-            result.TokenClass === AnyCharToken
-        );
-    });
+        it("create AnyCharToken", () => {
+            const factory = new TokenFactory([
+                AnyCharToken
+            ]);
+            const token = factory.createToken("a", 0);
+            assert.ok(
+                token instanceof AnyCharToken
+            );
+        });
 
-    it("speedup getTokenClass() by popular entry", () => {
+        it("NumberToken from digit", () => {
+            const factory = new TokenFactory([
+                NumberToken,
+                AnyCharToken
+            ]);
+            const token = factory.createToken("1", 0);
+            assert.ok(
+                token instanceof NumberToken
+            );
+        });
 
-        const regExp = new RegExp("[0-7]");
-        regExp.test = () => true;
+        it("create AnyCharToken instead of  NumberToken", () => {
+            const factory = new TokenFactory([
+                NumberToken,
+                AnyCharToken
+            ]);
+            const token = factory.createToken("x", 0);
+            assert.ok(
+                token instanceof AnyCharToken
+            );
+        });
 
-        class PopularNumberToken extends Token {
-            static description: TokenDescription = {
-                entry: regExp,
-                popularEntry: ["8", "9"]
-            };
-        }
+        it("speedup by popular entry", () => {
 
-        const map = new TokenFactory([
-            PopularNumberToken,
-            AnyCharToken
-        ]);
-        const result = map.getTokenClass("9");
-        assert.ok(
-            result &&
-            result.TokenClass === PopularNumberToken
-        );
-    });
+            const regExp = new RegExp("[0-7]");
+            regExp.test = () => true;
 
-    it("error on duplicated popular char", () => {
+            class PopularNumberToken extends Token {
+                static description: TokenDescription = {
+                    entry: regExp,
+                    popularEntry: ["8", "9"]
+                };
+            }
 
-        class FooToken extends Token {
-            static description: TokenDescription = {
-                entry: /./,
-                popularEntry: ["1"]
-            };
-        }
-        class BarToken extends Token {
-            static description: TokenDescription = {
-                entry: /./,
-                popularEntry: ["0", "1"]
-            };
-        }
+            const factory = new TokenFactory([
+                PopularNumberToken,
+                AnyCharToken
+            ]);
+            const token = factory.createToken("9", 0);
+            assert.ok(
+                token instanceof PopularNumberToken
+            );
+        });
 
-        assert.throws(() => {
-            new TokenFactory([
-                FooToken,
+        it("create default Token when special class for char not found", () => {
+            class BarToken extends Token {
+                static description: TokenDescription = {
+                    entry: /[abr]/
+                };
+            }
+
+            const factory = new TokenFactory([
                 BarToken
             ]);
-        }, (err: Error) =>
-            /duplicated popular entry char: "1" between FooToken and BarToken/.test(err.message)
-        );
+
+            const token = factory.createToken("x", 0);
+            assert.ok(
+                token instanceof Token
+            );
+        });
+
     });
 
-    it("required one more description", () => {
-
-        assert.throws(() => {
-            new TokenFactory([]);
-        }, (err: Error) =>
-            /one or more token descriptions required/.test(err.message)
-        );
-    });
-
-    it("getTokenClass() returns undefined when token for char not found", () => {
-        class BarToken extends Token {
-            static description: TokenDescription = {
-                entry: /[abr]/
-            };
-        }
-
-        const map = new TokenFactory([
-            BarToken
-        ]);
-
-        const result = map.getTokenClass("x");
-        assert.strictEqual(result, undefined);
-    });
-
-    it("getTokenClass() popular entry chars must match entry regExp", () => {
-        class BarToken extends Token {
-            static description: TokenDescription = {
-                entry: /[0-2]/,
-                popularEntry: ["2", "3"]
-            };
-        }
-
-        assert.throws(() => {
-            new TokenFactory([
-                BarToken
-            ]);
-        }, (err: Error) =>
-            /BarToken: popular entry char "3" does not match entry: \/\[0-2]\//.test(err.message)
-        );
-    });
 });

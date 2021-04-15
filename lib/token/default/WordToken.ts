@@ -13,8 +13,7 @@ const upperAlphabet = lowerAlphabet.map((alpha) =>
 export class WordToken extends Token {
 
     static description: TokenDescription = {
-        entry: /[A-Z_a-z]/,
-        popularEntry: [
+        entry: [
             "_",
             ...lowerAlphabet,
             ...upperAlphabet

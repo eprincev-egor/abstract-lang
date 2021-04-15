@@ -3,8 +3,7 @@ import { Token, TokenDescription } from "../Token";
 export class BracketsToken extends Token {
 
     static description: TokenDescription = {
-        entry: /[()[\]{}]/,
-        popularEntry: ["[", "]", "(", ")", "{", "}"],
+        entry: ["[", "]", "(", ")", "{", "}"],
         maxLength: 1
     };
 }

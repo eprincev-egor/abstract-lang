@@ -7,8 +7,7 @@ import { Token, TokenDescription } from "../Token";
 export class EndOfLineToken extends Token {
 
     static description: TokenDescription = {
-        entry: /[\n\r]/,
-        popularEntry: ["\n", "\r"],
+        entry: ["\n", "\r"],
         maxLength: 2
     };
 

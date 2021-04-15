@@ -27,27 +27,10 @@ export class Tokenizer {
         const tokens: Token[] = [];
 
         while ( this.position < this.text.length ) {
-            const start = this.position;
-            const char = this.text[ this.position ];
-            const result = this.factory.getTokenClass(char);
+            const token = this.factory.createToken(this.text, this.position);
 
-            if ( result ) {
-                const tokenValue = result.TokenClass.read(
-                    this.text,
-                    this.position
-                );
-                this.position += tokenValue.length;
-
-                const token = new result.TokenClass(tokenValue, start);
-                tokens.push(token);
-            }
-            else {
-                const tokenValue = char;
-                this.position++;
-
-                const token = new Token(tokenValue, start);
-                tokens.push(token);
-            }
+            this.position += token.length;
+            tokens.push(token);
 
         }
 

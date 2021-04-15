@@ -3,8 +3,7 @@ import { Token, TokenDescription } from "../Token";
 export class OperatorsToken extends Token {
 
     static description: TokenDescription = {
-        entry: /[!%&*+./<=>?@^|~-]/,
-        popularEntry: [
+        entry: [
             // math
             "%", "*", "+", "/", "-",
             // compare

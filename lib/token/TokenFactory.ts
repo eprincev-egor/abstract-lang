@@ -1,4 +1,4 @@
-import { TokenClass, TokenDescription } from "./Token";
+import { Token, TokenClass, TokenDescription } from "./Token";
 
 export interface PopularMap {
     [char: string]: {
@@ -20,7 +20,23 @@ export class TokenFactory {
         this.popularMap = buildPopularMap(tokenClasses);
     }
 
-    getTokenClass(char: string): {TokenClass: TokenClass} | undefined {
+    createToken(text: string, position: number): Token {
+        const char = text[ position ];
+        const result = this.getTokenClass(char);
+
+        if ( result ) {
+            const start = position;
+            const tokenValue = result.TokenClass.read(text, position);
+            const token = new result.TokenClass(tokenValue, start);
+            return token;
+        }
+        else {
+            const token = new Token(char, position);
+            return token;
+        }
+    }
+
+    private getTokenClass(char: string): {TokenClass: TokenClass} | undefined {
         const descriptionByPopularChar = this.popularMap[ char ];
         if ( descriptionByPopularChar ) {
             return descriptionByPopularChar;
