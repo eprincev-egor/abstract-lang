@@ -1,4 +1,9 @@
 import { TokenClass, TokenDescription } from "./Token";
+import {
+    invalidPopularCharError,
+    duplicatedPopularCharError,
+    requireTokenClassesError
+} from "./errors";
 
 interface TokenClassByPopularChar {
     [char: string]: TokenClass;
@@ -8,7 +13,7 @@ export class TokenMap {
 
     static build(tokenClasses: TokenClass[]): TokenMap {
         if ( tokenClasses.length === 0 ) {
-            throw new Error("one or more token descriptions required");
+            throw requireTokenClassesError();
         }
 
         const popularMap: TokenClassByPopularChar = {};
@@ -21,22 +26,17 @@ export class TokenMap {
                     TokenClass.description.entry instanceof RegExp &&
                     !TokenClass.description.entry.test(popularChar)
                 ) {
-                    throw new Error([
-                        `${TokenClass.name}:`,
-                        `popular entry char "${popularChar}"`,
-                        `does not match entry: ${String(TokenClass.description.entry)}`
-                    ].join(" "));
+                    throw invalidPopularCharError(TokenClass, popularChar);
                 }
 
                 const existentTokenClass = popularMap[ popularChar ];
                 if ( existentTokenClass ) {
-                    throw new Error([
-                        `duplicated popular entry char: "${popularChar}"`,
-                        `between ${ existentTokenClass.name }`,
-                        "and",
-                        TokenClass.name
-                    ].join(" "));
+                    throw duplicatedPopularCharError(
+                        TokenClass, existentTokenClass,
+                        popularChar
+                    );
                 }
+
                 popularMap[ popularChar ] = TokenClass;
             }
         }
