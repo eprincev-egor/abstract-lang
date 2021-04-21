@@ -409,6 +409,35 @@ describe("assertNode", () => {
             });
         });
 
+        it("json can contain numbers", () => {
+            interface SelectRow {
+                limit: number;
+            }
+            class Select extends AbstractNode<SelectRow> {
+
+                static entry = TestNode.entry.bind(TestNode);
+
+                static parse(cursor: Cursor): SelectRow {
+                    cursor.readWord("limit");
+                    const limit = +cursor.readAll(DigitsToken).join("");
+                    return {limit};
+                }
+
+                template() {
+                    return `limit ${this.row.limit}`;
+                }
+            }
+
+            assertNode(Select, {
+                input: "limit 120",
+                shouldBe: {
+                    json: {
+                        limit: 120
+                    }
+                }
+            });
+        });
+
     });
 
     describe("invalid errors", () => {

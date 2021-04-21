@@ -55,7 +55,7 @@ export type NodeJsonValue<T extends any> = (
     T extends string ?
         string :
     T extends number ?
-        string :
+        number :
     T extends boolean ?
         boolean :
     T extends null ?
