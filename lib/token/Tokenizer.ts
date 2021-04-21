@@ -5,8 +5,8 @@ import { TokenFactory } from "./TokenFactory";
 export class Tokenizer {
 
     /** split text into tokens */
-    static tokenize(map: TokenFactory, text: string): Token[] {
-        const tokenizer = new Tokenizer(map, text);
+    static tokenize(factory: TokenFactory, text: string): Token[] {
+        const tokenizer = new Tokenizer(factory, text);
         return tokenizer.tokenize();
     }
 
@@ -33,7 +33,6 @@ export class Tokenizer {
 
             this.position += token.value.length;
             tokens.push(token);
-
         }
 
         const eof = new EndOfFleToken(this.text.length);
