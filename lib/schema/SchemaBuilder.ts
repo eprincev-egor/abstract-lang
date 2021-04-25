@@ -3,7 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Cursor } from "cursor";
-import { DigitsToken } from "token";
+import { SourceCode } from "source";
+import { DigitsToken, WordToken } from "token";
 import { AnyRow, keyword } from "../node";
 import { Schema, SchemaDescription } from "./interface";
 
@@ -27,38 +28,84 @@ export class SchemaBuilder<TRow extends AnyRow> {
     private constructor(params: SchemaBuilderParams<TRow>) {
         this.schema = params.schema;
         this.description = params.where;
-
-        for (const key in this.description) {
-            const place = `<${key}>`;
-            const hasPlace = this.schema.includes(place);
-            if ( !hasPlace ) {
-                throw new Error(`required ${place} inside schema: ${this.schema}`);
-            }
-        }
     }
 
     private build(): Schema<TRow> {
-        const [someKeyword, wrappedKey] = this.schema.trim().split(" ");
-        const key = wrappedKey.replace("<", "").replace(">", "");
+        const {schema, description} = this;
+        const {cursor} = new SourceCode(schema);
+
+        const schemaElements: any[] = [];
+
+        while ( !cursor.beforeEnd() ) {
+            cursor.skipSpaces();
+
+            if ( cursor.beforeToken(WordToken) ) {
+                const word = cursor.read(WordToken).value;
+                schemaElements.push({ word });
+                continue;
+            }
+
+            if ( cursor.beforeValue("<") ) {
+                cursor.readValue("<");
+                cursor.skipSpaces();
+
+                const key = cursor.read(WordToken).value;
+                if ( !(key in description) ) {
+                    throw new Error(
+                        `required description for <${key}> inside schema: ${schema}`
+                    );
+                }
+                schemaElements.push({ key });
+
+                cursor.skipSpaces();
+                cursor.readValue(">");
+            }
+        }
+
+        for (const key in description) {
+            const hasPlace = schemaElements.find((element) =>
+                element &&
+                "key" in element &&
+                element.key === key
+            );
+            if ( !hasPlace ) {
+                throw new Error(`required <${key}> inside schema: ${schema}`);
+            }
+        }
+
+        const entryPhrase: string[] = schemaElements
+            .filter((element) =>
+                element && "word" in element
+            )
+            .map((element) =>
+                element.word
+            );
+
+        const firstKey = schemaElements.find((element) =>
+            element && "key" in element
+        ).key;
 
         return {
             entry(cursor: Cursor) {
-                return cursor.beforeWord(someKeyword);
+                return cursor.beforePhrase(...entryPhrase);
             },
             parse(cursor: Cursor) {
                 const row: any = {};
-                cursor.readWord(someKeyword);
+
+                cursor.readPhrase(...entryPhrase);
 
                 const value = +cursor.readAll(DigitsToken).join("");
-                row[ key ] = value;
+                row[ firstKey ] = value;
 
                 return row;
             },
             template(row: any) {
-                const value = row[ key ];
+                const value = row[ firstKey ];
 
                 return [
-                    keyword(someKeyword),
+                    ...entryPhrase.map((someKeyword) =>
+                        keyword(someKeyword)
+                    ),
                     value.toString()
                 ];
             }

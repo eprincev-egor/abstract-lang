@@ -6,6 +6,9 @@ import { assertNode } from "../../assert";
 export interface SchemaTest<TRow extends AnyRow> {
     schema: string;
     where: SchemaDescription<TRow>;
+    examples: SchemaTestExample<TRow>[];
+}
+export interface SchemaTestExample<TRow extends AnyRow> {
     input: string;
     shouldBe: {
         json: NodeJson<TRow>;
@@ -28,8 +31,7 @@ export function testSchema<TRow extends AnyRow>(test: SchemaTest<TRow>): void {
         }
     }
 
-    assertNode(TestNode, {
-        input: test.input,
-        shouldBe: test.shouldBe
-    });
+    for (const example of test.examples) {
+        assertNode(TestNode, example);
+    }
 }

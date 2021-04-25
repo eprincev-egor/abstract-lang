@@ -8,7 +8,11 @@ export interface Schema<TRow extends AnyRow> {
 }
 
 export type SchemaDescription<TRow extends AnyRow> = {
-    [key in keyof TRow]: TRow[key] extends number ?
-        typeof Number :
-        TRow[key];
+    [key in keyof TRow]: (
+        TRow[key] extends number ?
+            typeof Number :
+        TRow[key] extends string ?
+            typeof String :
+        TRow[key]
+    );
 }
