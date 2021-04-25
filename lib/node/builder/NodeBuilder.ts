@@ -1,25 +1,40 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Cursor } from "cursor";
-import { SourceCode } from "source";
-import { DigitsToken, WordToken } from "token";
-import { AnyRow, keyword } from "../node";
-import { Schema, SchemaDescription } from "./interface";
+import { Cursor } from "../../cursor";
+import { SourceCode } from "../../source";
+import { DigitsToken, WordToken } from "../../token";
+import { AbstractNode, AnyRow, keyword, NodeClass } from "../..";
+
+export type SchemaDescription<TRow extends AnyRow> = {
+    [key in keyof TRow]: SchemaDescriptionValue<TRow[key]>;
+}
+
+export type NumberDescription = typeof Number;
+export type StringDescription = typeof String;
+
+export type SchemaDescriptionValue<T extends any> = (
+    T extends number ?
+        NumberDescription :
+    T extends string ?
+        StringDescription :
+    T
+);
 
 export interface SchemaBuilderParams<TRow extends AnyRow> {
     schema: string;
     where: SchemaDescription<TRow>;
 }
 
-export class SchemaBuilder<TRow extends AnyRow> {
+export class NodeBuilder<TRow extends AnyRow> {
 
     static build<TRow extends AnyRow>(
         params: SchemaBuilderParams<TRow>
-    ): Schema<TRow> {
-        const builder = new SchemaBuilder<TRow>(params);
+    ): NodeClass<AbstractNode<TRow>> {
+        const builder = new NodeBuilder<TRow>(params);
         const schema = builder.build();
         return schema;
     }
@@ -31,7 +46,7 @@ export class SchemaBuilder<TRow extends AnyRow> {
         this.description = params.where;
     }
 
-    private build(): Schema<TRow> {
+    private build(): NodeClass<AbstractNode<TRow>> {
         const {schema, description} = this;
         const {cursor} = new SourceCode(schema);
 
@@ -129,11 +144,12 @@ export class SchemaBuilder<TRow extends AnyRow> {
             element && "key" in element
         );
 
-        return {
-            entry(cursor: Cursor) {
+        return class SchemaNode extends AbstractNode<TRow> {
+            static entry(cursor: Cursor) {
                 return cursor.beforePhrase(...entryPhrase);
-            },
-            parse(cursor: Cursor) {
+            }
+
+            static parse(cursor: Cursor) {
                 const row: any = {};
 
                 cursor.readPhrase(...entryPhrase);
@@ -163,8 +179,10 @@ export class SchemaBuilder<TRow extends AnyRow> {
                 }
 
                 return row;
-            },
-            template(row: any) {
+            }
+
+            template() {
+                const {row} = this;
                 const value = row[ firstElement.key ];
 
                 return [
@@ -177,6 +195,6 @@ export class SchemaBuilder<TRow extends AnyRow> {
                     )
                 ];
             }
-        } as Schema<TRow>;
+        };
     }
 }

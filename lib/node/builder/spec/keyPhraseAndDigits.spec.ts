@@ -1,9 +1,9 @@
-import { testSchema } from "./testSchema";
+import { testBuilder } from "./testBuilder";
 
-describe("SchemaBuilder: key phrase <digits>", () => {
+describe("NodeBuilder: key phrase <digits>", () => {
 
     it("start from <digits>", () => {
-        testSchema<{
+        testBuilder<{
             startFrom: number;
         }>({
             schema: "start from <startFrom>",
@@ -34,7 +34,7 @@ describe("SchemaBuilder: key phrase <digits>", () => {
     });
 
     it("one two three <digits>", () => {
-        testSchema<{
+        testBuilder<{
             four: number;
         }>({
             schema: "one two three <four>",

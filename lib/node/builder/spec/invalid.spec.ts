@@ -1,11 +1,11 @@
-import { SchemaBuilder } from "../SchemaBuilder";
+import { NodeBuilder } from "../NodeBuilder";
 import assert from "assert";
 
-describe("SchemaBuilder: invalid schemas", () => {
+describe("NodeBuilder: invalid schemas", () => {
 
     it("required <place> for description", () => {
         assert.throws(() => {
-            SchemaBuilder.build({
+            NodeBuilder.build({
                 schema: "offset offset",
                 where: {
                     offset: Number
@@ -18,7 +18,7 @@ describe("SchemaBuilder: invalid schemas", () => {
 
     it("required description for <place>", () => {
         assert.throws(() => {
-            SchemaBuilder.build({
+            NodeBuilder.build({
                 schema: "offset <offset> <limit>",
                 where: {
                     offset: Number

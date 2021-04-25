@@ -1,9 +1,9 @@
-import { testSchema } from "./testSchema";
+import { testBuilder } from "./testBuilder";
 
-describe("SchemaBuilder: keyword <digits>", () => {
+describe("NodeBuilder: keyword <digits>", () => {
 
     it("limit <digits>", () => {
-        testSchema<{
+        testBuilder<{
             limit: number;
         }>({
             schema: "limit <limit>",
@@ -32,7 +32,7 @@ describe("SchemaBuilder: keyword <digits>", () => {
     });
 
     it("offset <digits>", () => {
-        testSchema<{
+        testBuilder<{
             offset: number;
         }>({
             schema: "offset <offset>",
