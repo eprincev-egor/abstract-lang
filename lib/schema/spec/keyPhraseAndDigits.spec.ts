@@ -33,4 +33,25 @@ describe("SchemaBuilder: key phrase <digits>", () => {
         });
     });
 
+    it("one two three <digits>", () => {
+        testSchema<{
+            four: number;
+        }>({
+            schema: "one two three <four>",
+            where: {
+                four: Number
+            },
+            examples: [{
+                input: "one\rtwo\nthree\t4",
+                shouldBe: {
+                    json: {
+                        four: 4
+                    },
+                    pretty: "one two three 4",
+                    minify: "one two three 4"
+                }
+            }]
+        });
+    });
+
 });
