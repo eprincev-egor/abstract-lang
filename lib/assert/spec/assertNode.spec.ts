@@ -449,7 +449,8 @@ describe("assertNode", () => {
                     throws: /expected operator/
                 });
             }, (err: Error) =>
-                err.message.includes("Missing expected exception")
+                err.message.includes("Missing expected exception") &&
+                err.message.includes("200 + 200")
             );
         });
 
@@ -465,6 +466,7 @@ describe("assertNode", () => {
                 });
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
+                err.message.includes("101") &&
                 err.message.includes("error should be SyntaxError instance")
             );
         });

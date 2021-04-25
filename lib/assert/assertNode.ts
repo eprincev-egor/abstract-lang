@@ -52,14 +52,17 @@ function testError(Node: NodeClass<any>, test: ErrorTest): void {
 
     assert.ok(
         test.throws.test(actualError.message),
-        "invalid error message:\n" +
-        "expected: " + test.throws.toString() + "\n" +
-        "actual:\n" +
+        "invalid error message on input:\n" +
+        test.input + "\n\n" +
+        "expected error: " + test.throws.toString() + "\n" +
+        "actual error:\n" +
         actualError.message
     );
 
     assert.ok(
         actualError instanceof SyntaxError,
+        "invalid error instance on input:\n" +
+        test.input + "\n\n" +
         "error should be SyntaxError instance"
     );
 
@@ -67,7 +70,7 @@ function testError(Node: NodeClass<any>, test: ErrorTest): void {
         assert.strictEqual(
             actualError.target.toString(),
             test.target,
-            "invalid error target, on input:\n" +
+            "invalid error target on input:\n" +
             test.input + "\n\n" +
             actualError.message
         );
@@ -77,7 +80,7 @@ function testError(Node: NodeClass<any>, test: ErrorTest): void {
             test.target.test(
                 actualError.target.toString()
             ) ,
-            "invalid error target, on input:\n" +
+            "invalid error target on input:\n" +
             test.input + "\n\n" +
             actualError.message
         );
