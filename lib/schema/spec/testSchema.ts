@@ -1,12 +1,12 @@
 import { SchemaBuilder } from "../SchemaBuilder";
 import { SchemaDescription } from "../interface";
 import { AbstractNode, AnyRow, NodeJson } from "../../node";
-import { assertNode } from "../../assert";
+import { assertNode, SuccessTest, ErrorTest } from "../../assert";
 
 export interface SchemaTest<TRow extends AnyRow> {
     schema: string;
     where: SchemaDescription<TRow>;
-    examples: SchemaTestExample<TRow>[];
+    examples: (SuccessTest<AbstractNode<TRow>> | ErrorTest)[];
 }
 export interface SchemaTestExample<TRow extends AnyRow> {
     input: string;

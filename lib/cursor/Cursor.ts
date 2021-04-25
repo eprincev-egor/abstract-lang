@@ -39,9 +39,7 @@ export class Cursor {
      * returns true if next token value is equal someTokenValue,
      * returns false if this is end of tokens
      */
-    beforeValue<T extends string>(someTokenValue: T): this is {
-        nextToken: Token & {value: T};
-    } {
+    beforeValue<T extends string>(someTokenValue: T): boolean {
         return this.nextToken_.value === someTokenValue;
     }
 

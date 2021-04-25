@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -55,7 +56,37 @@ export class SchemaBuilder<TRow extends AnyRow> {
                         `required description for <${key}> inside schema: ${schema}`
                     );
                 }
-                schemaElements.push({ key });
+
+                if ( cursor.beforeValue(":") ) {
+                    cursor.readValue(":");
+                    cursor.skipSpaces();
+
+                    cursor.readValue("{");
+                    cursor.skipSpaces();
+
+                    const variants: string[] = [];
+                    while ( !cursor.beforeEnd() && !cursor.beforeValue("}") ) {
+                        const variant = cursor.read(WordToken).value;
+                        variants.push(variant);
+
+                        cursor.skipSpaces();
+                        if ( cursor.beforeValue("|") ) {
+                            cursor.readValue("|");
+                            cursor.skipSpaces();
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    cursor.skipSpaces();
+                    cursor.readValue("}");
+
+                    schemaElements.push({ key, variants });
+                }
+                else {
+                    schemaElements.push({ key });
+                }
 
                 cursor.skipSpaces();
                 cursor.readValue(">");
@@ -73,17 +104,30 @@ export class SchemaBuilder<TRow extends AnyRow> {
             }
         }
 
-        const entryPhrase: string[] = schemaElements
-            .filter((element) =>
-                element && "word" in element
-            )
-            .map((element) =>
-                element.word
-            );
+        const entryPhrase: string[] = [];
+        for (const element of schemaElements) {
+            if ( element && "word" in element ) {
+                entryPhrase.push(element.word);
+            }
+            else {
+                break;
+            }
+        }
 
-        const firstKey = schemaElements.find((element) =>
+        let endPhrase: string[] = [];
+        for (const element of schemaElements.reverse()) {
+            if ( element && "word" in element ) {
+                endPhrase.push(element.word);
+            }
+            else {
+                break;
+            }
+        }
+        endPhrase = endPhrase.reverse();
+
+        const firstElement = schemaElements.find((element) =>
             element && "key" in element
-        ).key;
+        );
 
         return {
             entry(cursor: Cursor) {
@@ -94,19 +138,43 @@ export class SchemaBuilder<TRow extends AnyRow> {
 
                 cursor.readPhrase(...entryPhrase);
 
-                const value = +cursor.readAll(DigitsToken).join("");
-                row[ firstKey ] = value;
+                if ( firstElement.variants ) {
+                    let variantValue: string | undefined;
+                    for (const variant of firstElement.variants ) {
+                        if ( cursor.beforeWord(variant) ) {
+                            variantValue = cursor.readWord(variant);
+                            break;
+                        }
+                    }
+
+                    if ( !variantValue ) {
+                        const nextToken = cursor.nextToken.value;
+                        cursor.throwError([
+                            `unexpected token: "${nextToken}",`,
+                            `expected one of: ${ firstElement.variants.join(" | ") }`
+                        ].join(" "));
+                    }
+
+                    row[ firstElement.key ] = variantValue;
+                }
+                else {
+                    const value = +cursor.readAll(DigitsToken).join("");
+                    row[ firstElement.key ] = value;
+                }
 
                 return row;
             },
             template(row: any) {
-                const value = row[ firstKey ];
+                const value = row[ firstElement.key ];
 
                 return [
                     ...entryPhrase.map((someKeyword) =>
                         keyword(someKeyword)
                     ),
-                    value.toString()
+                    value.toString(),
+                    ...endPhrase.map((someKeyword) =>
+                        keyword(someKeyword)
+                    )
                 ];
             }
         } as Schema<TRow>;
