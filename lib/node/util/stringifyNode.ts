@@ -55,22 +55,32 @@ export function stringifyNode(
     node: AbstractNode<AnyRow>,
     inputSpaces: Partial<Spaces> = PrettySpaces
 ): string {
+    const elements = nodeToElements(node);
+    return stringify(elements, inputSpaces);
+}
+
+export function stringify(
+    elements: TemplateElement[],
+    inputSpaces: Partial<Spaces> = PrettySpaces
+): string {
     const spaces: Spaces = {...PrettySpaces, ...inputSpaces};
     let output = "";
 
-    const elements = template(node);
-    for (let i = 0, n = elements.length; i < n; i++) {
-        const element = elements[i];
-        output += stringifyElement(spaces, elements, element, i);
+    const lines = elementsToLines(elements);
+    const plainElements = linesToPlainElements(lines);
+
+    for (let i = 0, n = plainElements.length; i < n; i++) {
+        const element = plainElements[i];
+        output += stringifyPlainElement(spaces, plainElements, element, i);
     }
 
     return output;
 }
 
-function template(node: AbstractNode<AnyRow>): PrimitiveTemplateElement[] {
+function linesToPlainElements(lines: PrimitiveTemplateElement[][]) {
     const plainElements: PrimitiveTemplateElement[] = [];
 
-    for (const line of templateLines(node)) {
+    for (const line of lines) {
         if ( plainElements.length > 0 ) {
             plainElements.push(eol);
         }
@@ -93,8 +103,13 @@ function isEmptyLine(line: PrimitiveTemplateElement[]): boolean {
     );
 }
 
-function templateLines(node: AbstractNode<AnyRow>) {
-    const elements = templateAsArray(node);
+function nodeToLines(node: AbstractNode<AnyRow>) {
+    const elements = nodeToElements(node);
+    const lines = elementsToLines(elements);
+    return lines;
+}
+
+function elementsToLines(elements: TemplateElement[]) {
     const lines: PrimitiveTemplateElement[][] = [];
 
     for (const line of split(elements, eol)) {
@@ -112,7 +127,7 @@ function extrudeSubLines(parentLine: TemplateElement[]) {
     for (const element of parentLine) {
         if ( element instanceof AbstractNode ) {
             const node = element;
-            const subLines = templateLines(node);
+            const subLines = nodeToLines(node);
 
             if ( subLines.length === 1 ) {
                 const subLine = subLines[0];
@@ -141,7 +156,7 @@ function extrudeSubLines(parentLine: TemplateElement[]) {
     return outputLines;
 }
 
-function templateAsArray(node: AbstractNode<AnyRow>) {
+function nodeToElements(node: AbstractNode<AnyRow>) {
     const template = node.template();
     if ( Array.isArray(template) ) {
         return template;
@@ -149,7 +164,7 @@ function templateAsArray(node: AbstractNode<AnyRow>) {
     return [template];
 }
 
-function stringifyElement(
+function stringifyPlainElement(
     spaces: Spaces,
     elements: PrimitiveTemplateElement[],
     element: PrimitiveTemplateElement,

@@ -19,7 +19,13 @@ implements Source {
     readonly cursor: Cursor;
     protected _lines?: Line[];
 
-    constructor(params: CodeParams) {
+    constructor(params: CodeParams | string) {
+        if ( typeof params === "string" ) {
+            params = {
+                text: params
+            };
+        }
+
         this.text = params.text;
 
         const tokenFactory = params.tokenFactory || defaultTokenFactory;
