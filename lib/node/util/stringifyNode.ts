@@ -55,18 +55,10 @@ export function stringifyNode(
     node: AbstractNode<AnyRow>,
     inputSpaces: Partial<Spaces> = PrettySpaces
 ): string {
-    const elements = nodeToElements(node);
-    return stringify(elements, inputSpaces);
-}
-
-export function stringify(
-    elements: TemplateElement[],
-    inputSpaces: Partial<Spaces> = PrettySpaces
-): string {
     const spaces: Spaces = {...PrettySpaces, ...inputSpaces};
     let output = "";
 
-    const lines = elementsToLines(elements);
+    const lines = nodeToLines(node);
     const plainElements = linesToPlainElements(lines);
 
     for (let i = 0, n = plainElements.length; i < n; i++) {
@@ -75,6 +67,12 @@ export function stringify(
     }
 
     return output;
+}
+
+function nodeToLines(node: AbstractNode<AnyRow>) {
+    const elements = nodeToElements(node);
+    const lines = elementsToLines(elements);
+    return lines;
 }
 
 function linesToPlainElements(lines: PrimitiveTemplateElement[][]) {
@@ -96,17 +94,51 @@ function linesToPlainElements(lines: PrimitiveTemplateElement[][]) {
     return plainElements;
 }
 
+function nodeToElements(node: AbstractNode<AnyRow>) {
+    const template = node.template();
+    if ( Array.isArray(template) ) {
+        return template;
+    }
+    return [template];
+}
+
+function stringifyPlainElement(
+    spaces: Spaces,
+    elements: PrimitiveTemplateElement[],
+    element: PrimitiveTemplateElement,
+    elementIndex: number
+): string {
+    if ( element === tab ) {
+        return spaces.tab;
+    }
+    else if ( element === _ ) {
+        return spaces._;
+    }
+    else if ( element === eol ) {
+        return spaces.eol;
+    }
+    else if ( isKeyWord(element) ) {
+        let output = spaces.keyword(element.keyword);
+
+        if ( needSpaceBeforeKeyword(spaces, elements, elementIndex) ) {
+            output = " " + output;
+        }
+        if ( needSpaceAfterKeyword(spaces, elements, elementIndex) ) {
+            output += " ";
+        }
+
+        return output;
+    }
+    else {
+        return element as string;
+    }
+}
+
 function isEmptyLine(line: PrimitiveTemplateElement[]): boolean {
     return line.every((element) =>
         element === _ ||
         element === tab
     );
-}
-
-function nodeToLines(node: AbstractNode<AnyRow>) {
-    const elements = nodeToElements(node);
-    const lines = elementsToLines(elements);
-    return lines;
 }
 
 function elementsToLines(elements: TemplateElement[]) {
@@ -154,46 +186,6 @@ function extrudeSubLines(parentLine: TemplateElement[]) {
 
     outputLines.push(lastLine);
     return outputLines;
-}
-
-function nodeToElements(node: AbstractNode<AnyRow>) {
-    const template = node.template();
-    if ( Array.isArray(template) ) {
-        return template;
-    }
-    return [template];
-}
-
-function stringifyPlainElement(
-    spaces: Spaces,
-    elements: PrimitiveTemplateElement[],
-    element: PrimitiveTemplateElement,
-    elementIndex: number
-): string {
-    if ( element === tab ) {
-        return spaces.tab;
-    }
-    else if ( element === _ ) {
-        return spaces._;
-    }
-    else if ( element === eol ) {
-        return spaces.eol;
-    }
-    else if ( isKeyWord(element) ) {
-        let output = spaces.keyword(element.keyword);
-
-        if ( needSpaceBeforeKeyword(spaces, elements, elementIndex) ) {
-            output = " " + output;
-        }
-        if ( needSpaceAfterKeyword(spaces, elements, elementIndex) ) {
-            output += " ";
-        }
-
-        return output;
-    }
-    else {
-        return element as string;
-    }
 }
 
 function needSpaceAfterKeyword(

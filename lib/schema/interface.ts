@@ -1,10 +1,10 @@
-import { AnyRow, Spaces } from "../node";
+import { AnyRow, TemplateElement } from "../node";
 import { Cursor } from "../cursor";
 
 export interface Schema<TRow extends AnyRow> {
     entry: (cursor: Cursor) => boolean;
     parse: (cursor: Cursor) => TRow;
-    serialize: (row: TRow, spaces?: Spaces) => string;
+    template: (row: TRow) => TemplateElement[];
 }
 
 export type SchemaDescription<TRow extends AnyRow> = {

@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Cursor } from "cursor";
 import { DigitsToken } from "token";
-import { AnyRow, stringify, keyword } from "../node";
+import { AnyRow, keyword } from "../node";
 import { Schema, SchemaDescription } from "./interface";
 
 export interface SchemaBuilderParams<TRow extends AnyRow> {
@@ -46,14 +46,13 @@ export class SchemaBuilder<TRow extends AnyRow> {
 
                 return row;
             },
-            serialize(row: any) {
+            template(row: any) {
                 const value = row[ key ];
 
-                const output = stringify([
+                return [
                     keyword(someKeyword),
                     value.toString()
-                ]);
-                return output;
+                ];
             }
         } as Schema<TRow>;
     }
