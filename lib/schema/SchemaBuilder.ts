@@ -27,6 +27,14 @@ export class SchemaBuilder<TRow extends AnyRow> {
     private constructor(params: SchemaBuilderParams<TRow>) {
         this.schema = params.schema;
         this.description = params.where;
+
+        for (const key in this.description) {
+            const place = `<${key}>`;
+            const hasPlace = this.schema.includes(place);
+            if ( !hasPlace ) {
+                throw new Error(`required ${place} inside schema: ${this.schema}`);
+            }
+        }
     }
 
     private build(): Schema<TRow> {
