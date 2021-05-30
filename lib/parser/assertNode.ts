@@ -1,5 +1,6 @@
 import { AbstractNode, AnyRow, MinifySpaces, NodeClass, PrettySpaces } from "../node";
 import { SourceCode, SyntaxError } from "../source";
+import { BaseParser } from "./BaseParser";
 import assert from "assert";
 
 export interface SuccessTest<TNode extends AbstractNode<any>> {
@@ -29,22 +30,27 @@ export interface ErrorTest {
 
 /** parse input and strict deep equal output json */
 export function assertNode<TNode extends AbstractNode<any>>(
+    this: typeof BaseParser,
     Node: NodeClass<TNode>,
     test: SuccessTest<TNode> | ErrorTest
 ): void {
     if ( "throws" in test ) {
-        testError(Node, test);
+        testError.call(this, Node, test);
     }
     else {
-        testParsing(Node, test);
-        testEntry(Node, test);
+        testParsing.call(this, Node as NodeClass<any>, test);
+        testEntry.call(this, Node, test);
     }
 }
 
-function testError(Node: NodeClass<any>, test: ErrorTest): void {
+function testError(
+    this: typeof BaseParser,
+    Node: NodeClass<any>,
+    test: ErrorTest
+): void {
     let actualError: Error = new Error("Missing expected exception");
     try {
-        parse(Node, test.input);
+        this.parseCode(test.input, Node);
     }
     catch (error) {
         actualError = error as Error;
@@ -87,11 +93,15 @@ function testError(Node: NodeClass<any>, test: ErrorTest): void {
     }
 }
 
-function testParsing(Node: NodeClass<any>, test: SuccessTest<any>): void {
+function testParsing(
+    this: typeof BaseParser,
+    Node: NodeClass<AbstractNode<any>>,
+    test: SuccessTest<any>
+): void {
     const pretty = test.shouldBe.pretty || test.input;
     const minify = test.shouldBe.minify || test.input;
 
-    const node = parse(Node, test.input);
+    const node = this.parseCode(test.input, Node);
     assert.deepStrictEqual(
         node.toJSON(),
         test.shouldBe.json,
@@ -110,13 +120,13 @@ function testParsing(Node: NodeClass<any>, test: SuccessTest<any>): void {
 
 
     assert.deepStrictEqual(
-        parse(Node, pretty).toJSON(),
+        this.parseCode(pretty, Node).toJSON(),
         test.shouldBe.json,
         "invalid json on pretty:\n" + pretty + "\n\n"
     );
 
     assert.deepStrictEqual(
-        parse(Node, minify).toJSON(),
+        this.parseCode(minify, Node).toJSON(),
         test.shouldBe.json,
         "invalid json on minify:\n" + minify + "\n\n"
     );
@@ -157,14 +167,6 @@ function testEntry(Node: NodeClass<any>, test: SuccessTest<any>): void {
         entry(Node, minify),
         "invalid entry on minify:\n" + minify + "\n\n"
     );
-}
-
-function parse(Node: NodeClass<any>, text: string) {
-    const code = new SourceCode({
-        text
-    });
-    const node = code.cursor.parse(Node) as unknown;
-    return node as AbstractNode<any>;
 }
 
 function entry(Node: NodeClass<any>, text: string) {

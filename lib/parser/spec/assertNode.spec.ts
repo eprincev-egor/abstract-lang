@@ -2,7 +2,8 @@ import assert from "assert";
 import { DigitsToken, SpaceToken, WordToken } from "../../token";
 import { Cursor } from "../../cursor";
 import { AbstractNode, Spaces, _ } from "../../node";
-import { assertNode, SuccessTest } from "../assertNode";
+import { SuccessTest } from "../assertNode";
+import { BaseParser } from "../BaseParser";
 
 describe("assertNode", () => {
 
@@ -62,7 +63,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, test);
+                BaseParser.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
@@ -81,7 +82,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, test);
+                BaseParser.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === "1 + 2" &&
@@ -101,7 +102,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, test);
+                BaseParser.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === "1+2" &&
@@ -123,7 +124,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, test);
+                BaseParser.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
@@ -149,7 +150,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, test);
+                BaseParser.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
@@ -168,7 +169,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, test);
+                BaseParser.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === true &&
@@ -186,7 +187,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, test);
+                BaseParser.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === true &&
@@ -205,7 +206,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, test);
+                BaseParser.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === true &&
@@ -240,7 +241,7 @@ describe("assertNode", () => {
             }
 
             assert.throws(() => {
-                assertNode(StringNode, {
+                BaseParser.assertNode(StringNode, {
                     input: "hello",
                     shouldBe: {
                         json: {
@@ -294,7 +295,7 @@ describe("assertNode", () => {
             const json = new TestNode({row}).toJSON();
 
             assert.throws(() => {
-                assertNode(TestNode, {
+                BaseParser.assertNode(TestNode, {
                     input: "x + y",
                     shouldBe: {
                         json,
@@ -313,7 +314,7 @@ describe("assertNode", () => {
     describe("valid parsing", () => {
 
         it("success parsing test", () => {
-            assertNode(TestNode, {
+            BaseParser.assertNode(TestNode, {
                 input: "100 -3",
                 shouldBe: {
                     json: {left: "100", operator: "-", right: "3"},
@@ -324,7 +325,7 @@ describe("assertNode", () => {
         });
 
         it("pretty by default is input", () => {
-            assertNode(TestNode, {
+            BaseParser.assertNode(TestNode, {
                 input: "100 - 3",
                 shouldBe: {
                     json: {left: "100", operator: "-", right: "3"},
@@ -334,7 +335,7 @@ describe("assertNode", () => {
         });
 
         it("minify by default is input", () => {
-            assertNode(TestNode, {
+            BaseParser.assertNode(TestNode, {
                 input: "100-3",
                 shouldBe: {
                     json: {left: "100", operator: "-", right: "3"},
@@ -348,7 +349,7 @@ describe("assertNode", () => {
                 cursor.throwError("expected operator");
             };
 
-            assertNode(TestNode, {
+            BaseParser.assertNode(TestNode, {
                 input: "200",
                 throws: /expected operator/
             });
@@ -362,7 +363,7 @@ describe("assertNode", () => {
                 );
             };
 
-            assertNode(TestNode, {
+            BaseParser.assertNode(TestNode, {
                 input: "50+60",
                 throws: /message/,
                 target: "60"
@@ -387,7 +388,7 @@ describe("assertNode", () => {
                 );
             };
 
-            assertNode(TestNode, {
+            BaseParser.assertNode(TestNode, {
                 input: "50+60",
                 throws: /message/,
                 target: "60"
@@ -402,7 +403,7 @@ describe("assertNode", () => {
                 );
             };
 
-            assertNode(TestNode, {
+            BaseParser.assertNode(TestNode, {
                 input: "50+60",
                 throws: /message/,
                 target: /6/
@@ -428,7 +429,7 @@ describe("assertNode", () => {
                 }
             }
 
-            assertNode(Select, {
+            BaseParser.assertNode(Select, {
                 input: "limit 120",
                 shouldBe: {
                     json: {
@@ -444,7 +445,7 @@ describe("assertNode", () => {
 
         it("missing exception", () => {
             assert.throws(() => {
-                assertNode(TestNode, {
+                BaseParser.assertNode(TestNode, {
                     input: "200 + 200",
                     throws: /expected operator/
                 });
@@ -460,7 +461,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, {
+                BaseParser.assertNode(TestNode, {
                     input: "101",
                     throws: /some error/
                 });
@@ -477,7 +478,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, {
+                BaseParser.assertNode(TestNode, {
                     input: "400 - 100",
                     throws: /some error/,
                     target: "100"
@@ -496,7 +497,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                assertNode(TestNode, {
+                BaseParser.assertNode(TestNode, {
                     input: "400 - 100",
                     throws: /some error/,
                     target: /100/

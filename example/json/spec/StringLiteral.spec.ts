@@ -1,24 +1,24 @@
-import { assertNode } from "abstract-lang";
+import { BaseParser } from "abstract-lang";
 import { StringLiteral } from "../index";
 
 describe("StringLiteral", () => {
 
     it("valid inputs", () => {
-        assertNode(StringLiteral, {
+        BaseParser.assertNode(StringLiteral, {
             input: "\"hello\"",
             shouldBe: {
                 json: {string: "hello"}
             }
         });
 
-        assertNode(StringLiteral, {
+        BaseParser.assertNode(StringLiteral, {
             input: "\"\"",
             shouldBe: {
                 json: {string: ""}
             }
         });
 
-        assertNode(StringLiteral, {
+        BaseParser.assertNode(StringLiteral, {
             input: "\"he\\\\llo\"",
             shouldBe: {
                 json: {string: "he\\llo"}

@@ -1,10 +1,10 @@
-import { assertNode } from "abstract-lang";
+import { BaseParser } from "abstract-lang";
 import { JsonNode } from "../index";
 
 describe("JsonNode", () => {
 
     it("valid inputs", () => {
-        assertNode(JsonNode, {
+        BaseParser.assertNode(JsonNode, {
             input: "null",
             shouldBe: {
                 json: {
@@ -13,7 +13,7 @@ describe("JsonNode", () => {
             }
         });
 
-        assertNode(JsonNode, {
+        BaseParser.assertNode(JsonNode, {
             input: "false",
             shouldBe: {
                 json: {
@@ -22,7 +22,7 @@ describe("JsonNode", () => {
             }
         });
 
-        assertNode(JsonNode, {
+        BaseParser.assertNode(JsonNode, {
             input: "true",
             shouldBe: {
                 json: {
@@ -31,7 +31,7 @@ describe("JsonNode", () => {
             }
         });
 
-        assertNode(JsonNode, {
+        BaseParser.assertNode(JsonNode, {
             input: "-0.5",
             shouldBe: {
                 json: {
@@ -40,7 +40,7 @@ describe("JsonNode", () => {
             }
         });
 
-        assertNode(JsonNode, {
+        BaseParser.assertNode(JsonNode, {
             input: "\" \"",
             shouldBe: {
                 json: {
@@ -49,7 +49,7 @@ describe("JsonNode", () => {
             }
         });
 
-        assertNode(JsonNode, {
+        BaseParser.assertNode(JsonNode, {
             input: "[]",
             shouldBe: {
                 json: {
@@ -58,7 +58,7 @@ describe("JsonNode", () => {
             }
         });
 
-        assertNode(JsonNode, {
+        BaseParser.assertNode(JsonNode, {
             input: "{}",
             shouldBe: {
                 json: {
@@ -69,7 +69,7 @@ describe("JsonNode", () => {
     });
 
     it("invalid inputs", () => {
-        assertNode(JsonNode, {
+        BaseParser.assertNode(JsonNode, {
             input: "!",
             throws: /expected json element/,
             target: "!"
