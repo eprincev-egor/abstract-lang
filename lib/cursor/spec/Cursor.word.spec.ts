@@ -154,6 +154,19 @@ describe("Cursor.word.spec.ts word methods", () => {
                 cursor.beforeWord("world")
             );
         });
+
+        it("read phrase '(' ')'", () => {
+            code = new SourceCode({
+                text: "( \n \t )hello"
+            });
+            cursor = code.cursor;
+
+            cursor.readPhrase("(", ")");
+            assert.ok(
+                cursor.beforeWord("hello")
+            );
+        });
+
     });
 
     describe("beforePhrase(...words)", () => {
@@ -186,6 +199,18 @@ describe("Cursor.word.spec.ts word methods", () => {
             cursor.read(WordToken);
             cursor.read(SpaceToken);
             assert.ok( cursor.beforeValue("WORLD"), "before WORLD" );
+        });
+
+        it("before phrase '(' ')'", () => {
+            code = new SourceCode({
+                text: "( \n \t )"
+            });
+            cursor = code.cursor;
+
+            assert.strictEqual(
+                cursor.beforePhrase("(", ")"),
+                true
+            );
         });
 
     });
