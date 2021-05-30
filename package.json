@@ -28,7 +28,8 @@
       "postinstall/postinstall.js",
       ".mocharc.js",
       "lib/index.ts",
-      "lib/sandbox.ts"
+      "lib/sandbox.ts",
+      "example/sandbox"
     ]
   },
   "repository": {

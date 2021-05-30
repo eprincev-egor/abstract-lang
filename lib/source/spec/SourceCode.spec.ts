@@ -12,4 +12,9 @@ describe("SourceCode", () => {
         );
     });
 
+    it("constructor params as string", () => {
+        const code = new SourceCode("hello");
+        assert.strictEqual( code.tokens.join(""), "hello" );
+    });
+
 });
