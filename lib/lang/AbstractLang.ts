@@ -5,7 +5,7 @@ import { assertNode } from "./assertNode";
 import { Cursor } from "../cursor";
 
 export type ConcreteLang<TLang extends AbstractLang = AbstractLang> = (
-    (new(source: Source) => TLang) &
+    (new(source: Source, Comments: NodeClass<any>[]) => TLang) &
     Pick<typeof AbstractLang, keyof typeof AbstractLang>
 );
 
@@ -18,18 +18,18 @@ export abstract class AbstractLang {
     ): TLang {
         const tokens = Tokenizer.tokenize(this.tokenFactory, text);
         const code = new SourceCode(tokens);
-        const parser = new this(code);
+        const parser = new this(code, this.Comments);
         return parser;
     }
 
-    static comments: AbstractNode<AnyRow>[] = [];
+    static Comments: NodeClass<any>[] = [];
     static tokenFactory: TokenFactory = defaultTokenFactory;
 
     readonly source: Source;
     readonly cursor: Cursor;
-    constructor(source: Source) {
+    constructor(source: Source, Comments: NodeClass<any>[]) {
         this.source = source;
-        this.cursor = new Cursor(source);
+        this.cursor = new Cursor(source, Comments);
     }
 
     parse<TNode extends AbstractNode<AnyRow>>(

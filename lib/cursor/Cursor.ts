@@ -16,7 +16,8 @@ export class Cursor {
     readonly source: Source;
     private tokenIndex: number;
     private nextToken_: Token;
-    constructor(source: Source) {
+    private Comments: NodeClass<any>[];
+    constructor(source: Source, Comments: NodeClass<any>[] = []) {
         if ( source.tokens.length === 0 ) {
             throw new Error("required not empty array of tokens");
         }
@@ -28,6 +29,7 @@ export class Cursor {
         this.source = source;
         this.tokenIndex = 0;
         this.nextToken_ = source.tokens[ this.tokenIndex ];
+        this.Comments = Comments;
     }
 
     /** text cursor is before this token */
@@ -346,13 +348,28 @@ export class Cursor {
         }
     }
 
-    /** skip all spaces tokens */
+    /** skip all spaces tokens or comments */
     skipSpaces(): void {
-        while (
-            this.nextToken_ instanceof SpaceToken ||
-            this.nextToken_ instanceof EndOfLineToken
-        ) {
-            this.next();
+        while ( !this.beforeEnd() ) {
+            if (
+                this.nextToken_ instanceof EndOfLineToken ||
+                this.nextToken_ instanceof SpaceToken
+            ) {
+                this.next();
+                continue;
+            }
+
+            let hasComment = false;
+            for (const Comment of this.Comments) {
+                if ( this.before(Comment) ) {
+                    this.parse(Comment);
+                    hasComment = true;
+                }
+            }
+            if ( hasComment ) {
+                continue;
+            }
+            break;
         }
     }
 
