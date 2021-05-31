@@ -1,17 +1,14 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SourceCode, SyntaxError } from "../../source";
+import { SyntaxError } from "../../source";
 import { Hello, World } from "./fixture";
+import { TestLang } from "./TestLang";
 
 describe("Cursor.oneOf.spec.ts node *oneOf methods", () => {
 
-    let code!: SourceCode;
     let cursor!: Cursor;
     beforeEach(() => {
-        code = new SourceCode({
-            text: "hello world"
-        });
-        cursor = code.cursor;
+        cursor = TestLang.code("hello world").cursor;
     });
 
     describe("tryParseOneOf(Node[])", () => {

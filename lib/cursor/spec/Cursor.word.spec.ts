@@ -1,18 +1,16 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SourceCode, SyntaxError } from "../../source";
+import { SyntaxError } from "../../source";
 import { SpaceToken, WordToken } from "../../token";
+import { TestLang } from "./TestLang";
 
 describe("Cursor.word.spec.ts word methods", () => {
 
-    let code!: SourceCode;
     let cursor!: Cursor;
     beforeEach(() => {
-        code = new SourceCode({
-            text: "hello WORLD"
-        });
-        cursor = code.cursor;
+        cursor = TestLang.code("hello WORLD").cursor;
     });
+
 
     describe("beforeWord(word)", () => {
 
@@ -156,10 +154,7 @@ describe("Cursor.word.spec.ts word methods", () => {
         });
 
         it("read phrase '(' ')'", () => {
-            code = new SourceCode({
-                text: "( \n \t )hello"
-            });
-            cursor = code.cursor;
+            const {cursor} = TestLang.code("( \n \t )hello");
 
             cursor.readPhrase("(", ")");
             assert.ok(
@@ -202,10 +197,7 @@ describe("Cursor.word.spec.ts word methods", () => {
         });
 
         it("before phrase '(' ')'", () => {
-            code = new SourceCode({
-                text: "( \n \t )"
-            });
-            cursor = code.cursor;
+            const {cursor} = TestLang.code("( \n \t )");
 
             assert.strictEqual(
                 cursor.beforePhrase("(", ")"),

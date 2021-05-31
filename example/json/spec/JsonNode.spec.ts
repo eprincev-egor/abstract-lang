@@ -1,10 +1,10 @@
-import { BaseParser } from "abstract-lang";
+import { JsonLang } from "../JsonLang";
 import { JsonNode } from "../index";
 
 describe("JsonNode", () => {
 
     it("valid inputs", () => {
-        BaseParser.assertNode(JsonNode, {
+        JsonLang.assertNode(JsonNode, {
             input: "null",
             shouldBe: {
                 json: {
@@ -13,7 +13,7 @@ describe("JsonNode", () => {
             }
         });
 
-        BaseParser.assertNode(JsonNode, {
+        JsonLang.assertNode(JsonNode, {
             input: "false",
             shouldBe: {
                 json: {
@@ -22,7 +22,7 @@ describe("JsonNode", () => {
             }
         });
 
-        BaseParser.assertNode(JsonNode, {
+        JsonLang.assertNode(JsonNode, {
             input: "true",
             shouldBe: {
                 json: {
@@ -31,7 +31,7 @@ describe("JsonNode", () => {
             }
         });
 
-        BaseParser.assertNode(JsonNode, {
+        JsonLang.assertNode(JsonNode, {
             input: "-0.5",
             shouldBe: {
                 json: {
@@ -40,7 +40,7 @@ describe("JsonNode", () => {
             }
         });
 
-        BaseParser.assertNode(JsonNode, {
+        JsonLang.assertNode(JsonNode, {
             input: "\" \"",
             shouldBe: {
                 json: {
@@ -49,7 +49,7 @@ describe("JsonNode", () => {
             }
         });
 
-        BaseParser.assertNode(JsonNode, {
+        JsonLang.assertNode(JsonNode, {
             input: "[]",
             shouldBe: {
                 json: {
@@ -58,7 +58,7 @@ describe("JsonNode", () => {
             }
         });
 
-        BaseParser.assertNode(JsonNode, {
+        JsonLang.assertNode(JsonNode, {
             input: "{}",
             shouldBe: {
                 json: {
@@ -69,7 +69,7 @@ describe("JsonNode", () => {
     });
 
     it("invalid inputs", () => {
-        BaseParser.assertNode(JsonNode, {
+        JsonLang.assertNode(JsonNode, {
             input: "!",
             throws: /expected json element/,
             target: "!"

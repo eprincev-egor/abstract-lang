@@ -1,10 +1,10 @@
-import { BaseParser } from "abstract-lang";
+import { ExpressionLang } from "../ExpressionLang";
 import { Expression } from "../Expression";
 
 describe("Expression", () => {
 
     it("valid inputs", () => {
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "1",
             shouldBe: {
                 json: {
@@ -13,7 +13,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "-1",
             shouldBe: {
                 json: {
@@ -25,7 +25,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "+1.099",
             shouldBe: {
                 json: {
@@ -37,7 +37,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "hello",
             shouldBe: {
                 json: {
@@ -46,7 +46,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "2 +1",
             shouldBe: {
                 json: {
@@ -61,7 +61,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "hello * 2",
             shouldBe: {
                 json: {
@@ -75,7 +75,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "i++",
             shouldBe: {
                 json: {
@@ -87,7 +87,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "j--",
             shouldBe: {
                 json: {
@@ -99,7 +99,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "10-3",
             shouldBe: {
                 json: {
@@ -113,7 +113,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "true || false",
             shouldBe: {
                 json: {
@@ -127,7 +127,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "!false && +true",
             shouldBe: {
                 json: {
@@ -147,7 +147,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "null > 0",
             shouldBe: {
                 json: {
@@ -161,7 +161,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "-1+ 2",
             shouldBe: {
                 json: {
@@ -179,7 +179,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "+-1+ 2",
             shouldBe: {
                 json: {
@@ -200,7 +200,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "gid++ - 99",
             shouldBe: {
                 json: {
@@ -217,7 +217,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "1+ 2 +3",
             shouldBe: {
                 json: {
@@ -236,7 +236,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "gid++ * gid--",
             shouldBe: {
                 json: {
@@ -256,7 +256,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "--x % ++y",
             shouldBe: {
                 json: {
@@ -276,7 +276,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "obj.prop",
             shouldBe: {
                 json: {
@@ -288,7 +288,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "obj . prop",
             shouldBe: {
                 json: {
@@ -302,7 +302,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "'hello' + \"world\"",
             shouldBe: {
                 json: {
@@ -317,7 +317,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "'hello\\''",
             shouldBe: {
                 json: {
@@ -328,7 +328,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "'\\\\hello'",
             shouldBe: {
                 json: {
@@ -339,7 +339,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "'\\nhello'",
             shouldBe: {
                 json: {
@@ -350,7 +350,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "'\\rhello'",
             shouldBe: {
                 json: {
@@ -361,7 +361,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "2 + 2 * 2",
             shouldBe: {
                 json: {
@@ -379,7 +379,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "2 * 2 + 2",
             shouldBe: {
                 json: {
@@ -397,7 +397,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "(2 + 2) * 2",
             shouldBe: {
                 json: {
@@ -417,7 +417,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "1 + 2 * 3 - 4",
             shouldBe: {
                 json: {
@@ -439,7 +439,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "-1 * 2 + 3 * 4 - 5 - 6 * 7",
             shouldBe: {
                 json: {
@@ -476,7 +476,7 @@ describe("Expression", () => {
             }
         });
 
-        BaseParser.assertNode(Expression, {
+        ExpressionLang.assertNode(Expression, {
             input: "a.b.c.d",
             shouldBe: {
                 json: {

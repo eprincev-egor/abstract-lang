@@ -1,4 +1,4 @@
-import { TokenClass } from "token/Token";
+import { TokenClass } from "../../token/Token";
 import { TokenReader } from "./interface";
 
 export type TokenClassWithCustomRead = TokenClass & {read: TokenReader["read"]};

@@ -1,37 +1,15 @@
-import { Cursor } from "../cursor";
-import {
-    Token, Tokenizer, TokenFactory,
-    defaultTokenFactory, EndOfFleToken, EndOfLineToken
-} from "../token";
+import { Token, EndOfFleToken, EndOfLineToken } from "../token";
 import { Fragment } from "./Fragment";
 import { Source, Coords } from "./interface";
 import { Line } from "./Line";
 
-export interface CodeParams {
-    text: string;
-    tokenFactory?: TokenFactory;
-}
-
 export class SourceCode
 implements Source {
-    readonly text: string;
     readonly tokens: Token[];
-    readonly cursor: Cursor;
     protected _lines?: Line[];
 
-    constructor(params: CodeParams | string) {
-        if ( typeof params === "string" ) {
-            params = {
-                text: params
-            };
-        }
-
-        this.text = params.text;
-
-        const tokenFactory = params.tokenFactory || defaultTokenFactory;
-        this.tokens = Tokenizer.tokenize(tokenFactory, params.text);
-
-        this.cursor = new Cursor(this);
+    constructor(tokens: Token[]) {
+        this.tokens = tokens;
     }
 
     get lines(): Line[] {

@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable unicorn/consistent-destructuring */
-import { TokenClass } from "token/Token";
+import { TokenClass } from "../../token/Token";
 import { EntryArrayTokenReader } from "./EntryArrayTokenReader";
 import { EntryRegExpTokenReader } from "./EntryRegExpTokenReader";
 import { TokenReader } from "./interface";

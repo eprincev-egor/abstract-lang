@@ -1,10 +1,10 @@
-import { BaseParser } from "abstract-lang";
+import { JsonLang } from "../JsonLang";
 import { ObjectLiteral } from "../index";
 
 describe("ObjectLiteral", () => {
 
     it("valid inputs", () => {
-        BaseParser.assertNode(ObjectLiteral, {
+        JsonLang.assertNode(ObjectLiteral, {
             input: "{}",
             shouldBe: {
                 json: {
@@ -13,7 +13,7 @@ describe("ObjectLiteral", () => {
             }
         });
 
-        BaseParser.assertNode(ObjectLiteral, {
+        JsonLang.assertNode(ObjectLiteral, {
             input: "{\"hello\": \"world\"}",
             shouldBe: {
                 json: {
@@ -33,7 +33,7 @@ describe("ObjectLiteral", () => {
             }
         });
 
-        BaseParser.assertNode(ObjectLiteral, {
+        JsonLang.assertNode(ObjectLiteral, {
             input: "{\"a\": 1, \"b\": 2}",
             shouldBe: {
                 json: {
@@ -58,7 +58,7 @@ describe("ObjectLiteral", () => {
             }
         });
 
-        BaseParser.assertNode(ObjectLiteral, {
+        JsonLang.assertNode(ObjectLiteral, {
             input: "{\"a\": [ ]}",
             shouldBe: {
                 json: {

@@ -1,6 +1,6 @@
 import { AbstractNode, AnyRow, MinifySpaces, NodeClass, PrettySpaces } from "../node";
-import { SourceCode, SyntaxError } from "../source";
-import { BaseParser } from "./BaseParser";
+import { SyntaxError } from "../source";
+import { AbstractLang, ConcreteLang } from "./AbstractLang";
 import assert from "assert";
 
 export interface SuccessTest<TNode extends AbstractNode<any>> {
@@ -29,8 +29,8 @@ export interface ErrorTest {
 }
 
 /** parse input and strict deep equal output json */
-export function assertNode<TNode extends AbstractNode<any>>(
-    this: typeof BaseParser,
+export function assertNode<TNode extends AbstractNode<any>, TLang extends AbstractLang>(
+    this: ConcreteLang<TLang>,
     Node: NodeClass<TNode>,
     test: SuccessTest<TNode> | ErrorTest
 ): void {
@@ -44,13 +44,13 @@ export function assertNode<TNode extends AbstractNode<any>>(
 }
 
 function testError(
-    this: typeof BaseParser,
+    this: ConcreteLang,
     Node: NodeClass<any>,
     test: ErrorTest
 ): void {
     let actualError: Error = new Error("Missing expected exception");
     try {
-        this.parseCode(test.input, Node);
+        this.code(test.input).parse(Node);
     }
     catch (error) {
         actualError = error as Error;
@@ -94,14 +94,14 @@ function testError(
 }
 
 function testParsing(
-    this: typeof BaseParser,
+    this: ConcreteLang,
     Node: NodeClass<AbstractNode<any>>,
     test: SuccessTest<any>
 ): void {
     const pretty = test.shouldBe.pretty || test.input;
     const minify = test.shouldBe.minify || test.input;
 
-    const node = this.parseCode(test.input, Node);
+    const node = this.code(test.input).parse(Node);
     assert.deepStrictEqual(
         node.toJSON(),
         test.shouldBe.json,
@@ -120,13 +120,13 @@ function testParsing(
 
 
     assert.deepStrictEqual(
-        this.parseCode(pretty, Node).toJSON(),
+        this.code(pretty).parse(Node).toJSON(),
         test.shouldBe.json,
         "invalid json on pretty:\n" + pretty + "\n\n"
     );
 
     assert.deepStrictEqual(
-        this.parseCode(minify, Node).toJSON(),
+        this.code(minify).parse(Node).toJSON(),
         test.shouldBe.json,
         "invalid json on minify:\n" + minify + "\n\n"
     );
@@ -151,28 +151,24 @@ function testEveryNodeHavePosition(input: string, node: AbstractNode<AnyRow>) {
     }
 }
 
-function testEntry(Node: NodeClass<any>, test: SuccessTest<any>): void {
+function testEntry(
+    this: ConcreteLang,
+    Node: NodeClass<any>,
+    test: SuccessTest<any>
+): void {
     const pretty = test.shouldBe.pretty || test.input;
     const minify = test.shouldBe.minify || test.input;
 
     assert.ok(
-        entry(Node, test.input),
+        this.code(test.input).cursor.before(Node),
         "invalid entry on input:\n" + test.input + "\n\n"
     );
     assert.ok(
-        entry(Node, pretty),
+        this.code(pretty).cursor.before(Node),
         "invalid entry on pretty:\n" + pretty + "\n\n"
     );
     assert.ok(
-        entry(Node, minify),
+        this.code(minify).cursor.before(Node),
         "invalid entry on minify:\n" + minify + "\n\n"
     );
-}
-
-function entry(Node: NodeClass<any>, text: string) {
-    const code = new SourceCode({
-        text
-    });
-    const entry = code.cursor.before(Node);
-    return entry;
 }

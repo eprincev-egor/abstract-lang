@@ -1,15 +1,14 @@
 import assert from "assert";
 import { codeExample } from "./fixture";
-import { SourceCode } from "../../SourceCode";
 import { NodeHighlighter } from "../NodeHighlighter";
+import { TestLang } from "../../../cursor/spec/TestLang";
+import { Source } from "../../interface";
 
 describe("NodeHighlighter", () => {
 
-    let code!: SourceCode;
+    let code!: Source;
     beforeEach(() => {
-        code = new SourceCode({
-            text: codeExample
-        });
+        code = TestLang.code(codeExample).source;
     });
 
     it("show 4 lines before invalid node and 4 lines after", () => {

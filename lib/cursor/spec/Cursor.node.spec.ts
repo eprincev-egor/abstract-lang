@@ -1,19 +1,16 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
 import { AbstractNode } from "../../node";
-import { SourceCode, SyntaxError } from "../../source";
+import { SyntaxError } from "../../source";
 import { DigitsToken } from "../../token";
 import { WordNode } from "./fixture";
+import { TestLang } from "./TestLang";
 
 describe("Cursor.node.spec.ts node methods", () => {
 
-    let code!: SourceCode;
     let cursor!: Cursor;
     beforeEach(() => {
-        code = new SourceCode({
-            text: "hello world"
-        });
-        cursor = code.cursor;
+        cursor = TestLang.code("hello world").cursor;
     });
 
     describe("parse(Node)", () => {
@@ -81,10 +78,7 @@ describe("Cursor.node.spec.ts node methods", () => {
                 }
             }
 
-            code = new SourceCode({
-                text: "(1 + 2) - (3 + 4)"
-            });
-            cursor = code.cursor;
+            const {cursor, source: code} = TestLang.code("(1 + 2) - (3 + 4)");
 
             const node = cursor.parse(Operator);
 
@@ -120,10 +114,9 @@ describe("Cursor.node.spec.ts node methods", () => {
     describe("parseChainOf(Node, delimiter)", () => {
 
         it("parse sequence of nodes over some delimiter", () => {
-            code = new SourceCode({
-                text: "first,second , third\n,\rfour,\tfive"
-            });
-            const cursor = code.cursor;
+            const {cursor} = TestLang.code(
+                "first,second , third\n,\rfour,\tfive"
+            );
 
             const words = cursor.parseChainOf(WordNode, ",");
             assert.deepStrictEqual(
@@ -133,10 +126,9 @@ describe("Cursor.node.spec.ts node methods", () => {
         });
 
         it("parse sequence of nodes without delimiter", () => {
-            code = new SourceCode({
-                text: "first \t second\nthird!stop"
-            });
-            const cursor = code.cursor;
+            const {cursor} = TestLang.code(
+                "first \t second\nthird!stop"
+            );
 
             const words = cursor.parseChainOf(WordNode);
             assert.deepStrictEqual(
@@ -147,10 +139,7 @@ describe("Cursor.node.spec.ts node methods", () => {
         });
 
         it("throw an error if the next token is wrong", () => {
-            code = new SourceCode({
-                text: " "
-            });
-            const cursor = code.cursor;
+            const {cursor} = TestLang.code(" ");
 
             assert.throws(() => {
                 cursor.parseChainOf(WordNode, ";");
@@ -161,10 +150,7 @@ describe("Cursor.node.spec.ts node methods", () => {
         });
 
         it("throw an error if the next token after delimiter is wrong", () => {
-            code = new SourceCode({
-                text: "hello;123"
-            });
-            const cursor = code.cursor;
+            const {cursor} = TestLang.code("hello;123");
 
             assert.throws(() => {
                 cursor.parseChainOf(WordNode, ";");

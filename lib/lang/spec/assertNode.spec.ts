@@ -3,9 +3,11 @@ import { DigitsToken, SpaceToken, WordToken } from "../../token";
 import { Cursor } from "../../cursor";
 import { AbstractNode, Spaces, _ } from "../../node";
 import { SuccessTest } from "../assertNode";
-import { BaseParser } from "../BaseParser";
+import { AbstractLang } from "../AbstractLang";
 
 describe("assertNode", () => {
+
+    class TestLang extends AbstractLang {}
 
     interface OperatorRow {
         left: string;
@@ -63,7 +65,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, test);
+                TestLang.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
@@ -82,7 +84,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, test);
+                TestLang.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === "1 + 2" &&
@@ -102,7 +104,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, test);
+                TestLang.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === "1+2" &&
@@ -124,7 +126,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, test);
+                TestLang.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
@@ -150,7 +152,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, test);
+                TestLang.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 JSON.stringify(err.expected) === JSON.stringify(test.shouldBe.json) &&
@@ -169,7 +171,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, test);
+                TestLang.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === true &&
@@ -187,7 +189,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, test);
+                TestLang.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === true &&
@@ -206,7 +208,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, test);
+                TestLang.assertNode(TestNode, test);
             }, (err: Error) =>
                 err instanceof assert.AssertionError &&
                 err.expected === true &&
@@ -241,7 +243,7 @@ describe("assertNode", () => {
             }
 
             assert.throws(() => {
-                BaseParser.assertNode(StringNode, {
+                TestLang.assertNode(StringNode, {
                     input: "hello",
                     shouldBe: {
                         json: {
@@ -295,7 +297,7 @@ describe("assertNode", () => {
             const json = new TestNode({row}).toJSON();
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, {
+                TestLang.assertNode(TestNode, {
                     input: "x + y",
                     shouldBe: {
                         json,
@@ -314,7 +316,7 @@ describe("assertNode", () => {
     describe("valid parsing", () => {
 
         it("success parsing test", () => {
-            BaseParser.assertNode(TestNode, {
+            TestLang.assertNode(TestNode, {
                 input: "100 -3",
                 shouldBe: {
                     json: {left: "100", operator: "-", right: "3"},
@@ -325,7 +327,7 @@ describe("assertNode", () => {
         });
 
         it("pretty by default is input", () => {
-            BaseParser.assertNode(TestNode, {
+            TestLang.assertNode(TestNode, {
                 input: "100 - 3",
                 shouldBe: {
                     json: {left: "100", operator: "-", right: "3"},
@@ -335,7 +337,7 @@ describe("assertNode", () => {
         });
 
         it("minify by default is input", () => {
-            BaseParser.assertNode(TestNode, {
+            TestLang.assertNode(TestNode, {
                 input: "100-3",
                 shouldBe: {
                     json: {left: "100", operator: "-", right: "3"},
@@ -349,7 +351,7 @@ describe("assertNode", () => {
                 cursor.throwError("expected operator");
             };
 
-            BaseParser.assertNode(TestNode, {
+            TestLang.assertNode(TestNode, {
                 input: "200",
                 throws: /expected operator/
             });
@@ -363,7 +365,7 @@ describe("assertNode", () => {
                 );
             };
 
-            BaseParser.assertNode(TestNode, {
+            TestLang.assertNode(TestNode, {
                 input: "50+60",
                 throws: /message/,
                 target: "60"
@@ -388,7 +390,7 @@ describe("assertNode", () => {
                 );
             };
 
-            BaseParser.assertNode(TestNode, {
+            TestLang.assertNode(TestNode, {
                 input: "50+60",
                 throws: /message/,
                 target: "60"
@@ -403,7 +405,7 @@ describe("assertNode", () => {
                 );
             };
 
-            BaseParser.assertNode(TestNode, {
+            TestLang.assertNode(TestNode, {
                 input: "50+60",
                 throws: /message/,
                 target: /6/
@@ -429,7 +431,7 @@ describe("assertNode", () => {
                 }
             }
 
-            BaseParser.assertNode(Select, {
+            TestLang.assertNode(Select, {
                 input: "limit 120",
                 shouldBe: {
                     json: {
@@ -445,7 +447,7 @@ describe("assertNode", () => {
 
         it("missing exception", () => {
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, {
+                TestLang.assertNode(TestNode, {
                     input: "200 + 200",
                     throws: /expected operator/
                 });
@@ -461,7 +463,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, {
+                TestLang.assertNode(TestNode, {
                     input: "101",
                     throws: /some error/
                 });
@@ -478,7 +480,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, {
+                TestLang.assertNode(TestNode, {
                     input: "400 - 100",
                     throws: /some error/,
                     target: "100"
@@ -497,7 +499,7 @@ describe("assertNode", () => {
             };
 
             assert.throws(() => {
-                BaseParser.assertNode(TestNode, {
+                TestLang.assertNode(TestNode, {
                     input: "400 - 100",
                     throws: /some error/,
                     target: /100/

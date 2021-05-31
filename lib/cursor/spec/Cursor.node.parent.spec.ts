@@ -2,7 +2,7 @@ import assert from "assert";
 import { Cursor } from "../Cursor";
 import { AbstractNode } from "../../node";
 import { DigitsToken } from "../../token";
-import { SourceCode } from "../../source";
+import { TestLang } from "./TestLang";
 
 describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
 
@@ -58,41 +58,38 @@ describe("Cursor.node.parent.spec.ts set correct node.parent", () => {
             }
         }
 
-        const code = new SourceCode({
-            text: `{
-                item: 1,
-                children: [
-                    {
-                        item: 2,
-                        children: []
-                    },
-                    {
-                        item: 3,
-                        children: [
-                            {
-                                item: 5,
-                                children: []
-                            }
-                        ]
-                    },
-                    {
-                        item: 6,
-                        children: [
-                            {
-                                item: 7,
-                                children: [
-                                    {
-                                        item: 8,
-                                        children: []
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }`.trim()
-        });
-        const {cursor} = code;
+        const cursor = TestLang.code(`{
+            item: 1,
+            children: [
+                {
+                    item: 2,
+                    children: []
+                },
+                {
+                    item: 3,
+                    children: [
+                        {
+                            item: 5,
+                            children: []
+                        }
+                    ]
+                },
+                {
+                    item: 6,
+                    children: [
+                        {
+                            item: 7,
+                            children: [
+                                {
+                                    item: 8,
+                                    children: []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }`.trim()).cursor;
 
         const root = cursor.parse(ItemNode);
         assert.deepStrictEqual(root.toJSON(), {

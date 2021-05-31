@@ -1,21 +1,18 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SourceCode, SyntaxError } from "../../source";
+import { SyntaxError } from "../../source";
 import {
     Token,
     SpaceToken,
     WordToken
 } from "../../token";
+import { TestLang } from "./TestLang";
 
 describe("Cursor.base.spec.ts base methods", () => {
 
-    let code!: SourceCode;
     let cursor!: Cursor;
     beforeEach(() => {
-        code = new SourceCode({
-            text: "hello world"
-        });
-        cursor = code.cursor;
+        cursor = TestLang.code("hello world").cursor;
     });
 
     it("required not empty array of tokens", () => {
@@ -122,8 +119,8 @@ describe("Cursor.base.spec.ts base methods", () => {
     describe("setPositionBefore(Token)", () => {
 
         it("set position before world", () => {
-            const hello = code.tokens[0];
-            const world = code.tokens[2];
+            const hello = cursor.source.tokens[0];
+            const world = cursor.source.tokens[2];
 
             cursor.setPositionBefore(world);
             assert.ok(
@@ -153,7 +150,7 @@ describe("Cursor.base.spec.ts base methods", () => {
             cursor.next();
             cursor.next();
             cursor.next();
-            cursor.setPositionBefore(code.tokens[0]);
+            cursor.setPositionBefore(cursor.source.tokens[0]);
 
             const word = cursor.read(WordToken);
             assert.strictEqual(word.value, "hello");

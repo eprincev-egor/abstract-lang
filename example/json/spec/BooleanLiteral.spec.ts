@@ -1,17 +1,17 @@
-import { BaseParser } from "abstract-lang";
+import { JsonLang } from "../JsonLang";
 import { BooleanLiteral } from "../index";
 
 describe("BooleanLiteral", () => {
 
     it("valid inputs", () => {
-        BaseParser.assertNode(BooleanLiteral, {
+        JsonLang.assertNode(BooleanLiteral, {
             input: "true",
             shouldBe: {
                 json: {boolean: true}
             }
         });
 
-        BaseParser.assertNode(BooleanLiteral, {
+        JsonLang.assertNode(BooleanLiteral, {
             input: "false",
             shouldBe: {
                 json: {boolean: false}

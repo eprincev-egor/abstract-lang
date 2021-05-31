@@ -1,9 +1,9 @@
 import assert from "assert";
-import { SourceCode } from "../../source";
 import {
     WordToken,
     DigitsToken
 } from "../../token";
+import { TestLang } from "./TestLang";
 
 describe("Cursor.other.spec.ts other methods", () => {
 
@@ -13,10 +13,7 @@ describe("Cursor.other.spec.ts other methods", () => {
         const quote = "'";
 
         function parseQuotes(text: string) {
-            const code = new SourceCode({
-                text
-            });
-            const cursor = code.cursor;
+            const {cursor} = TestLang.code(text);
 
             // require open quote
             cursor.readValue(quote);
@@ -54,10 +51,7 @@ describe("Cursor.other.spec.ts other methods", () => {
 
         // eslint-disable-next-line unicorn/consistent-function-scoping
         function parseNumber(text: string): number {
-            const code = new SourceCode({
-                text
-            });
-            const cursor = code.cursor;
+            const {cursor} = TestLang.code(text);
 
             let numb = "";
             if ( cursor.beforeValue("-") ) {

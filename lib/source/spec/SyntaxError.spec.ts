@@ -3,16 +3,17 @@ import { codeExample } from "../highlighter/spec/fixture";
 import { SyntaxError } from "../SyntaxError";
 import { Token } from "../../token";
 import { TestNode } from "../../node/spec/AbstractNode/fixture";
-import { SourceCode } from "../../source/SourceCode";
+import { Source } from "../../source/interface";
 import { SourceFile } from "../../source/SourceFile";
+import { AbstractLang } from "../../lang";
 
 describe("SyntaxError", () => {
 
-    let source!: SourceCode;
+    class TestLang extends AbstractLang {}
+
+    let source!: Source;
     beforeEach(() => {
-        source = new SourceCode({
-            text: codeExample
-        });
+        source = TestLang.code(codeExample).source;
     });
 
     const message = "unexpected token";
@@ -105,13 +106,14 @@ describe("SyntaxError", () => {
     });
 
     it("show filePath:column:line", () => {
-        const file = new SourceFile({
-            path: "./test.txt",
-            text: codeExample
-        });
+        const tokens = TestLang.code(codeExample).source.tokens;
+        const file = new SourceFile(
+            "./test.txt",
+            tokens
+        );
 
         const err = SyntaxError.at({
-            source: file.cursor.source,
+            source: file,
             message,
             target: file.tokens.slice().reverse().find((token) =>
                 token.value === "lowerWord"

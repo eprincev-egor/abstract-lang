@@ -1,19 +1,17 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SourceCode, SyntaxError } from "../../source";
+import { SyntaxError } from "../../source";
 import { WordToken } from "../../token";
 import { AbstractNode } from "../../node";
+import { TestLang } from "./TestLang";
 
 describe("Cursor.throwError.spec.ts", () => {
 
-    let code!: SourceCode;
     let cursor!: Cursor;
     beforeEach(() => {
-        code = new SourceCode({
-            text: "hello world"
-        });
-        cursor = code.cursor;
+        cursor = TestLang.code("hello world").cursor;
     });
+
 
     describe("throwError(message, target?)", () => {
 

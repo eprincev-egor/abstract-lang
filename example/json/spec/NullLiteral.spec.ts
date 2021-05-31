@@ -1,10 +1,10 @@
-import { BaseParser } from "abstract-lang";
+import { JsonLang } from "../JsonLang";
 import { NullLiteral } from "../index";
 
 describe("NullLiteral", () => {
 
     it("valid inputs", () => {
-        BaseParser.assertNode(NullLiteral, {
+        JsonLang.assertNode(NullLiteral, {
             input: "null",
             shouldBe: {
                 json: {null: true}

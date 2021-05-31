@@ -1,6 +1,6 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { SourceCode, SyntaxError } from "../../source";
+import { SyntaxError } from "../../source";
 import {
     SpaceToken,
     WordToken,
@@ -8,17 +8,15 @@ import {
     EndOfLineToken,
     OperatorsToken
 } from "../../token";
+import { TestLang } from "./TestLang";
 
 describe("Cursor.token.spec.ts token methods", () => {
 
-    let code!: SourceCode;
     let cursor!: Cursor;
     beforeEach(() => {
-        code = new SourceCode({
-            text: "hello world"
-        });
-        cursor = code.cursor;
+        cursor = TestLang.code("hello world").cursor;
     });
+
 
     it("beforeToken(TokenClass)", () => {
         assert.ok( cursor.beforeToken(WordToken) );
