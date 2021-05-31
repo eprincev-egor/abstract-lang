@@ -364,6 +364,7 @@ export class Cursor {
                 if ( this.before(Comment) ) {
                     this.parse(Comment);
                     hasComment = true;
+                    break;
                 }
             }
             if ( hasComment ) {
