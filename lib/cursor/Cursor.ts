@@ -5,7 +5,9 @@ import {
 import {
     AbstractNode,
     AnyRow,
-    NodeClass
+    NodeClass,
+    NodeParams,
+    NodePosition
 } from "../node";
 import { Source, SyntaxError } from "../source";
 import { last } from "../util";
@@ -261,6 +263,23 @@ export class Cursor {
         return node;
     }
 
+    /** correctly create node with source and position */
+    create<TRow extends AnyRow, TNode extends AbstractNode<AnyRow>>(
+        Node: new (params: NodeParams<TRow>) => TNode,
+        startFrom: Token | AbstractNode<AnyRow> | number,
+        row: TRow
+    ): TNode {
+        const position: NodePosition = {
+            start: extrudePositionStart(startFrom),
+            end: this.nextToken_.position
+        };
+        return new Node({
+            source: this.source,
+            position,
+            row
+        });
+    }
+
     /** parse a sequence of nodes separated by a some value */
     parseChainOf<TNode extends AbstractNode<AnyRow>>(
         Node: NodeClass<TNode>,
@@ -395,4 +414,21 @@ export class Cursor {
         this.tokenIndex++;
         this.nextToken_ = this.source.tokens[ this.tokenIndex ];
     }
+}
+
+function extrudePositionStart(
+    startFrom: Token | AbstractNode<AnyRow> | number
+): number {
+    if ( startFrom instanceof Token ) {
+        return startFrom.position;
+    }
+
+    if ( startFrom instanceof AbstractNode ) {
+        if ( !startFrom.position ) {
+            throw new Error("cannot detect start node position");
+        }
+        return startFrom.position.start;
+    }
+
+    return startFrom;
 }

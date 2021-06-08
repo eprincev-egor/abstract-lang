@@ -1,6 +1,6 @@
 import { Cursor } from "../Cursor";
-import { AbstractNode } from "../../node";
-import { WordToken } from "../../token";
+import { AbstractNode, TemplateElement } from "../../node";
+import { WordToken, DigitsToken } from "../../token";
 
 interface WordRow {
     word: string;
@@ -58,5 +58,55 @@ export class World extends AbstractNode<WorldRow> {
 
     template(): string {
         return "world";
+    }
+}
+
+
+interface OperatorRow {
+    left: string | Operator;
+    operator: string;
+    right: string | Operator;
+}
+
+export class Operator extends AbstractNode<OperatorRow> {
+    // istanbul ignore next
+    static entry(): boolean {
+        return true;
+    }
+
+    static parse(cursor: Cursor): OperatorRow {
+        const left = Operator.parseOperand(cursor);
+        cursor.skipSpaces();
+
+        const operator = cursor.nextToken.value;
+        cursor.skipOne();
+
+        cursor.skipSpaces();
+        const right = Operator.parseOperand(cursor);
+
+        return {left, operator, right};
+    }
+
+    static parseOperand(cursor: Cursor): string | Operator {
+        if ( cursor.beforeValue("(") ) {
+            cursor.skipOne();
+            cursor.skipSpaces();
+
+            const operator = cursor.parse(Operator);
+
+            cursor.skipSpaces();
+            cursor.readValue(")");
+
+            return operator;
+        }
+
+        const numb = cursor.read(DigitsToken).value;
+        return numb;
+    }
+
+    // istanbul ignore next
+    template(): TemplateElement[] {
+        const {left, operator, right} = this.row;
+        return [left, operator, right];
     }
 }

@@ -49,16 +49,9 @@ export class Expression extends AbstractNode<ExpressionRow> {
 
         if ( PostUnaryOperator.entryOperator(cursor) ) {
             const postOperator = PostUnaryOperator.parseOperator(cursor);
-            const postUnary = new PostUnaryOperator({
-                source: cursor.source,
-                position: {
-                    start: operand.position!.start,
-                    end: cursor.nextToken.position
-                },
-                row: {
-                    postOperator,
-                    operand
-                }
+            const postUnary = cursor.create(PostUnaryOperator, operand, {
+                postOperator,
+                operand
             });
             operand = postUnary;
 
@@ -80,16 +73,9 @@ export class Expression extends AbstractNode<ExpressionRow> {
         cursor.skipSpaces();
         const property = cursor.parse(Identifier);
 
-        const dotOperator = new DotOperator({
-            source: cursor.source,
-            position: {
-                start: operand.position!.start,
-                end: property.position!.end
-            },
-            row: {
-                operand,
-                property
-            }
+        const dotOperator = cursor.create(DotOperator, operand, {
+            operand,
+            property
         });
         operand = dotOperator;
 
@@ -144,42 +130,21 @@ export class Expression extends AbstractNode<ExpressionRow> {
             left.is(BinaryOperator) &&
             left.lessPrecedence(operator)
         ) {
-            return new BinaryOperator({
-                source: cursor.source,
-                position: {
-                    start: left.row.left.position!.start,
-                    end: right.position!.end
-                },
-                row: {
-                    left: left.row.left,
-                    operator: left.row.operator,
-                    right: new BinaryOperator({
-                        source: cursor.source,
-                        position: {
-                            start: left.row.right.position!.start,
-                            end: right.position!.end
-                        },
-                        row: {
-                            left: left.row.right,
-                            operator,
-                            right
-                        }
-                    })
-                }
+            return cursor.create(BinaryOperator, left.row.left, {
+                left: left.row.left,
+                operator: left.row.operator,
+                right: cursor.create(BinaryOperator, left.row.right, {
+                    left: left.row.right,
+                    operator,
+                    right
+                })
             });
         }
 
-        return new BinaryOperator({
-            source: cursor.source,
-            position: {
-                start: left.position!.start,
-                end: right.position!.end
-            },
-            row: {
-                left,
-                operator,
-                right
-            }
+        return cursor.create(BinaryOperator, left, {
+            left,
+            operator,
+            right
         });
     }
 

@@ -1,9 +1,7 @@
 import assert from "assert";
 import { Cursor } from "../Cursor";
-import { AbstractNode } from "../../node";
 import { SyntaxError } from "../../source";
-import { DigitsToken } from "../../token";
-import { WordNode } from "./fixture";
+import { WordNode, Operator } from "./fixture";
 import { TestLang } from "./TestLang";
 
 describe("Cursor.node.spec.ts node methods", () => {
@@ -30,53 +28,6 @@ describe("Cursor.node.spec.ts node methods", () => {
         });
 
         it("set node.parent", () => {
-            interface OperatorRow {
-                left: string | Operator;
-                operator: string;
-                right: string | Operator;
-            }
-            class Operator extends AbstractNode<OperatorRow> {
-                // istanbul ignore next
-                static entry() {
-                    return true;
-                }
-
-                static parse(cursor: Cursor): OperatorRow {
-                    const left = Operator.parseOperand(cursor);
-                    cursor.skipSpaces();
-
-                    const operator = cursor.nextToken.value;
-                    cursor.skipOne();
-
-                    cursor.skipSpaces();
-                    const right = Operator.parseOperand(cursor);
-
-                    return {left, operator, right};
-                }
-
-                static parseOperand(cursor: Cursor): string | Operator {
-                    if ( cursor.beforeValue("(") ) {
-                        cursor.skipOne();
-                        cursor.skipSpaces();
-
-                        const operator = cursor.parse(Operator);
-
-                        cursor.skipSpaces();
-                        cursor.readValue(")");
-
-                        return operator;
-                    }
-
-                    const numb = cursor.read(DigitsToken).value;
-                    return numb;
-                }
-
-                // istanbul ignore next
-                template() {
-                    const {left, operator, right} = this.row;
-                    return [left, operator, right];
-                }
-            }
 
             const {cursor, source: code} = TestLang.code("(1 + 2) - (3 + 4)");
 
