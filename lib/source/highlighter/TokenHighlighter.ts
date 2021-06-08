@@ -56,13 +56,17 @@ export class TokenHighlighter extends AbstractHighlighter {
     }
 
     private printUnderline() {
+        // every line printed with:
+        // "  " or "> "
+        // and
+        //  " |"
+        const LEFT_PADDING = " >";
+        const RIGHT_PADDING = " ";
+        const PADDINGS = LEFT_PADDING.length + RIGHT_PADDING.length;
+
         const spaces = " ".repeat(
             this.underline.column +
-            // every line printed with:
-            // "  " or "> "
-            // and
-            //  " |"
-            this.fragment.lineNumberWidth + 2 + 1
+            this.fragment.lineNumberWidth + PADDINGS
         );
         const underLine = "^".repeat(this.underline.length);
         return `${ spaces }${ underLine }`;

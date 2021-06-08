@@ -50,7 +50,7 @@ describe("SyntaxError", () => {
         });
 
         assert.ok( err.message.includes(
-            "\n> 1 |readWord(): string {"
+            "\n>  1 |readWord(): string {"
         ) );
     });
 

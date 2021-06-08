@@ -69,12 +69,12 @@ describe("NodeHighlighter", () => {
                 }
             }),
 
-            "\n> 1 |readWord(): string {" +
-            "\n> 2 |    let word = \"\";" +
-            "\n  3 |" +
-            "\n  4 |    const startIndex = this.i;" +
-            "\n  5 |    if ( startIndex === this.lastWordStartIndex ) {" +
-            "\n  6 |        this.i = this.lastWordEndIndex!;" +
+            "\n>  1 |readWord(): string {" +
+            "\n>  2 |    let word = \"\";" +
+            "\n   3 |" +
+            "\n   4 |    const startIndex = this.i;" +
+            "\n   5 |    if ( startIndex === this.lastWordStartIndex ) {" +
+            "\n   6 |        this.i = this.lastWordEndIndex!;" +
             "\n  ...|"
         );
     });

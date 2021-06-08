@@ -43,12 +43,12 @@ describe("TokenHighlighter", () => {
         assert.strictEqual(
             TokenHighlighter.highlight(code, testToken),
 
-            "\n> 1 |readWord(): string {" +
-            "\n     ^^^^^^^^" +
-            "\n  2 |    let word = \"\";" +
-            "\n  3 |" +
-            "\n  4 |    const startIndex = this.i;" +
-            "\n  5 |    if ( startIndex === this.lastWordStartIndex ) {" +
+            "\n>  1 |readWord(): string {" +
+            "\n      ^^^^^^^^" +
+            "\n   2 |    let word = \"\";" +
+            "\n   3 |" +
+            "\n   4 |    const startIndex = this.i;" +
+            "\n   5 |    if ( startIndex === this.lastWordStartIndex ) {" +
             "\n  ...|"
         );
     });

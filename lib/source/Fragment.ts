@@ -14,8 +14,13 @@ export class Fragment {
     ) {
         this.lines = lines;
 
-        this.lineNumberWidth = last(lines).number
-            .toString().length;
+        this.lineNumberWidth = Math.max(
+            last(lines).number.toString().length,
+            // minimal length is 2 for that case:
+            // " 5 |"
+            // "...|"
+            2
+        );
 
         this.existsLinesBefore = lines[0].number > 1;
         this.existsLinesAfter = (
