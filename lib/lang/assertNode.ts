@@ -136,6 +136,7 @@ function testParsing(
     }
 
     testEveryNodeHavePosition(test.input, node);
+    testEveryNodeHaveSource(test.input, node);
 }
 
 function testEveryNodeHavePosition(input: string, node: AbstractNode<AnyRow>) {
@@ -148,6 +149,19 @@ function testEveryNodeHavePosition(input: string, node: AbstractNode<AnyRow>) {
 
     for (const child of node.children) {
         testEveryNodeHavePosition(input, child);
+    }
+}
+
+function testEveryNodeHaveSource(input: string, node: AbstractNode<AnyRow>) {
+    assert.ok(
+        !!node.source,
+        "required node source for every child\n" +
+        "on input:\n" + input + "\n\n" +
+        "invalid node: " + JSON.stringify(node, undefined, 4)
+    );
+
+    for (const child of node.children) {
+        testEveryNodeHaveSource(input, child);
     }
 }
 

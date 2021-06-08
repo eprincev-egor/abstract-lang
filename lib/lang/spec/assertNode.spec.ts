@@ -311,6 +311,68 @@ describe("assertNode", () => {
             );
         });
 
+        it("every child node should have source", () => {
+            const someRow = {
+                left: "x",
+                operator: "+",
+                right: "y"
+            };
+            const row = {
+                ...someRow,
+                childArr: [
+                    new TestNode({
+                        row: someRow,
+                        position: {start: 0, end: 1}
+                    })
+                ],
+                childObj: {
+                    x: new TestNode({
+                        row: someRow,
+                        position: {start: 0, end: 1}
+                    })
+                },
+                recursion: new TestNode({
+                    row: {
+                        ...someRow,
+                        ...({
+                            childArr: [
+                                new TestNode({
+                                    row: someRow,
+                                    position: {start: 0, end: 1}
+                                })
+                            ],
+                            childObj: {
+                                x: new TestNode({
+                                    row: someRow,
+                                    position: {start: 0, end: 1}
+                                })
+                            }
+                        } as unknown as OperatorRow)
+                    },
+                    position: {start: 0, end: 1}
+                })
+            } as unknown as OperatorRow;
+
+            TestNode.parse = function() {
+                return row;
+            };
+            const json = new TestNode({row}).toJSON();
+
+            assert.throws(() => {
+                TestLang.assertNode(TestNode, {
+                    input: "x + y",
+                    shouldBe: {
+                        json,
+                        minify: "x+y"
+                    }
+                });
+            }, (err: Error) =>
+                err.message.includes("on input:\nx + y") &&
+                err.message.includes("required node source for every child") &&
+                err.message.includes("invalid node: ")
+            );
+        });
+
     });
 
     describe("valid parsing", () => {

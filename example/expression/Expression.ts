@@ -50,6 +50,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
         if ( PostUnaryOperator.entryOperator(cursor) ) {
             const postOperator = PostUnaryOperator.parseOperator(cursor);
             const postUnary = new PostUnaryOperator({
+                source: cursor.source,
                 position: {
                     start: operand.position!.start,
                     end: cursor.nextToken.position
@@ -80,6 +81,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
         const property = cursor.parse(Identifier);
 
         const dotOperator = new DotOperator({
+            source: cursor.source,
             position: {
                 start: operand.position!.start,
                 end: property.position!.end
@@ -118,6 +120,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
         cursor.skipSpaces();
 
         const binary = Expression.createBinaryOperator(
+            cursor,
             left,
             operator,
             Expression.parseOperand(cursor)
@@ -132,6 +135,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
     }
 
     private static createBinaryOperator(
+        cursor: Cursor,
         left: Operand,
         operator: BinaryOperatorType,
         right: Operand
@@ -141,6 +145,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
             left.lessPrecedence(operator)
         ) {
             return new BinaryOperator({
+                source: cursor.source,
                 position: {
                     start: left.row.left.position!.start,
                     end: right.position!.end
@@ -149,6 +154,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
                     left: left.row.left,
                     operator: left.row.operator,
                     right: new BinaryOperator({
+                        source: cursor.source,
                         position: {
                             start: left.row.right.position!.start,
                             end: right.position!.end
@@ -164,6 +170,7 @@ export class Expression extends AbstractNode<ExpressionRow> {
         }
 
         return new BinaryOperator({
+            source: cursor.source,
             position: {
                 start: left.position!.start,
                 end: right.position!.end
