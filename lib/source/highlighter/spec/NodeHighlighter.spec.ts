@@ -60,4 +60,23 @@ describe("NodeHighlighter", () => {
         );
     });
 
+    it("show 4 lines after invalid node at first two lines", () => {
+        assert.strictEqual(
+            NodeHighlighter.highlight(code, {
+                position: {
+                    start: 0,
+                    end: 23
+                }
+            }),
+
+            "\n> 1 |readWord(): string {" +
+            "\n> 2 |    let word = \"\";" +
+            "\n  3 |" +
+            "\n  4 |    const startIndex = this.i;" +
+            "\n  5 |    if ( startIndex === this.lastWordStartIndex ) {" +
+            "\n  6 |        this.i = this.lastWordEndIndex!;" +
+            "\n  ...|"
+        );
+    });
+
 });

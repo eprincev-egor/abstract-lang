@@ -31,7 +31,7 @@ export class NodeHighlighter extends AbstractHighlighter {
         }
 
         const fragment = code.getFragment(
-            start.line - NEAR_LINES_QUANTITY - 1,
+            Math.max(start.line - NEAR_LINES_QUANTITY - 1, 0),
             end.line + NEAR_LINES_QUANTITY
         );
 
