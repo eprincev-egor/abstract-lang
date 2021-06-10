@@ -5,7 +5,7 @@ import {
     TestScopeNode
 } from "./fixture";
 
-describe("AbstractDependencyNode", () => {
+describe("AbstractDependencyNode/TestScopeNode findDeclaration()", () => {
 
     let declaration1!: TestDeclarationNode;
     let declaration2!: TestDeclarationNode;
@@ -40,7 +40,7 @@ describe("AbstractDependencyNode", () => {
 
         it("no declaration", () => {
             const dependency = new TestDependencyNode({row: {}});
-            new TestScopeNode({row: {
+            const scope = new TestScopeNode({row: {
                 dependency
             }});
 
@@ -48,25 +48,43 @@ describe("AbstractDependencyNode", () => {
                 dependency.findDeclaration(),
                 undefined
             );
+            assert.strictEqual(
+                scope.findDeclaration(dependency),
+                undefined
+            );
         });
 
         it("declaration inside current scope", () => {
-            new TestScopeNode({row: {
+            const scope = new TestScopeNode({row: {
                 dependency1,
                 declaration1,
                 dependency2,
                 declaration2
             }});
 
-            const result1 = dependency1.findDeclaration();
-            assert.ok(result1 === declaration1, "declaration1");
+            assert.ok(
+                dependency1.findDeclaration() === declaration1,
+                "dependency1.findDeclaration()"
+            );
 
-            const result2 = dependency2.findDeclaration();
-            assert.ok(result2 === declaration2, "declaration2");
+            assert.ok(
+                dependency2.findDeclaration() === declaration2,
+                "dependency2.findDeclaration()"
+            );
+
+            assert.ok(
+                scope.findDeclaration(dependency1) === declaration1,
+                "scope.findDeclaration(dependency1)"
+            );
+
+            assert.ok(
+                scope.findDeclaration(dependency2) === declaration2,
+                "scope.findDeclaration(dependency2)"
+            );
         });
 
         it("declaration inside parent scope", () => {
-            new TestScopeNode({
+            const scope = new TestScopeNode({
                 row: {
                     declaration1,
                     child: new TestScopeNode({
@@ -77,8 +95,11 @@ describe("AbstractDependencyNode", () => {
                 }
             });
 
-            const result = dependency1.findDeclaration();
-            assert.ok(result === declaration1);
+            const result1 = dependency1.findDeclaration();
+            assert.ok(result1 === declaration1, "dependency");
+
+            const result2 = scope.findDeclaration(dependency1);
+            assert.ok(result2 === declaration1, "scope");
         });
     });
 

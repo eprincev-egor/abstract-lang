@@ -14,21 +14,7 @@ export abstract class AbstractDependencyNode<TRow extends AnyRow>
     findDeclaration(
         scope = this.requiredFindScope()
     ): AbstractDeclarationNode<AnyRow> | undefined {
-
-        const declarations = scope.filterChildren((declarationNode) =>
-            declarationNode.is(AbstractDeclarationNode) &&
-            this.isDependentOn(declarationNode)
-        ) as AbstractDeclarationNode<AnyRow>[];
-
-        const thisDeclaration = declarations[0];
-        if ( thisDeclaration ) {
-            return thisDeclaration;
-        }
-
-        const parentScope = scope.findParentScope();
-        if ( parentScope ) {
-            return this.findDeclaration(parentScope);
-        }
+        return scope.findDeclaration(this);
     }
 
     /** check clojure */
