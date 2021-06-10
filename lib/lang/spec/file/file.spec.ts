@@ -1,6 +1,6 @@
 import assert from "assert";
 import { InlineComment } from "../../../cursor/spec/InlineComment";
-import { SourceFile } from "source";
+import { SourceFile } from "../../../source";
 import { AbstractLang } from "../../AbstractLang";
 
 describe("Lang.file(filePath)", () => {
@@ -12,6 +12,7 @@ describe("Lang.file(filePath)", () => {
     it("success read file", () => {
         const filePath = __dirname + "/hello.txt";
         const test = TestLang.file(filePath);
+        assert.ok( test instanceof TestLang );
         assert.ok( test.source instanceof SourceFile );
         assert.strictEqual( test.source.path, filePath );
     });
@@ -30,6 +31,17 @@ describe("Lang.file(filePath)", () => {
 
         test.cursor.skipSpaces();
         assert.ok( test.cursor.beforeValue("hello") );
+    });
+
+    it("create file by object: {path, content}", () => {
+        const path = "/test.txt";
+        const content = "hello world";
+        const test = TestLang.file({path, content});
+
+        assert.ok( test instanceof TestLang );
+        assert.ok( test.source instanceof SourceFile );
+        assert.strictEqual( test.source.path, path );
+        assert.strictEqual( test.source.tokens.join(""), content );
     });
 
 });

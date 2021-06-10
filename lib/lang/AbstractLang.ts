@@ -16,6 +16,7 @@ export abstract class AbstractLang {
 
     static assertNode = assertNode;
 
+    /** create parser */
     static code<TLang extends AbstractLang>(
         this: ConcreteLang<TLang>,
         text: string
@@ -26,14 +27,25 @@ export abstract class AbstractLang {
         return parser;
     }
 
+    /** read file and create parser */
     static file<TLang extends AbstractLang>(
         this: ConcreteLang<TLang>,
-        filePath: string
+        file: string | {path: string; content: string}
     ): TLang {
-        const fileContent = fs.readFileSync(filePath).toString();
+        let filePath!: string;
+        let fileContent!: string;
+        if ( typeof file === "string" ) {
+            filePath = file;
+            fileContent = fs.readFileSync(filePath).toString();
+        }
+        else {
+            fileContent = file.content;
+            filePath = file.path;
+        }
+
         const tokens = Tokenizer.tokenize(this.tokenFactory, fileContent);
-        const file = new SourceFile(filePath, tokens);
-        const parser = new this(file, this.Comments);
+        const sourceFile = new SourceFile(filePath, tokens);
+        const parser = new this(sourceFile, this.Comments);
         return parser;
     }
 
