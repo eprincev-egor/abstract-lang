@@ -125,4 +125,25 @@ describe("defaultTokenFactory", () => {
         }
     });
 
+    it("BOM is SpaceToken", () => {
+        const BOM = String.fromCharCode(65279);
+
+        const tokens = Tokenizer.tokenize(
+            defaultTokenFactory,
+            `${BOM} test`
+        );
+
+        const actualTokens = tokens.map((token) =>
+            token.toJSON()
+        );
+        assert.deepStrictEqual(
+            actualTokens, [
+                {value: `${BOM} `, position: 0},
+                {value: "test", position: 2},
+                {value: "", position: 6}
+            ]
+        );
+        assert.ok( tokens[0] instanceof SpaceToken );
+    });
+
 });
