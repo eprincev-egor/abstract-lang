@@ -3,6 +3,7 @@ import { AbstractNode, AnyRow, NodeClass } from "../node";
 import { defaultTokenFactory, TokenFactory, Tokenizer } from "../token";
 import { assertNode } from "./assertNode";
 import { Cursor } from "../cursor";
+// * as => for projects without esModuleInterop
 import * as fs from "fs";
 
 export type ConcreteLang<TLang extends AbstractLang = AbstractLang> = (

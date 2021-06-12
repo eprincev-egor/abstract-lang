@@ -1,7 +1,8 @@
 import { AbstractNode, AnyRow, MinifySpaces, NodeClass, PrettySpaces } from "../node";
 import { SyntaxError } from "../source";
 import { AbstractLang, ConcreteLang } from "./AbstractLang";
-import assert from "assert";
+// * as => for projects without esModuleInterop
+import * as assert from "assert";
 
 export interface SuccessTest<TNode extends AbstractNode<any>> {
     /** input string for parsing */
@@ -74,7 +75,7 @@ function testError(
 
     if ( typeof test.target === "string" ) {
         assert.strictEqual(
-            actualError.target && actualError.target.toString(),
+            actualError.target.toString(),
             test.target,
             "invalid error target on input:\n" +
             test.input + "\n\n" +
