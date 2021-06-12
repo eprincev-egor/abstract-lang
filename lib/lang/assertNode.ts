@@ -48,7 +48,7 @@ function testError(
     Node: NodeClass<any>,
     test: ErrorTest
 ): void {
-    let actualError: Error = new Error("Missing expected exception");
+    let actualError: SyntaxError | Error = new Error("Missing expected exception");
     try {
         this.code(test.input).parse(Node);
     }
@@ -74,7 +74,7 @@ function testError(
 
     if ( typeof test.target === "string" ) {
         assert.strictEqual(
-            actualError.target.toString(),
+            actualError.target && actualError.target.toString(),
             test.target,
             "invalid error target on input:\n" +
             test.input + "\n\n" +

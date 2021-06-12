@@ -3,7 +3,7 @@ import { AbstractNode, AnyRow, NodeClass } from "../node";
 import { defaultTokenFactory, TokenFactory, Tokenizer } from "../token";
 import { assertNode } from "./assertNode";
 import { Cursor } from "../cursor";
-import fs from "fs";
+import * as fs from "fs";
 
 export type ConcreteLang<TLang extends AbstractLang = AbstractLang> = (
     (new(source: Source, Comments: NodeClass<any>[]) => TLang) &
