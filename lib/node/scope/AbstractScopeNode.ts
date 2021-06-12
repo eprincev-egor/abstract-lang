@@ -23,12 +23,10 @@ export abstract class AbstractScopeNode<TRow extends AnyRow>
         dependency: AbstractDependencyNode<AnyRow>,
         scope: AbstractScopeNode<AnyRow> = this
     ): AbstractDeclarationNode<AnyRow> | undefined {
-        const declarations = scope.filterChildren((declarationNode) =>
-            declarationNode.is(AbstractDeclarationNode) &&
+        const thisDeclaration = scope.getDeclarations().find((declarationNode) =>
             dependency.isDependentOn(declarationNode)
-        ) as AbstractDeclarationNode<AnyRow>[];
+        );
 
-        const thisDeclaration = declarations[0];
         if ( thisDeclaration ) {
             return thisDeclaration;
         }
@@ -37,5 +35,14 @@ export abstract class AbstractScopeNode<TRow extends AnyRow>
         if ( parentScope ) {
             return this.findDeclaration(dependency, parentScope);
         }
+    }
+
+    /** returns declarations from current scope, can be redefined for optimize */
+    getDeclarations(): AbstractDeclarationNode<AnyRow>[] {
+        const declarations = this.filterChildren((declarationNode) =>
+            declarationNode.is(AbstractDeclarationNode)
+        ) as AbstractDeclarationNode<AnyRow>[];
+
+        return declarations;
     }
 }
