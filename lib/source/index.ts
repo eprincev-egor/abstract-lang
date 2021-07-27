@@ -3,4 +3,5 @@ export * from "./Line";
 export * from "./SourceCode";
 export * from "./SourceFile";
 export * from "./SyntaxError";
+export * from "./highlighter";
 export * from "./interface";
