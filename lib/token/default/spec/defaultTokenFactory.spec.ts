@@ -20,7 +20,9 @@ describe("defaultTokenFactory", () => {
                 "'single'\"double\\\"\"`and that`",
                 "123\t\t456\t7890",
                 "%+-*/~!.><=^&&||?@",
-                "10e10"
+                "10e10",
+                " ", "defaultсoef",
+                " ", "йцукенгшщзхъфывапролджэячсмитьбюёЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ"
             ].join("")
         );
 
@@ -87,7 +89,17 @@ describe("defaultTokenFactory", () => {
             { value: "e", position: 114 },
             { value: "10", position: 115 },
 
-            { value: "", position: 117 }
+            { value: " ", position: 117 },
+
+            // WorkToken with rus and eng text
+            { value: "defaultсoef", position: 118 },
+
+            { value: " ", position: 129 },
+
+            // WorkToken with rus text
+            { value: "йцукенгшщзхъфывапролджэячсмитьбюёЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ", position: 130 },
+
+            { value: "", position: 196 }
         ];
         assert.deepStrictEqual(
             actualTokens,
